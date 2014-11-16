@@ -1,0 +1,72 @@
+% !Rnw root = ../Main.Rnw
+
+% Variables and their index
+<<echo=FALSE, results='hide'>>=
+ # "1 --> PerEURO"              
+ # "2 --> PerUSD"               
+ # "3 --> KeyIntRate"           
+ # "4 --> CPI"                  
+ # "5 --> EuroIntRate"          
+ # "6 --> LoanIntRate"          
+ # "7 --> ImpTot"               
+ # "8 --> ImpExShip"            
+ # "9 --> ImpExShipOilPlat"     
+ # "10 --> ImpExcShipOilPlatCrd"
+ # "11 --> TotExp"              
+ # "12 --> ExpExOldShip"        
+ # "13 --> ExpExShip"           
+ # "14 --> ExpExShipOilPlat"    
+ # "15 --> MlandExp"            
+ # "16 --> TrBal"               
+ # "17 --> TrBalExShipOilPlat"  
+ # "18 --> TrBalMland"          
+ # "19 --> ImpShip"             
+ # "20 --> ImpOldShip"          
+ # "21 --> ImpNewShip"          
+ # "22 --> ImpOilPlat"          
+ # "23 --> ImpShipOilPlat"      
+ # "24 --> ExpCrdOil"           
+ # "25 --> ExpNatGas"           
+ # "26 --> ExpCond"             
+ # "27 --> ExpCrdOilNatGasCond" 
+ # "28 --> ExpShip"             
+ # "29 --> ExpOldShip"          
+ # "30 --> ExpNewShip"          
+ # "31 --> ExpOilPlat"          
+ # "32 --> ExpShipOilPlat"
+@
+
+<<dataSetup, echo=FALSE, message=FALSE, warning=FALSE, results='hide'>>=
+baseTable<-read.xls(path.expand(file.path(dirname(dirname(getwd())), "Datasets", "CompleteDataSet.xlsx")), sheet = "ExtData")
+baseTable[,1]<-as.Date(baseTable[,1], format="%Y-%b-%d")
+
+min.Year<-min(as.numeric(format.Date(baseTable[,1], "%Y")))
+min.mth<-min(as.numeric(format.Date(baseTable[,1], "%m")))
+baseTable$Testrain<-format(baseTable$Date, "%Y")<2013
+
+# Creating Season Column
+season<-list()
+season$spring<-c("March","April","May")
+season$summer<-c("June", "July", "Aug")
+season$Autumn<-c("September", "October", "November")
+season$winter<-c("December", "January", "February")
+
+baseTable$season<-ifelse(
+  format(baseTable$Date, "%B")%in%season$spring, "Spring", ifelse(
+    format(baseTable$Date, "%B")%in%season$summer, "Summer", ifelse(
+      format(baseTable$Date, "%B")%in%season$Autumn, "Autumn", "Winter")))
+
+baseTable$ly.var<-lag(baseTable[,"PerEURO"])
+baseTable<-baseTable[-1,]  # To Remove NA due to introduction of Lagged Variable in Response
+
+# X and Y variables
+x.var<-colnames(baseTable)[-c(1:3, 33:35)]
+y.var<-colnames(baseTable)[2]
+axu.var<-colnames(baseTable)[3]
+date.var<-colnames(baseTable)[1]
+
+# Test and Training Dataset
+Train<-filter(baseTable,Testrain)
+Test<-filter(baseTable,!Testrain)
+@
+

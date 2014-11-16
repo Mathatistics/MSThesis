@@ -1,0 +1,84 @@
+% !Rnw root = ../Main.Rnw
+
+<<functions, echo=FALSE, cache=FALSE, warning=FALSE>>=
+plotTS<-function(dataSet, vars, colVar=NA){
+  plt<-ggplot(filter(dataSet, variable%in%vars), aes(Date))
+  ifelse(is.na(colVar),
+  plt<-plt+geom_line(aes(y=value), size=.3),
+  plt<-plt+geom_line(aes_string(y="value", col=colVar), size=.3)    
+  )
+  plt<-plt+theme_bw()
+  plt<-plt+theme(axis.text=element_text(size=7), strip.text.x=element_text(size=8))
+  plt<-plt+facet_wrap(~variable, scales = "free_y", ncol=3)
+  plt<-plt+theme(legend.position="top", legend.title=element_blank())
+  return(plt)
+}
+test.plot<-function(coef.matrix, alpha=0.05){
+  .e<-environment()
+  names(coef.matrix)<-c("Estimate", "StdError", "t.value", "p.value")
+  idx<-order(row.names(coef.matrix))
+  cp<-ggplot(coef.matrix[idx,], aes(x=row.names(coef.matrix[idx,]), y=t.value), environment = .e)
+  cp<-cp+geom_bar(stat="identity", position = "identity",
+                  fill=ifelse(coef.matrix[idx,"p.value"]<alpha, "firebrick3", "dodgerblue3"))
+  cp<-cp+geom_text(aes(y=ifelse(coef.matrix[idx, "t.value"]>0,t.value+0.5, t.value-0.5), 
+                       label=round(coef.matrix[idx,"Estimate"], 2)), angle=90, size=3)
+  cp<-cp+theme_bw()+labs(x="", y="T-Value")
+  cp<-cp+theme(axis.text.x=element_text(angle=90, hjust=1, size=10))
+  cp<-cp+scale_fill_manual("Status", values=c("firebrick3", "dodgerblue3"), 
+                           labels=c("Significant", "Non-Significant"))
+  cp<-cp+geom_hline(yintercept=c(-1,1)*qt(alpha/2, df = abs(diff(dim(coef.matrix))), lower.tail = F), 
+                    color="red", linetype="dashed")
+  cp<-cp+theme(legend.title=element_blank(), 
+               legend.position=c(0.8,0.9))
+  cp<-cp+geom_hline(yintercept=0, color="black", size=.2)
+  return(cp)
+}
+fit.model<-function(Model, yVar, xVars, dataSet){
+  model<-match.fun(Model)
+  Formula<-as.formula(paste(yVar, paste(xVars, collapse="+"), sep="~"))
+  return(list(formula=Formula, model=model(Formula, data=dataSet), dataset=dataSet))
+}
+diagPlot<-function(model){
+  p1<-ggplot(model, aes(.fitted, .resid))+geom_point()
+  p1<-p1+stat_smooth(method="loess")+geom_hline(yintercept=0, col="red", linetype="dashed")
+  p1<-p1+xlab("Fitted values")+ylab("Residuals")
+  p1<-p1+ggtitle("Residual vs Fitted Plot")+theme_bw()
+  
+  p2<-ggplot(model, aes(qqnorm(.stdresid)[[1]], .stdresid))+geom_point(na.rm = TRUE)
+  p2<-p2+geom_abline(aes(qqline(.stdresid)))+xlab("Theoretical Quantiles")+ylab("Standardized Residuals")
+  p2<-p2+ggtitle("Normal Q-Q")+theme_bw()
+  
+  p3<-ggplot(model, aes(.fitted, sqrt(abs(.stdresid))))+geom_point(na.rm=TRUE)
+  p3<-p3+stat_smooth(method="loess", na.rm = TRUE)+xlab("Fitted Value")
+  p3<-p3+ylab(expression(sqrt("|Standardized residuals|")))
+  p3<-p3+ggtitle("Scale-Location")+theme_bw()
+  
+  p4<-ggplot(model, aes(seq_along(.cooksd), .cooksd))+geom_bar(stat="identity", position="identity")
+  p4<-p4+xlab("Obs. Number")+ylab("Cook's distance")
+  p4<-p4+ggtitle("Cook's distance")+theme_bw()
+  
+  p5<-ggplot(model, aes(.hat, .stdresid))+geom_point(aes(size=.cooksd), na.rm=TRUE)
+  p5<-p5+stat_smooth(method="loess", na.rm=TRUE)
+  p5<-p5+xlab("Leverage")+ylab("Standardized Residuals")
+  p5<-p5+ggtitle("Residual vs Leverage Plot")
+  p5<-p5+scale_size_continuous("Cook's Distance", range=c(1,5))
+  p5<-p5+theme_bw()+theme(legend.position="bottom")
+  
+  p6<-ggplot(model, aes(.hat, .cooksd))+geom_point(na.rm=TRUE)+stat_smooth(method="loess", na.rm=TRUE)
+  p6<-p6+xlab("Leverage hii")+ylab("Cook's Distance")
+  p6<-p6+ggtitle("Cook's dist vs Leverage hii/(1-hii)")
+  p6<-p6+geom_abline(slope=seq(0,3,0.5), color="gray", linetype="dashed")
+  p6<-p6+theme_bw()
+  
+  return(list(rvfPlot=p1, qqPlot=p2, sclLocPlot=p3, cdPlot=p4, rvlevPlot=p5, cvlPlot=p6))
+}
+
+sumryBlock<-function(model){
+  return(paste("R-Sq = ",signif(summary(model)$r.squared, 2),
+                       "\nAdj R-Sq =",signif(summary(model)$adj.r.squared, 2),
+                       "\nSigma =",signif(summary(model)$sigma, 2),
+                       "\nF =",signif(as.vector(summary(model)$fstatistic[1]), 2))
+         )
+}
+@
+

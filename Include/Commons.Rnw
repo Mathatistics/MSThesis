@@ -1,0 +1,11 @@
+% !Rnw root = ../Main.Rnw
+% Fitting Different Models and saving the results in a list
+<<modelFitting, echo=FALSE, results='hide'>>=
+mdl<-c("lm", "pcr", "plsr", "linearRidge")
+mdl.ft<-list()
+mdl.ft<-lapply(mdl, function(x){
+  fit.model(x, y.var[1], x.var, filter(baseTable, Testrain))
+})
+names(mdl.ft)<-c("linear", "PCR", "PLS", "ridge")
+mdl.ft$lm.back<-list(model=step(lm(formula = mdl.ft$linear$formula, data=mdl.ft$linear$data)), formula=mdl.ft$linear$formula, data=mdl.ft$linear$data)
+@

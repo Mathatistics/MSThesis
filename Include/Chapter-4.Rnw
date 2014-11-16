@@ -1,0 +1,37 @@
+% !Rnw root = ../Main.Rnw
+
+\chapter{Data Analysis}
+This chapter will present the analysis report obtained for different models and also compare those models with criteria like goodness of fit, prediction error, variation explained during prediction. During this analysis, only the observations from Jan 2000 to December 20012. The model will be exposed to predict the average monthly exchange rate of Euro vs Norwegian Krone and compare the prediction with original value for its accuracy.
+
+The summary report of the variables that are in use during the analysis are in table (\ref{tbl:sumryTabl}),
+
+{\singlespacing
+<<sumryTabl, echo=FALSE, results='asis'>>=
+sumryTabl<-xtable(t(sapply(baseTable[,c(y.var[1], x.var)], function(x){c(min=min(x), median=median(x), max=max(x), mean=mean(x), stdev=sd(x))})))
+caption(sumryTabl)<-"Summary Report of all the variables used in this report"
+label(sumryTabl)<-"tbl:sumryTabl"
+print(sumryTabl, caption.placement = "top", booktabs=TRUE, floating=FALSE, tabular.environment = "longtable", hline.after=c(-1,0,0,nrow(sumryTabl)))
+@
+}
+It is also desirable to see the time series plot of the related variables given in figure -(\ref{fig:timeSeriesPlot})
+<<timeSeriesPlot, echo=FALSE, fig.cap="Time Series plot of different variables", fig.pos="ht">>=
+stkTabl<-melt(baseTable, id.vars = c(1,which(names(baseTable)=="season")))
+stkTabl$ExcChng<-c(ifelse(with(stkTabl, diff(baseTable$PerEURO))<0, "Decrease", "Increase/Unchange"), NA)
+vars<-c(y.var[1], x.var[-length(x.var)])
+plotTS(stkTabl, vars, "season")
+@
+The correlation plot in figure -(\ref{fig:corAnalysisPlot1}) will give some idea about the correlation among various predictor variables. In the plot, high correlation between independent variables indicates multicollinearity in the model.
+
+Further, the fig-(\ref{fig:corAnalysisPlot2}) shows that only few of the predictor variables have significant correlation with response variable.
+<<rpCorPlot, echo=FALSE, fig.show='hide'>>=
+rpCorTab<-lapply(seq_along(x.var), function(x){data.frame(var=x.var[x], p.value=cor.test(baseTable[,x.var[x]], baseTable[,y.var[1]])$p.value, correlation=cor.test(baseTable[,x.var[x]], baseTable[,y.var[1]])$estimate)})
+## Plotting
+cp<-ggplot(melt(rpCorTab, 1:2), aes(var, value))+geom_bar(stat="identity", position="identity", aes(fill=p.value))+theme_bw()+theme(axis.text.x=element_text(angle=90, hjust=1))+ylab("Correlation Estimate")+scale_fill_continuous("P-value")+geom_hline(yintercept=c(1,-1)*0.05, col="red", linetype="dashed")
+@
+<<corAnalysisPlot, echo=FALSE, ref.label='corAnalysisPlot', fig.cap="Correlation Analysis of Dataset", fig.subcap=c('Correlation Plot of different predictor variables','Correlation betwen  Response and Predictor Variables. The red dashed lines give the critical region of 0.05 significance level'), out.width='0.49\\textwidth', fig.env='sidewaysfigure'>>=
+corPlot<-corrplot(cor(baseTable[,x.var]), method="ellipse", type="lower", cl.pos="b", tl.cex=.8, diag = F, tl.col = "black", outline=T)
+print(cp)
+@
+<<ResetMarParameter, echo=FALSE, results='hide'>>=
+par(mar=c(5, 4, 4, 2) + 0.1)
+@

@@ -1,0 +1,27 @@
+% !Rnw root = Chapter-3.Rnw
+\begin{figure}
+\centering
+\begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=1.0cm,y=1.0cm]
+\tikzstyle{every node}=[font=\small\sf]
+\draw[->,color=black] (-1.,0.) -- (10.,0.);
+\foreach \x in {1,2,3,4,5,6,7,8,9}
+\draw[shift={(\x,0)},color=black] (0pt,2pt) -- (0pt,-2pt) node[below] {\footnotesize $\x$};
+\draw[->,color=black] (0.,-1.) -- (0.,7.);
+\foreach \y in {1,2,3,4,5,6}
+\draw[shift={(0,\y)},color=black] (2pt,0pt) -- (-2pt,0pt) node[left] {\footnotesize $\y$};
+\draw[color=black] (0pt,-10pt) node[right] {\footnotesize $0$};
+\clip(-1.,-1.) rectangle (10.,7.);
+\draw [shift={(-0.121669889526,9.43948846317)},dash pattern=on 2pt off 2pt]  plot[domain=4.72546460841:5.93273201445,variable=\t]({1.*9.30535469727*cos(\t r)+0.*9.30535469727*sin(\t r)},{0.*9.30535469727*cos(\t r)+1.*9.30535469727*sin(\t r)});
+\draw [shift={(9.23740777921,10.094828387)},dash pattern=on 4pt off 4pt]  plot[domain=3.52560568874:4.68732394366,variable=\t]({1.*9.9630286574*cos(\t r)+0.*9.9630286574*sin(\t r)},{0.*9.9630286574*cos(\t r)+1.*9.9630286574*sin(\t r)});
+\draw [shift={(4.3205708351,8.28323005515)}] plot[domain=3.49667738686:5.92421281305,variable=\t]({1.*4.60803364605*cos(\t r)+0.*4.60803364605*sin(\t r)},{0.*4.60803364605*cos(\t r)+1.*4.60803364605*sin(\t r)});
+\draw (0.5,2) node[anchor=north west] {$\text{Under fitting}$};
+\draw (6.5,2) node[anchor=north west] {$\text{Over fitting}$};
+%\draw (-0.00666330535589,0.207513228255) node[anchor=north west] {$\text{Error of Prediction}$};
+\draw (-1,5) node[anchor=north west] {$\rotatebox{90.0}{ \text{Error of prediction}  }$};
+\draw (6.5,1) node[anchor=north west] {$\text{Model Error}$};
+\draw (6.5,4) node[anchor=north west] {$\text{Estimation Error}$};
+\draw (2,-0.5) node[anchor=north west] {$\text{Complexity of Calibration Model}$};
+\end{tikzpicture}
+\caption{Model Error - Estimation Error and Prediction Error}
+\label{fig:mdlErrorPlt}
+\end{figure}

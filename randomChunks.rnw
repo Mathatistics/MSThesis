@@ -1,0 +1,83 @@
+
+  
+  
+  <<loading.plot, echo=FALSE>>=
+  loadings<-melt(list(pcr<-mdl.ft$PCR$model$loading[,1:2], pls<-mdl.ft$PLS$model$loadings[,1:2]))
+names(loadings)<-c("Vars", "Comp", "Value", "Model")
+loadings$Vars<-as.numeric(loadings$Vars)
+ggplot(loadings, aes(Vars, Value))+geom_line(aes(lty=Comp))+facet_grid(Model~.)
+@
+  
+  <<pcr.pls.pred, echo=FALSE>>=
+  predVals<-data.frame(measured=baseTable["PerEURO"],
+                       linear=predict(lm.back.model, newdata = baseTable[,x.var]),
+                       pcr=predict(mdl.ft$PCR$model, , newdata = baseTable[,x.var], ncomp = 15)[,,1],
+                       pls=predict(mdl.ft$PLS$model, newdata = baseTable[,x.var], ncomp = 15)[,,1],
+                       ridge=predict(mdl.ft$ridge$model, newdata=baseTable[,x.var], ncomp = 15))
+@
+  
+  The Measured vs Prediction Plot for four Models are,
+<<predPlot, echo=FALSE>>=
+  predPlot<-ggplot(melt(predVals, 1), aes(PerEURO, value))+geom_point()
+predPlot<-predPlot+stat_smooth(method="lm", aes(col=variable))
+predPlot<-predPlot+facet_grid(variable~., scales = "free_y")
+predPlot<-predPlot+ggtitle("Measured vs Prediction Plot")+xlab("Measured")+ylab("Predicted")
+print(predPlot)
+@
+  
+  <<RMSEP.R2.mat, echo=FALSE>>=
+  rmsep.r2.pcr<-cbind(RMSEP=as.vector(RMSEP(mdl.ft$PCR$model)$val),
+                      R2=as.vector(R2(mdl.ft$PCR$model)$val))
+rmsep.r2.pls<-cbind(RMSEP=as.vector(RMSEP(mdl.ft$PLS$model)$val),
+                    R2=as.vector(R2(mdl.ft$PLS$model)$val))
+rmsep.r2<-melt(list(pcr=rmsep.r2.pcr, pls=rmsep.r2.pls))
+names(rmsep.r2)<-c("Comp","RMSEP.R2","Value", "Model")
+@
+  
+  <<RMSEP.R2.plot, echo=FALSE, fig.height=4>>=
+  rrPlot<-ggplot(rmsep.r2, aes(Comp, Value))+geom_line(aes(col=RMSEP.R2))
+rrPlot<-rrPlot+facet_grid(.~Model)
+rrPlot<-rrPlot+theme(legend.position="top", legend.title=element_blank())
+plot(rrPlot+ggtitle("RMSEP and R2 plot for PLS and PCR plot"))
+@
+  
+  <<echo=FALSE, fig.height=5, fig.show='hide'>>=
+  lmRFPlot<-ggplot(mdl.ft$linear$model, aes(.fitted, .resid))+geom_point()+xlab("Fitted")+ylab("Residual")
+lmBkRFPlot<-ggplot(lm.back.model, aes(.fitted, .resid))+geom_point()+xlab("Fitted")+ylab("Residual")
+grid.arrange(lmRFPlot, lmBkRFPlot, nrow=2, main="Residual vs Fitted Plot for \nFull Linear and Stepwise selected Linear Model")
+@
+  
+  % Lagged Model -------------------------------------|
+  <<PrepareLaggedDataset, echo=FALSE, results='hide'>>=
+  l.baseTable<-data.frame(baseTable, apply(data.frame(l.PerEURO=baseTable[,y.var[1]], baseTable[,x.var]), 2, lag))
+@
+  
+  
+  
+  The prediction made by these there models are compared from the following plot,
+<<echo=FALSE>>=
+  lm.pred<-predict(lm.back.model, newdata = tsTest[,x.var])
+pcr.pred<-predict(mdl.ft$PCR$model, newdata=tsTest[,x.var], ncomp=1:5)
+pls.pred<-predict(mdl.ft$PLS$model, newdata=tsTest[,x.var], ncomp=1:5)
+
+l.pcr.pred<-predict(l.mdl.ft$PCR$model, newdata=cbind(tsTest[,x.var], tsTest[,y.var[1]]), ncomp=1:5)
+l.plsr.pred<-predict(l.mdl.ft$PLS$model, newdata=cbind(tsTest[,x.var], tsTest[,y.var[1]]), ncomp=1:5)
+@
+  
+  <<echo=FALSE, results='hide'>>=
+  fit=vector()
+for(i in 1:nrow(tsTest)){
+  train<-tsTable[1:nrow(tsTrain)+i-1,]
+  test<-tsTable[nrow(tsTrain)+i,,drop=F]
+  
+  mdl.ft$PLS$model<-plsr(train[,y.var[1]]~train[,x.var], nc=10)
+  fit[i]<-as.vector(predict(mdl.ft$PLS$model, newdata=test[,x.var,drop=FALSE], ncomp=7))
+}
+@
+  <<echo=FALSE>>=
+  predSet<-cbind(original=tsTest[,y.var[1]], linear=lm.pred, pcr=pcr.pred[,,1], pls=pls.pred[,,1], laggedPCR=l.pcr.pred[,,1], laggedPLS=l.plsr.pred[,,1], shortRun=fit)
+plot(predSet, plot.type="single", col=rainbow(7))
+legend(2013.0, 8.4, colnames(predSet), col=rainbow(7), cex=0.7, lty=1)
+@
+  
+  

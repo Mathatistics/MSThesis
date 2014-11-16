@@ -1,0 +1,46 @@
+% !Rnw root = ../Main.Rnw
+
+\section{Multiple Linear Regression}
+Lets denote the predictor variables by $\mbf{X}=(\vl{X}{p})$ and $Y$ for response variable. The detail explanation for the variables are in Appendix A. The linear model, as given in eq-(\ref{eq:linRegMatModel}),when fitted, shows that only few variables are significant. In other words \texttt{\Sexpr{row.names(summary(mdl.ft$linear$model)$coefficients)[data.frame(summary(mdl.ft$linear$model)$coefficients)$Pr...t..<=0.05]}} are affecting the Euro vs Norwegian Krone exchange rate significantly. The table (\ref{tab:lmModelSumry}) gives the result for the fitted model.
+
+The summary table in table-(\ref{tab:lmModelSumry}) can also be visualized by the bar plots of t-value we obtained which is shown in figure-(\ref{fig:lmPlots1}). The red bars are those coefficients which are only significant variables and are also separated by he red dashed lines representing the critical value of t at 0.05 level of significance.
+<<linearModelPlot, echo=FALSE, warning=FALSE, fig.show='hold'>>=
+lm.coef.matrix<-data.frame(summary(mdl.ft$linear$model)$coefficients)
+plt<-test.plot(lm.coef.matrix, alpha=0.05)
+plt<-plt+annotate("text", x=5, y=20, 
+                  label=sumryBlock(mdl.ft$linear$model), size=3, hjust=0)
+@
+Although, lots of coefficients are insignificant, the diagnostic plots in figure-(\ref{fig:diagPlots}) are satisfactory and indicates that the residuals are randomly distributed and the very few observations are influential but are out of danger zone.
+
+<<diagPlots, echo=FALSE, results='hide', fig.pos="ht", fig.height=7, fig.width=12, fig.cap="Diagnostic Plots for Linear Model", fig.env='sidewaysfigure'>>=
+diagPlots<-diagPlot(mdl.ft$linear$model)
+grid.arrange(diagPlots[[1]], diagPlots[[2]],diagPlots[[3]],diagPlots[[4]],diagPlots[[5]],diagPlots[[6]], ncol=3)
+@
+
+Since, there are a lot of variables that are not significant. So, it is better to use step-wise variable selection procedure. The backward elimination method choose some variables and a more variables are significant in this case. 
+
+{\singlespacing
+<<lmModelSumry, echo=FALSE, results='asis'>>=
+stargazer(lm(formula = mdl.ft$linear$formula, data=mdl.ft$linear$data), step(lm(formula = mdl.ft$linear$formula, data=mdl.ft$linear$data), trace=FALSE), title = "Summary Report for Linear Models", single.row=TRUE, column.labels = c("Full Model", "Backward Eliminated"), dep.var.labels.include=FALSE, model.numbers=FALSE, table.placement="!ht", omit.stat="n", label = "tab:lmModelSumry", font.size='small')
+@
+} The t-value plot in figure -(\ref{fig:lmPlots2}) summarize the results presented in table-(\ref{tab:lmModelSumry}), where the red bars represents the significant variables. The estimates are on the top of the bars.The critical region is separated by the red dashed lines.
+<<lm.back.testPlot, echo=FALSE, warning=FALSE, fig.show='hold'>>=
+back.lm.coef.matrix<-data.frame(summary(mdl.ft$lm.back$model)$coefficients)
+bk.plt<-test.plot(back.lm.coef.matrix, alpha=0.05)
+bk.plt<-bk.plt+annotate("text", x=5, y=20, 
+                  label=sumryBlock(mdl.ft$lm.back$model), size=3, hjust=0)
+@
+<<lmPlots, echo=FALSE, fig.cap="Plot of t-value for linear model. The red dashed line show the cretical region where the variable gets significant. The top of the bars includes the coefficients of the respective variables.", fig.subcap=c('Full Linear Model','Model obtained from backward elimination'), ref.label='lmPlots', fig.env='sidewaysfigure', out.width='0.49\\textwidth'>>=
+print(plt)
+print(bk.plt)
+@
+
+From the correlation plot in fig-(\ref{fig:corAnalysisPlot1}) we can get some idea about multicollineartiy. Since a multicollinearity problem can lead to false estimate in the models fitted above. The multicollineary can be measured using Variance Inflation Factor (VIF). For the linear model obtained from stepwise backward elimination process, the VIF obtained are in figure - (\ref{fig:vifPlot}). The red dashed line in the figure for the indication of VIF at 10 which is regarded as tolorence level as a rule of thumb. Since some of the variables have very high VIF comparing this tolorence level, It is better to adopt alternative approaches like Principal Component Regression, Partial Least Square Regression or Ridge Regression (\cite{OabRob2007}).
+
+<<vifPlot, echo=FALSE, fig.cap="Variance Inflation Factor Plot for measuring Multicollinearity", fig.height=4, fig.width=5, fig.pos="!ht">>=
+vifPlot<-qplot(names(vif(mdl.ft$lm.back$model)), vif(mdl.ft$lm.back$model), geom = "bar", stat="identity", position="identity")+theme_bw()
+vifPlot<-vifPlot+xlab("Variables")+ylab("Variance Inflation Factor (VIF)")
+vifPlot<-vifPlot+theme(axis.text.x=element_text(angle=90, hjust=1))
+vifPlot<-vifPlot+geom_hline(yintercept=10, color="darkred", linetype="dashed")
+print(vifPlot)
+@

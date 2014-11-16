@@ -1,0 +1,7 @@
+% !Rnw root = ../Main.Rnw
+\section{Partial Least Square Regression}
+\section{Ridge Regression}
+\section{Prediction}
+  \subsection{Leave one out(LOO) cross-validation}
+  \subsection{Future Forecast}
+\section{Comparison of Models}

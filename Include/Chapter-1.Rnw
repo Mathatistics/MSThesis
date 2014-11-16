@@ -1,0 +1,7 @@
+% !Rnw root = ../Main.Rnw
+
+\chapter{Introduction}
+Trading started from the very beginning of human civilization. People used to trade with goods at the time but with advancement of development people started using gold, silver and finally money. The process is not restricted within a country. Some countries are powerful and some are not so as their currencies. Currency of another country becomes essential to buy things from that country. Here comes the roal of exchange rate. Buying powerful currencies requires large sum of weak currencies. All those economic activities that exist between countries create demand and supply of the currencies of those countries which consequently determine the exchange rate. The economic activities betwen countries is also called the balance of payment. Thus the balance of payment captures all the demand and supply of foreign currency (\cite{fang1991forecasting}). When the domestic demand for foreign currency exceeds the foreign demand of domestic currency i.e. a deficit in the balance of payment, the domestic currency depreciate (\cite{sur2005}). 
+
+Any international trade is conducted through more than one currencies. Participants in the international trade require to exchange their currency which is performed by foreign exchange market. ``The foreign exchange market (ForEx) is the mechanism that brings together buyers and sellers of different currencies'' (\cite{appleyard2014international}).
+

@@ -1,4 +1,4 @@
-thesisCode
+My Masters Thesis made using Knitr
 ==========
 
-Codes of my masters thesis
+I have included all the related files that I have created to complete my masters thesis.

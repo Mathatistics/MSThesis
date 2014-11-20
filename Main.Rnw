@@ -55,7 +55,7 @@ lapply(req.package, require, character.only=TRUE, quietly = T, warn.conflicts = 
 % Knitr Option Control
 <<setup, include=FALSE, cache=FALSE, echo=FALSE>>=
 opts_chunk$set(fig.path='Include', fig.align='center')
-setwd('~/Dropbox/UMB/Thesis/WriteUp/')
+setwd('~/Dropbox/UMB/Thesis/MSThesis/')
 Sys.setenv(TEXINPUTS=getwd(),
            BIBINPUTS=getwd(),
            BSTINPUTS=getwd())

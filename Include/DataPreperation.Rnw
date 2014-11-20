@@ -59,6 +59,10 @@ baseTable$season<-ifelse(
 baseTable$ly.var<-lag(baseTable[,"PerEURO"])
 baseTable<-baseTable[-1,]  # To Remove NA due to introduction of Lagged Variable in Response
 
+## Label Variables in baseTable
+labelTable<-read.xls(path.expand(file.path(dirname(dirname(getwd())), "Datasets", "CompleteDataSet.xlsx")), sheet = "ExtDataCode", stringsAsFactors=FALSE)
+
+
 # X and Y variables
 x.var<-colnames(baseTable)[-c(1:3, 33:35)]
 y.var<-colnames(baseTable)[2]
@@ -66,7 +70,7 @@ axu.var<-colnames(baseTable)[3]
 date.var<-colnames(baseTable)[1]
 
 # Test and Training Dataset
-Train<-filter(baseTable,Testrain)
-Test<-filter(baseTable,!Testrain)
+#     Train<-filter(baseTable,Testrain)
+#     Test<-filter(baseTable,!Testrain)
 @
 

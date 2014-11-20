@@ -130,13 +130,11 @@ The new vectors $\mbf{z}_i$ obtained from \ref{eq:projComp} are the orthogonal p
 \end{enumerate}
 
 \section{Principal Component Regression}
-The components obtained from Principal Component Analysis 
-
+The components obtained from Principal Component Analysis contains the variation of the data accumulated on first few components. Since these components contains the variation of data, a linear regression is fitted with only those components. For instance, if modeling with the first three components can explain over 95\% of variation, the dimension of data is remarkably reduced with excluding noise.
 \section{Partial Least Square Regression}
 \section{Ridge Regression}
 \section{Comparision Criteria}
 <<mdlFitCriteriaPlot, child="mdlFitCriteriaPlot.Rnw">>=
-
 @
 
   \subsection{PRESS (Predicted Residual Aum of Squares)}

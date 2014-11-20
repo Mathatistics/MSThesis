@@ -1,5 +1,11 @@
 % !Rnw root = ../Main.Rnw
 \section{Partial Least Square Regression}
+{\singlespacing
+<<plsSummary, echo=FALSE, comment=NA>>=
+summary(mdl.ft$PLS$model)
+@
+}
+
 \section{Ridge Regression}
 \section{Prediction}
   \subsection{Leave one out(LOO) cross-validation}

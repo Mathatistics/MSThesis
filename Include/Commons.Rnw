@@ -6,7 +6,11 @@ mdl<-c("lm", "pcr", "plsr", "linearRidge")
 mdl.ft<-list()
 
 mdl.ft<-lapply(mdl, function(x){
+<<<<<<< HEAD
     fit.model(Model = x, yVar = y.var, xVars = x.var, dataSet = filter(baseTable, Testrain)) 
+=======
+  fit.model(Model = x, yVar = y.var, xVars = x.var, dataSet = filter(baseTable, Testrain))
+>>>>>>> ac8b343d607fc33e93c936420e1d501634c8e115
 })
 names(mdl.ft)<-c("linear", "PCR", "PLS", "ridge")
 mdl.ft$lm.back<-list(model=step(lm(formula = mdl.ft$linear$formula, data=mdl.ft$linear$data)), formula=mdl.ft$linear$formula, data=mdl.ft$linear$data)

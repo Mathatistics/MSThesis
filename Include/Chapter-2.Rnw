@@ -1,3 +1,10 @@
 % !Rnw root = ../Main.Rnw
 
 \chapter{Data and Material}
+
+This thesis attempts to predicts the dynamics of Exchange Rate through Economic and Financial indicators. From these two broad categories, those factors are only consider which are believed to be useful to understand the exchange rate dynamics.
+
+\section{Norwegian Krone (NOK)}
+After introduction of Krone in April 1975 (\cite{NorBnkHistory}), Norway was pushed to join the Scandinavian Monetary Union established on 1873 (\cite{nokHistoryOanda}). Although the Union was formally abolished on 1972, Norway decided to keep the names of its currencies. In December 1982, due to heavy speculation, Norges Bank (Central Bank of Norway) decided to fix Norwegian Krone which was floated on 1992 (\cite{NorBnkHistory}).
+
+Norway 

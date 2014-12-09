@@ -34,8 +34,12 @@ test.plot<-function(coef.matrix, alpha=0.05){
   return(cp)
 }
 fit.model<-function(Model, yVar, xVars, dataSet){
+    ifelse(Model%in%c("plsr", "pcr"),
   model<-match.fun(Model)
   Formula<-as.formula(paste(yVar, paste(xVars, collapse="+"), sep="~"))
+  ,
+  model<-match.fun(Model)
+  Formula<-as.formula(paste(yVar, paste(xVars, collapse="+"), sep="~", scale=TRUE)))
   return(list(formula=Formula, model=model(Formula, data=dataSet), dataset=dataSet))
 }
 diagPlot<-function(model){

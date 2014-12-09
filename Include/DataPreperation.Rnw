@@ -42,7 +42,7 @@ baseTable[,1]<-as.Date(baseTable[,1], format="%Y-%b-%d")
 
 min.Year<-min(as.numeric(format.Date(baseTable[,1], "%Y")))
 min.mth<-min(as.numeric(format.Date(baseTable[,1], "%m")))
-baseTable$Testrain<-format(baseTable$Date, "%Y")<2013
+baseTable$Testrain<-format(baseTable$Date, "%Y")<2014
 
 # Creating Season Column
 season<-list()
@@ -57,7 +57,8 @@ baseTable$season<-ifelse(
       format(baseTable$Date, "%B")%in%season$Autumn, "Autumn", "Winter")))
 
 baseTable$ly.var<-lag(baseTable[,"PerEURO"])
-baseTable<-baseTable[-1,]  # To Remove NA due to introduction of Lagged Variable in Response
+baseTable$l2y.var<-lag(baseTable[,"PerEURO"], 2)
+baseTable<-baseTable[-c(1:2),]  # To Remove NA due to introduction of Lagged Variable in Response
 
 ## Label Variables in baseTable
 labelTable<-read.xls(path.expand(file.path(dirname(dirname(getwd())), "Datasets", "CompleteDataSet.xlsx")), sheet = "ExtDataCode", stringsAsFactors=FALSE)

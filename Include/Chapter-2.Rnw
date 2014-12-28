@@ -11,3 +11,14 @@ Norway has floating exchange rate, i.e. the exchange rate will reflect supply an
 
 \section{The Euro (EUR)}
 Euro, the official currency of Eurozone, was introduced in 1999 as a virtual currency and later on 2002 as physical.
+
+\section{Factors influencing Exchange Rate}
+A floating exchange rate are the reflections of demand and supply of the related currency in money market. The demand and suppy depends on various commodity and financial variables.
+
+\subsection{Inflation}
+Inflation is ...
+
+\subsection{Interest Rate}
+Interest ...
+
+\subsection{}

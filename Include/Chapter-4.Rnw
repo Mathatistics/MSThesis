@@ -15,10 +15,8 @@ print(sumryTabl, caption.placement = "top", booktabs=TRUE, floating=FALSE, tabul
 }
 It is also desirable to see the time series plot of the related variables given in figure -(\ref{fig:timeSeriesPlot})
 <<timeSeriesPlot, echo=FALSE, fig.cap="Time Series plot of different variables", fig.pos="ht">>=
-stkTabl<-melt(baseTable, id.vars = c(1,which(names(baseTable)=="season")))
-stkTabl$ExcChng<-c(ifelse(with(stkTabl, diff(baseTable$PerEURO))<0, "Decrease", "Increase/Unchange"), NA)
-vars<-c(y.var[1], x.var[-length(x.var)])
-plotTS(stkTabl, vars, "season")
+stkTabl<-melt(baseTable[,c("Date", y.var, x.var, y2.var)], id.vars = c("Date", y2.var))
+plotTS(stkTabl, x.var, y2.var)
 @
 The correlation plot in figure -(\ref{fig:corAnalysisPlot1}) will give some idea about the correlation among various predictor variables. In the plot, high correlation between independent variables indicates multicollinearity in the model.
 

@@ -1,77 +1,29 @@
 % !Rnw root = ../Main.Rnw
 
-% Variables and their index
-<<echo=FALSE, results='hide'>>=
- # "1 --> PerEURO"              
- # "2 --> PerUSD"               
- # "3 --> KeyIntRate"           
- # "4 --> CPI"                  
- # "5 --> EuroIntRate"          
- # "6 --> LoanIntRate"          
- # "7 --> ImpTot"               
- # "8 --> ImpExShip"            
- # "9 --> ImpExShipOilPlat"     
- # "10 --> ImpExcShipOilPlatCrd"
- # "11 --> TotExp"              
- # "12 --> ExpExOldShip"        
- # "13 --> ExpExShip"           
- # "14 --> ExpExShipOilPlat"    
- # "15 --> MlandExp"            
- # "16 --> TrBal"               
- # "17 --> TrBalExShipOilPlat"  
- # "18 --> TrBalMland"          
- # "19 --> ImpShip"             
- # "20 --> ImpOldShip"          
- # "21 --> ImpNewShip"          
- # "22 --> ImpOilPlat"          
- # "23 --> ImpShipOilPlat"      
- # "24 --> ExpCrdOil"           
- # "25 --> ExpNatGas"           
- # "26 --> ExpCond"             
- # "27 --> ExpCrdOilNatGasCond" 
- # "28 --> ExpShip"             
- # "29 --> ExpOldShip"          
- # "30 --> ExpNewShip"          
- # "31 --> ExpOilPlat"          
- # "32 --> ExpShipOilPlat"
-@
-
 <<dataSetup, echo=FALSE, message=FALSE, warning=FALSE, results='hide'>>=
-baseTable<-read.xls(path.expand(file.path(dirname(dirname(getwd())), "Datasets", "CompleteDataSet.xlsx")), sheet = "ExtData")
-baseTable[,1]<-as.Date(baseTable[,1], format="%Y-%b-%d")
+baseTable<-read.xls(path.expand(file.path(dirname(dirname(getwd())), "Datasets", "CompleteDataSet.xlsx")), sheet = "FinalData")
+baseTable[,1]<-as.Date(baseTable[,1], format="%d/%m/%Y")
+baseTable[,"Testrain"]<-as.logical(baseTable[,"Testrain"])
 
-min.Year<-min(as.numeric(format.Date(baseTable[,1], "%Y")))
-min.mth<-min(as.numeric(format.Date(baseTable[,1], "%m")))
-baseTable$Testrain<-format(baseTable$Date, "%Y")<2014
-
-# Creating Season Column
-season<-list()
-season$spring<-c("March","April","May")
-season$summer<-c("June", "July", "Aug")
-season$Autumn<-c("September", "October", "November")
-season$winter<-c("December", "January", "February")
-
-baseTable$season<-ifelse(
-  format(baseTable$Date, "%B")%in%season$spring, "Spring", ifelse(
-    format(baseTable$Date, "%B")%in%season$summer, "Summer", ifelse(
-      format(baseTable$Date, "%B")%in%season$Autumn, "Autumn", "Winter")))
-
-baseTable$ly.var<-lag(baseTable[,"PerEURO"])
-baseTable$l2y.var<-lag(baseTable[,"PerEURO"], 2)
-baseTable<-baseTable[-c(1:2),]  # To Remove NA due to introduction of Lagged Variable in Response
 
 ## Label Variables in baseTable
-labelTable<-read.xls(path.expand(file.path(dirname(dirname(getwd())), "Datasets", "CompleteDataSet.xlsx")), sheet = "ExtDataCode", stringsAsFactors=FALSE)
+labelTable<-read.xls(path.expand(file.path(dirname(dirname(getwd())), "Datasets", "CompleteDataSet.xlsx")), sheet = "FinalCodeBook", stringsAsFactors=FALSE)
+for(i in 1:ncol(baseTable)){
+    Hmisc::label(baseTable[,i])<-labelTable[i,2]
+}
 
+# Variable Declaration
+y.var<-grep("PerEURO", names(baseTable), value=TRUE)
+fin.var<-grep("^CPI|Int", names(baseTable), value=TRUE)
+price.var<-grep("^Oil", names(baseTable), value=TRUE)
+import.var<-grep("^Imp", names(baseTable), value=TRUE)
+export.var<-grep("^Exp", names(baseTable), value=TRUE)
+tradeBal.var<-grep("^Tr", names(baseTable), value=TRUE)
+expct.var<-grep("^l", names(baseTable), value=TRUE)
+y2.var<-grep("ExcCh", names(baseTable), value=TRUE)
+season<-grep("season", names(baseTable), value=TRUE)
+train<-grep("Testrain", names(baseTable), value=TRUE)
 
-# X and Y variables
-x.var<-colnames(baseTable)[-c(1:3, 33:35)]
-y.var<-colnames(baseTable)[2]
-axu.var<-colnames(baseTable)[3]
-date.var<-colnames(baseTable)[1]
-
-# Test and Training Dataset
-#     Train<-filter(baseTable,Testrain)
-#     Test<-filter(baseTable,!Testrain)
+x.var<-c(fin.var, price.var, import.var, export.var, tradeBal.var, expct.var)
 @
 

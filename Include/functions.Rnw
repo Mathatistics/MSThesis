@@ -1,5 +1,7 @@
 % !Rnw root = ../Main.Rnw
 
+
+%% Plotting Time Series Data Series
 <<functions, echo=FALSE, cache=FALSE, warning=FALSE>>=
 plotTS<-function(dataSet, vars, colVar=NA){
   plt<-ggplot(filter(dataSet, variable%in%vars), aes(Date))
@@ -13,6 +15,8 @@ plotTS<-function(dataSet, vars, colVar=NA){
   plt<-plt+theme(legend.position="top", legend.title=element_blank())
   return(plt)
 }
+
+## Plotting Model Coefficients with their state of significance
 test.plot<-function(coef.matrix, alpha=0.05){
   .e<-environment()
   names(coef.matrix)<-c("Estimate", "StdError", "t.value", "p.value")
@@ -33,15 +37,21 @@ test.plot<-function(coef.matrix, alpha=0.05){
   cp<-cp+geom_hline(yintercept=0, color="black", size=.2)
   return(cp)
 }
-fit.model<-function(Model, yVar, xVars, dataSet){
-    ifelse(Model%in%c("plsr", "pcr"),
+
+## Fitting Linear Model
+fit.model<-function(Model, yVar, xVars, dataSet, scaling=TRUE){
   model<-match.fun(Model)
-  Formula<-as.formula(paste(yVar, paste(xVars, collapse="+"), sep="~"))
-  ,
-  model<-match.fun(Model)
-  Formula<-as.formula(paste(yVar, paste(xVars, collapse="+"), sep="~", scale=TRUE)))
-  return(list(formula=Formula, model=model(Formula, data=dataSet), dataset=dataSet))
+  formula<-as.formula(paste(yVar, paste(xVars, collapse="+"), sep="~"))
+  if(scaling){
+      model<-model(formula, data=dataSet, scale=TRUE)
+  }else{
+      model<-model(formula, data=dataSet)
+  }
+  return(list(formula=formula, model=model, dataset=dataSet))
 }
+
+
+## Diagnostic Plot using GGPlot
 diagPlot<-function(model){
   p1<-ggplot(model, aes(.fitted, .resid))+geom_point()
   p1<-p1+stat_smooth(method="loess")+geom_hline(yintercept=0, col="red", linetype="dashed")
@@ -77,12 +87,64 @@ diagPlot<-function(model){
   return(list(rvfPlot=p1, qqPlot=p2, sclLocPlot=p3, cdPlot=p4, rvlevPlot=p5, cvlPlot=p6))
 }
 
+## Generate summary plot from a fitted model to annotate other plot
 sumryBlock<-function(model){
   return(paste("R-Sq = ",signif(summary(model)$r.squared, 2),
                        "\nAdj R-Sq =",signif(summary(model)$adj.r.squared, 2),
                        "\nSigma =",signif(summary(model)$sigma, 2),
                        "\nF =",signif(as.vector(summary(model)$fstatistic[1]), 2))
          )
+}
+
+model.sumry<-function(model, call=TRUE, coefMat=TRUE, sumry=TRUE){
+    if("lm"%nin%class(model)){
+        stop("Model should be of class 'lm'.\n")
+    }
+    else{
+        s<-summary(model)$sigma
+        df<-summary(model)$df
+        r.sq<-summary(model)$r.squared
+        adj.r.sq<-summary(model)$adj.r.squared
+        f<-summary(model)$fstatistic[1]
+        f.df.num<-summary(model)$fstatistic[2]
+        f.df.den<-summary(model)$fstatistic[3]
+        if(call){
+            print(summary(model)$call)
+            cat("\n")
+        }
+        if(coefMat){
+            printCoefmat(summary(model)$coef, digits = 3)
+        }
+        if(sumry){
+            cat("\n sigma: ",s, " on ", df[2], " degrees of freedom\n",
+            "Multiple R-squared: ", r.sq, "\n",
+            "Adjusted R-Squared: ", adj.r.sq,"\n",
+            "F-statistic: ", f, "on", f.df.num,"and",f.df.den, "degree of freedom\n",
+            "P-value: ", pf(f, f.df.num, f.df.den, lower.tail = FALSE))
+        }
+    }
+}
+
+vifPlot<-function(model){
+    if("lm"%nin%class(model)){
+        stop("Model should be of class 'lm'.")
+    }else{
+        coef<-names(vif(model))
+        vif<-as.vector(vif(model))
+        mdl.label<-ifelse(label(model)=="", deparse(substitute(model)), label(model))
+        vifMat<-data.frame(coef, vif)
+        p<-ggplot(vifMat, aes(coef, vif))
+        p<-p+geom_bar(stat="identity", color="black", fill=NA)+theme_bw()
+        p<-p+ggtitle(label = paste("Variance Inflation Function plot\nModel:", mdl.label))
+        if(length(coef)>5){
+            p<-p+theme(axis.text.x=element_text(hjust=1, angle=90))
+        }
+        return(p)
+    }
+}
+
+addline_format <- function(x,...){
+    gsub('\\s','\n',x)
 }
 @
 

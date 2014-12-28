@@ -32,7 +32,7 @@
 
 % Loading R Packages
 <<LoadingPkgs, echo=FALSE, message=FALSE, warning=FALSE, results='hide'>>=
-req.package<-c("pls", "xtable", "MASS", "car", "corrplot", "gdata", "dplyr", "ggplot2", "reshape2","ridge", "grid", "gridExtra", "stargazer", "devtools", "ggbiplot", "knitr")
+req.package<-c("pls", "xtable", "MASS", "car", "corrplot", "gdata", "dplyr", "ggplot2", "reshape2","ridge", "grid", "gridExtra", "stargazer", "devtools", "ggbiplot", "mixlm", "Hmisc", "knitr")
 lapply(req.package, require, character.only=TRUE, quietly = T, warn.conflicts = F)
 @
 
@@ -218,26 +218,26 @@ Sys.setenv(TEXINPUTS=getwd(),
 @
 
 %% Chapter 3 -----------------------------------------------------------------||||
-<<chapter3-include, child="Include/Chapter-3.Rnw">>=
+<<chapter3-include, child="Include/Chapter-3.Rnw", eval=FALSE>>=
 @
 
 %% Chapter 4 -----------------------------------------------------------------||||
-<<chapter4-include, child="Include/Chapter-4.Rnw">>=
+<<chapter4-include, child="Include/Chapter-4.Rnw", eval=FALSE>>=
 @
   %% Common Computation ------------------------------------------------------||||
   <<commons, child="Include/Commons.Rnw">>=
   @
 
   %% Multiple Linear Regression with Stepwise reduction -----------------------||||
-  <<chapter4a-include, child="Include/Chapter-4a.Rnw">>=
+  <<chapter4a-include, child="Include/Chapter-4a.Rnw", eval=FALSE>>=
   @
   
   %% Principal Component Analysis and Regression ------------------------------||||
-  <<chapter4b-include, child="Include/Chapter-4b.Rnw">>=
+  <<chapter4b-include, child="Include/Chapter-4b.Rnw", eval=FALSE>>=
   @
   
   %% Partial Least Square Regression ------------------------------------------||||
-  <<chapter4c-include, child="Include/Chapter-4c.Rnw">>=
+  <<chapter4c-include, child="Include/Chapter-4c.Rnw", eval=FALSE>>=
   @
 
 %% Reference ----------------------------------------------------------------- |||

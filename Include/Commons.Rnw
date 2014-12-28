@@ -5,10 +5,27 @@ pls.options(plsralg="oscorespls")
 mdl<-c("lm", "pcr", "plsr", "linearRidge")
 mdl.ft<-list()
 
-mdl.ft<-lapply(mdl, function(x){
-    fit.model(Model = x, yVar = y.var, xVars = x.var, dataSet = filter(baseTable, Testrain))
-})
-names(mdl.ft)<-c("linear", "PCR", "PLS", "ridge")
-mdl.ft$lm.back<-list(model=step(lm(formula = mdl.ft$linear$formula, data=mdl.ft$linear$data)), formula=mdl.ft$linear$formula, data=mdl.ft$linear$data)
+for(i in seq_along(mdl)){
+    mdl.ft[[i]]<-fit.model(mdl[i], y.var, x.var, baseTable, scaling=mdl[i] %in% c("plsr", "pcr"))
+}
 
+names(mdl.ft)<-c("linear", "PCR", "PLS", "ridge")
+
+## Forward Selection Model (criteria: level of significance)
+mdl.ft$lm.forward.alpha<-list(formula=mdl.ft$linear$formula, model=forward(lm(formula = mdl.ft$linear$formula, data=mdl.ft$linear$data), alpha = 0.05, full = FALSE), data=mdl.ft$linear$data)
+
+## Backward Elimination Model (criteria: level of significance)
+mdl.ft$lm.back.alpha<-list(formula=mdl.ft$linear$formula, model=backward(lm(formula = mdl.ft$linear$formula, data=mdl.ft$linear$data), alpha = 0.05, full = FALSE, hierarchy = TRUE), data=mdl.ft$linear$data)
+
+## Forward Selection Model (criteria: AIC)
+mdl.ft$lm.forward.aic<-list(formula=mdl.ft$linear$formula, model=step(lm(formula = mdl.ft$linear$formula, data=mdl.ft$linear$data), direction = "forward", trace=FALSE, k = 2), data=mdl.ft$linear$data)
+
+## Backward Elimination Model (criteria: AIC)
+mdl.ft$lm.back.aic<-list(formula=mdl.ft$linear$formula, model=step(lm(formula = mdl.ft$linear$formula, data=mdl.ft$linear$data), direction = "backward", trace=FALSE, k = 2), data=mdl.ft$linear$data)
+
+mdl.labels<-c("Linear Model", "Principal Component Regression", "Partial Least Square Regression", "Ridge Regression", "Forward Selection Model (criteria:level of significance)", "Backward Elimination Model (criteria: level of significance)", "Forward Selection Model (criteria:AIC)", "Backward Elimination Model (criteria: AIC)")
+for(i in 1:length(mdl.ft)){
+    Hmisc::label(mdl.ft[[i]][[2]])<-mdl.labels[i]
+    class(mdl.ft[[i]][[2]])<-rev(class(mdl.ft[[i]][[2]]))
+}
 @

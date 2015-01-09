@@ -1,24 +1,10 @@
 % !Rnw root = ../Main.Rnw
 
 \chapter{Data and Material}
+\label{ch:DataMaterial}
 
-This thesis attempts to predicts the dynamics of Exchange Rate through Economic and Financial indicators. From these two broad categories, those factors are only consider which are believed to be useful to understand the exchange rate dynamics.
-
-\section{Norwegian Krone (NOK)}
-After introduction of Krone in April 1975 (\cite{NorBnkHistory}), Norway was pushed to join the Scandinavian Monetary Union established on 1873 (\cite{nokHistoryOanda}). Although the Union was formally abolished on 1972, Norway decided to keep the names of its currencies. In December 1982, due to heavy speculation, Norges Bank (Central Bank of Norway) decided to fix Norwegian Krone which was floated on 1992 (\cite{NorBnkHistory}).
-
-Norway has floating exchange rate, i.e. the exchange rate will reflect supply and demand of the currency in the international foreign exchange market. The exchange rate data for NOK/Euro is obtained from Norges Bank; and are middle rates, i.e. the mid-point between buying and selling rates in the interbank market (\cite{faq:NorBnk-ExcRate}).
-
-\section{The Euro (EUR)}
-Euro, the official currency of Eurozone, was introduced in 1999 as a virtual currency and later on 2002 as physical.
+	This thesis attempts to predicts the dynamics of Exchange Rate through Economic and Financial indicators. From these two broad categories, those factors are only consider which are believed to be useful to understand the exchange rate dynamics. As discussed in chapter \ref{ch:Introduction}, 
 
 \section{Factors influencing Exchange Rate}
-A floating exchange rate are the reflections of demand and supply of the related currency in money market. The demand and suppy depends on various commodity and financial variables.
-
-\subsection{Inflation}
-Inflation is ...
-
-\subsection{Interest Rate}
-Interest ...
-
-\subsection{}
+\label{sec:AffectingFactors}
+	A floating exchange rate are the reflections of demand and supply of the related currency in money market. The demand and suppy depends on various commodity and financial variables.

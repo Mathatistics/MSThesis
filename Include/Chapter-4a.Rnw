@@ -7,7 +7,7 @@ The summary table in table-(\ref{tab:lmModelSumry}) can also be visualized by th
 <<linearModelPlot, echo=FALSE, warning=FALSE, fig.show='hold'>>=
 lm.coef.matrix<-data.frame(summary(mdl.ft$linear$model)$coefficients)
 plt<-test.plot(lm.coef.matrix, alpha=0.05)
-plt<-plt+annotate("text", x=5, y=20, 
+plt<-plt+annotate("text", x=5, y=max(lm.coef.matrix[,3]), 
                   label=sumryBlock(mdl.ft$linear$model), size=3, hjust=0)
 @
 Although, lots of coefficients are insignificant, the diagnostic plots in figure-(\ref{fig:diagPlots}) are satisfactory and indicates that the residuals are randomly distributed and the very few observations are influential but are out of danger zone.

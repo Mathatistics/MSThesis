@@ -1,13 +1,13 @@
-% !Rnw root = ../Main.Rnw
+% !Rnw root = Main.Rnw
 
 <<dataSetup, echo=FALSE, message=FALSE, warning=FALSE, results='hide'>>=
-baseTable<-read.xls(path.expand(file.path(dirname(dirname(getwd())), "Datasets", "CompleteDataSet.xlsx")), sheet = "FinalData")
+baseTable<-read.xls(data.path, sheet = "FinalData")
 baseTable[,1]<-as.Date(baseTable[,1], format="%d/%m/%Y")
 baseTable[,"Testrain"]<-as.logical(baseTable[,"Testrain"])
 
 
 ## Label Variables in baseTable
-labelTable<-read.xls(path.expand(file.path(dirname(dirname(getwd())), "Datasets", "CompleteDataSet.xlsx")), sheet = "FinalCodeBook", stringsAsFactors=FALSE)
+labelTable<-read.xls(data.path, sheet = "FinalCodeBook", stringsAsFactors=FALSE)
 for(i in 1:ncol(baseTable)){
     Hmisc::label(baseTable[,i])<-labelTable[i,2]
 }

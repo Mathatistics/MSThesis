@@ -1,0 +1,60 @@
+\documentclass{standalone}
+\usepackage{pgf,tikz}
+\usepackage{amsmath}
+\usetikzlibrary{arrows}
+\pagestyle{empty}
+
+\begin{document}
+\tikzstyle{every node}=[font=\normalsize]
+\tikzstyle{every picture}=[line width=1pt]
+\definecolor{uuuuuu}{rgb}{0.3,0.3,0.3}
+\definecolor{xdxdff}{rgb}{0.5,0.5,1.}
+\begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=1.0cm,y=1.0cm]
+\foreach \x in {,2.,4.,6.,8.}
+\draw[shift={(\x,0)},color=black] (0pt,2pt) -- (0pt,-2pt);
+\foreach \y in {,2.,4.,6.,8.}
+\draw[shift={(0,\y)},color=black] (2pt,0pt) -- (-2pt,0pt);
+\clip(-1.5,-2) rectangle (10.,10.);
+\draw (0.,8.)-- (8.,0.);
+\draw (0.,0.)-- (8.,8.);
+\draw [dash pattern=on 2pt off 2pt] (4.,4.)-- (4.,0.);
+\draw [dash pattern=on 2pt off 2pt] (4.,4.)-- (0.,4.);
+\draw (8,8) node[anchor=north west] {$S_0$};
+\draw (8,0.5) node[anchor=north west] {$D_0$};
+\draw[->] (0,-0.5) -- node[pos=0.5, anchor=south, rotate=90, yshift=1cm]{Value of EURO per NOK} (0,10);
+\draw[->] (-0.5,0) -- node[pos=0.5, below, yshift=-0.5cm] {Quantity of EURO} (10,0);
+\draw (-1,4.3) node[anchor=north west] {$9.10$};
+\draw (1.,9.)-- (9.,1.);
+\draw (0,2.)-- (7.,9.);
+\draw [dash pattern=on 2pt off 2pt] (4.,6.)-- (0.,6.);
+\draw [dash pattern=on 2pt off 2pt] (4.,6.)-- (4.,0.);
+\draw (-1,6.3) node[anchor=north west] {$9.97$};
+\draw (7,9) node[anchor=north west] {$S_1$};
+\draw (9,1) node[anchor=north west] {$D_1$};
+\draw (3.8,0) node[anchor=north west] {$Q_{\text{Euro}}$};
+\draw [->] (4.,4.) -- (5.,5.);
+\draw [->] (4.,4.) -- (3.,5.);
+\draw [->] (-0.5,4.5) -- (-0.5,5.5);
+\draw (5.8,5.5) node[anchor=north west, text width=4cm] {\small{Upward shift in Demand of Euro due to inflation in Norway}};
+\draw [->] (5.8, 5) to [bend left] (4.5, 4.5);
+\draw (2,9) node[anchor= north west, text width=4cm] {\small{Downward shift in supply of Euro purchasing NOK}};
+\draw [->] (4,8) to[bend left] (3.5,4.5);
+\begin{scriptsize}
+\draw [fill=xdxdff] (0.,8.) circle (1.5pt);
+\draw [fill=xdxdff] (8.,0.) circle (1.5pt);
+\draw [fill=xdxdff] (0.,0.) circle (1.5pt);
+\draw [fill=xdxdff] (4.,4.) circle (1.5pt);
+\draw [fill=xdxdff] (8.,8.) circle (1.5pt);
+\draw [fill=xdxdff] (5.,5.) circle (1.5pt);
+\draw [fill=xdxdff] (1.,9.) circle (1.5pt);
+\draw [fill=xdxdff] (9.,1.) circle (1.5pt);
+\draw [fill=xdxdff] (3.,5.) circle (1.5pt);
+\draw [fill=xdxdff] (0,2.) circle (1.5pt);
+\draw [fill=xdxdff] (7.,9.) circle (1.5pt);
+\draw [fill=uuuuuu] (4.,6.) circle (1.5pt);
+\draw [fill=uuuuuu] (4.,0.) circle (1.5pt);
+\draw [fill=uuuuuu] (4.,0.) circle (1.5pt);
+\draw [fill=uuuuuu] (0.,6.) circle (1.5pt);
+\end{scriptsize}
+\end{tikzpicture}
+\end{document}

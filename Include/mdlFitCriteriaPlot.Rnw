@@ -1,5 +1,5 @@
 % !Rnw root = Chapter-3.Rnw
-\begin{figure}
+\begin{figure}[!htb]
 \centering
 \begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=1.0cm,y=1.0cm]
 \tikzstyle{every node}=[font=\small\sf]

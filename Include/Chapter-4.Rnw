@@ -1,6 +1,7 @@
 % !Rnw root = ../Main.Rnw
 
 \chapter{Data Analysis}
+\label{ch:dataAnalysis}
 This chapter will present the analysis report obtained for different models and also compare those models with criteria like goodness of fit, prediction error, variation explained during prediction. During this analysis, only the observations from Jan 2000 to December 20012. The model will be exposed to predict the average monthly exchange rate of Euro vs Norwegian Krone and compare the prediction with original value for its accuracy.
 
 The summary report of the variables that are in use during the analysis are in table (\ref{tbl:sumryTabl}),

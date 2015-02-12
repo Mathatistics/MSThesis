@@ -1,0 +1,201 @@
+% !Rnw root = Main.Rnw
+
+% Loading Packages
+\newcommand{\proquestmode}{}
+\usepackage{tikz, pgf}
+\usepackage[inline]{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{fancyvrb}
+\usepackage[a4paper]{geometry}
+\usepackage[font={small, sf}, format=hang, margin=10pt]{caption}
+\usepackage{framed}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{ltablex}
+\usepackage{dcolumn}
+\usepackage[natbib=true, backend=bibtex, style=alphabetic, citestyle=authoryear]{biblatex}
+\usepackage{longtable}
+\usepackage{apalike}
+\usepackage{url}
+\usepackage{lscape}
+\usepackage{float}    % for fig.pos='H'
+\usepackage{rotfloat} % for sidewaysfigure
+%\usepackage{subfig}   % for subfigure
+\usepackage[font={scriptsize, sf}, format=hang, margin=10pt]{subcaption}  % an alternative package for sub figures
+\usepackage{rotating}
+\usepackage{listing}
+\usepackage{xcolor}
+\usepackage{standalone}
+\usepackage{bm}
+\usetikzlibrary{plotmarks,arrows, shapes, calc, backgrounds, fit, decorations.markings}
+\addbibresource{reference.bib}
+
+% Loading R Packages
+<<LoadingPkgs, echo=FALSE, message=FALSE, warning=FALSE, results='hide'>>=
+req.package<-c("pls", "xtable", "MASS", "car", "corrplot", "gdata", "dplyr", "ggplot2", "reshape2","ridge", "grid", "gridExtra", "stargazer", "devtools", "ggbiplot", "mixlm", "Hmisc", "knitr")
+lapply(req.package, require, character.only=TRUE, quietly = T, warn.conflicts = F)
+@
+
+% Customization
+\renewcommand{\figurename}{\textit{Fig}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcommand{\subfloat}[2][need a sub-caption]{\subcaptionbox{#1}{#2}}
+\renewcommand{\topfraction}{0.85}
+\setcounter{topnumber}{2} % max fraction of floats at top
+\setcounter{bottomnumber}{2} % max fraction of floats at bottom
+\setcounter{totalnumber}{4}     % 2 may work better
+\setcounter{dbltopnumber}{2}    % for 2-column pages
+\renewcommand{\dbltopfraction}{0.66}  % fit big float above 2-col. text
+\renewcommand{\textfraction}{0.15}    % allow minimal text w. figs
+\renewcommand{\floatpagefraction}{0.66}	% require fuller float pages
+\renewcommand{\dblfloatpagefraction}{0.66}	% require fuller float pages
+\setlength{\LTcapwidth}{\textwidth}
+%set parameters for longtable:
+% default caption width is 4in for longtable, but wider for normal tables
+\setlength{\LTcapwidth}{\textwidth}
+\newlist{inlinelist}{enumerate*}{1}
+\setlist*[inlinelist,1]{label=(\alph*)}
+
+
+
+% Opening ---------------------------|
+\title{Evaluation of Models for predicting the average monthly Euro versus Norwegian krone exchange rate from financial and commodity information}
+
+
+\submitted{Dec 2014}  % degree conferral date (January, April, June, September, or November)
+\copyrightyear{2014}  % year in which the copyright is secured by publication of the dissertation.
+\author{Raju Rimal}
+\adviser{Ellen Sandeberg and Trygve Almoe}%replace with the full name of your adviser
+%\departmentprefix{Program in}  % defaults to "Department of", but programs need to change this.
+\department{IKBM}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Printed vs. online formatting
+\ifdefined\printmode
+
+% Printed copy
+\else
+
+\ifdefined\proquestmode
+%ProQuest copy -- http://www.princeton.edu/~mudd/thesis/Submissionguide.pdf
+
+% ProQuest requires a double spaced version (set previously). They will take an electronic copy, so we want links in the pdf, but also copies may be printed or made into microfilm in black and white, so we want outlined links instead of colored links.
+\usepackage{hyperref}
+\hypersetup{bookmarksnumbered}
+
+% copy the already-set title and author to use in the pdf properties
+\makeatletter
+\hypersetup{pdftitle=\@title,pdfauthor=\@author}
+\makeatother
+
+\else
+% Online copy
+
+% adds internal linked references, pdf bookmarks, etc
+
+% turn all references and citations into hyperlinks:
+%  -- not for printed copies
+% -- automatically includes url package
+% options:
+%   colorlinks makes links by coloring the text instead of putting a rectangle around the text.
+\usepackage{hyperref}
+\hypersetup{colorlinks,bookmarksnumbered}
+
+% copy the already-set title and author to use in the pdf properties
+\makeatletter
+\hypersetup{pdftitle=\@title,pdfauthor=\@author}
+\makeatother
+
+% make the page number rather than the text be the link for ToC entries
+%\hypersetup{linktocpage}
+\fi % proquest or online formatting
+\fi % printed or online formatting
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\
+%%%% Define commands
+
+% Define any custom commands that you want to use.
+% For example, highlight notes for future edits to the thesis
+%\newcommand{\todo}[1]{\textbf{\emph{TODO:}#1}}
+
+
+% create an environment that will indent text
+% see: http://latex.computersci.org/Reference/ListEnvironments
+%   \raggedright makes them left aligned instead of justified
+\newenvironment{indenttext}{
+    \begin{list}{}{ \itemsep 0in \itemindent 0in
+    \labelsep 0in \labelwidth 0in
+    \listparindent 0in
+    \topsep 0in \partopsep 0in \parskip 0in \parsep 0in
+    \leftmargin 1em \rightmargin 0in
+    \raggedright
+    }
+    \item
+  }
+  {\end{list}}
+
+% another environment that's an indented list, with no spaces between items -- if we want multiple items/lines. Useful in tables. Use \item inside the environment.
+% 	\raggedright makes them left aligned instead of justified
+\newenvironment{indentlist}{
+    \begin{list}{}{ \itemsep 0in \itemindent 0in
+    \labelsep 0in \labelwidth 0in
+    \listparindent 0in
+    \topsep 0in \partopsep 0in \parskip 0in \parsep 0in
+    \leftmargin 1em \rightmargin 0in
+    \raggedright
+    }
+
+  }
+  {\end{list}}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\
+%%%% Front-matter
+
+% For early drafts, you may want to disable some of the frontmatter. Simply change this to "\ifodd 1" to do so.
+\ifodd 0
+% front-matter disabled while writing chapters
+\renewcommand{\maketitlepage}{}
+\renewcommand*{\makecopyrightpage}{}
+\renewcommand*{\makeabstract}{}
+
+% you can just skip the \acknowledgements and \dedication commands to leave out these sections.
+
+\else
+
+
+\abstract{
+% Abstract can be any length, but should be max 350 words for a Dissertation for ProQuest's print indicies (150 words for a Master's Thesis) or it will be truncated for those uses.
+\input{abstract}
+}
+
+\acknowledgements{
+%I would like to thank...
+\input{acknowledgement}
+}
+
+\dedication{To my parents.}
+
+\fi  % disable frontmatter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%/
+
+%%% Custom Command %%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%/
+\newcommand{\bs}[1]{\ensuremath{\boldsymbol{#1}}}
+\newcommand{\mbf}[1]{\ensuremath{\mathbf{#1}}}
+\newcommand{\mbb}[1]{\ensuremath{\mathbb{#1}}}
+\newcommand{\vl}[2]{\ensuremath{#1_1, #1_2, \ldots, #1_#2}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%/
+
+%%% Shortcods for usual log-like commands %%%%%%%%%/
+\newcommand{\diag}[1]{\ifmmode \text{diag}(\mathbf{#1})\else diag($\mathbf{#1}$)\fi}
+\newcommand{\corr}[1]{\ifmmode \text{corr}(\mathbf{#1})\else corr($\mathbf{#1}$)\fi}
+\newcommand{\cov}[1]{\ifmmode \text{cov}(\mathbf{#1})\else cov($\mathbf{#1}$)\fi}
+\newcommand{\var}[1]{\ifmmode \text{var}(\mathbf{#1})\else var($\mathbf{#1}$)\fi}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%/

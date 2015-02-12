@@ -1,0 +1,38 @@
+\documentclass{standalone}
+\usepackage{tikz, pgf}
+\usepackage{amsmath}
+\usetikzlibrary{shapes.geometric,backgrounds,calc,shapes.multipart}
+
+\begin{document}
+	\begin{tabular}{|c|c|}
+		\multicolumn{2}{c}{
+			\tikz \node[text height=0.8cm] {\Large\textsc{Balance of Payment}};
+		} \\
+		\hline
+		
+		\tikz \node[minimum height=3em,text depth=.25ex,] {\large Current Account}; &
+		\tikz \node[minimum height=3em,text depth=.25ex,] {\large Capital Account};\\
+		
+		\hline\hline
+		
+		\parbox[t]{0.5\textwidth}{
+			\begin{itemize}
+				\item Payments for Merchandise and Services
+				\item Factor Income Payments
+				\item Transfer Payments
+				\item Examples of Payment Entries
+				\item Actual Current Account Balance
+			\end{itemize}
+		}&
+		
+		\parbox[t]{0.5\textwidth}{
+			\begin{itemize}
+				\item Direct Foreign Investment
+				\item Portfolio Investment
+				\item Other Capital Investment
+				\item Errors and Omissions and Reserves
+			\end{itemize}
+		}\\
+		\hline
+	\end{tabular}
+\end{document}

@@ -1,0 +1,64 @@
+\documentclass{standalone}
+\usepackage{pgf,tikz}
+\usetikzlibrary{arrows}
+
+\begin{document}
+\centering
+
+\definecolor{zzttqq}{rgb}{0.6,0.2,0.}
+\definecolor{ffqqqq}{rgb}{1.,0.,0.}
+\definecolor{uuuuuu}{rgb}{0.3,0.3,0.3}
+\definecolor{qqyqqq}{rgb}{0.,0.5,0.}
+\definecolor{xdxdff}{rgb}{0.5,0.5,1.}
+\tikzstyle{every node}=[font=\huge]
+\tikzstyle{every picture}=[line width=1.4pt]
+\begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=2.0cm,y=1.7cm, scale=1.4]
+    \draw[->,color=black] (-0.2,0.) -- (6.,0.);
+    \foreach \x in {,1.,2.,3.,4.,5.}
+    \draw[shift={(\x,0)},color=black] (0pt,2pt) -- (0pt,-2pt);
+    \draw[->,color=black] (0.,-0.2) -- (0.,4.5);
+    \foreach \y in {,1.,2.,3.,4.}
+    \draw[shift={(0,\y)},color=black] (2pt,0pt) -- (-2pt,0pt);
+    \clip(-0.5,-0.5) rectangle (7.,5);
+    \fill[line width=0.4pt,color=zzttqq,fill=zzttqq,fill opacity=0.1] (2.5,1.5) -- (3.5,2.5) -- (3.5,0.5) -- cycle;
+    \draw (4.,0.)-- (0.,4.);
+    \draw (0.,1.)-- (3.,4.);
+    \draw [dash pattern=on 2pt off 2pt] (1.5,0.)-- (1.5,2.5);
+    \draw [dash pattern=on 2pt off 2pt] (0.,2.5)-- (1.5,2.5);
+    \draw [->] (1.5,2.5) -- (2.5,1.5);
+    \draw (1.,0.)-- (4.,3.);
+    \draw [dash pattern=on 2pt off 2pt,color=qqyqqq] (0.,1.5)-- (2.5,1.5);
+    \draw [dash pattern=on 2pt off 2pt,color=qqyqqq] (2.5,0.)-- (2.5,1.5);
+    \draw (1.35,-0.05) node[anchor=north west] {$Q_0$};
+    \draw (-0.5,2.65) node[anchor=north west] {$e_0$};
+    \draw [dash pattern=on 2pt off 2pt,color=ffqqqq] (1.5,2.5)-- (3.5,2.5);
+    \draw [dash pattern=on 2pt off 2pt,color=ffqqqq] (3.5,2.5)-- (3.5,0.);
+    \draw (-0.5,1.65) node[anchor=north west] {$e_1$};
+    \draw (3.35,-0.05) node[anchor=north west] {$Q'$};
+    \draw (2.35,-0.05) node[anchor=north west] {$Q_1$};
+    \draw [line width=0.4pt,color=zzttqq] (2.5,1.5)-- (3.5,2.5);
+    \draw [line width=0.4pt,color=zzttqq] (3.5,2.5)-- (3.5,0.5);
+    \draw [line width=0.4pt,color=zzttqq] (3.5,0.5)-- (2.5,1.5);
+    \draw (3,4) node[anchor=north west] {Supply Function};
+    \draw (4,0.5) node[anchor=north west] {Demand Function};
+    \draw (3.7,2.7) node[anchor=north west] {Shift in Supply Function};
+    \draw (3.7, 2) node[anchor=north west, text width=2cm] {Deadweight Loss};
+    \draw [->] (3.7, 1.8) to [bend right] (3, 1.5);
+    \draw [->] (0.,2.5) -- (0.,1.5);
+    \draw [->] (1.5,0.) -- (2.5,0.);
+    \begin{scriptsize}
+        \draw [fill=xdxdff] (4.,0.) circle (1.5pt);
+        \draw [fill=xdxdff] (0.,4.) circle (1.5pt);
+        \draw [fill=xdxdff] (0.,1.) circle (1.5pt);
+        \draw [fill=xdxdff] (1.5,2.5) circle (1.5pt);
+        \draw [fill=xdxdff] (2.5,1.5) circle (1.5pt);
+        \draw [fill=uuuuuu] (1.5,0.) circle (1.5pt);
+        \draw [fill=uuuuuu] (2.5,0.) circle (1.5pt);
+        \draw [fill=uuuuuu] (0.,1.5) circle (1.5pt);
+        \draw [fill=uuuuuu] (0.,2.5) circle (1.5pt);
+        \draw [fill=uuuuuu] (3.5,2.5) circle (1.5pt);
+        \draw [fill=uuuuuu] (3.5,0.) circle (1.5pt);
+        \draw [fill=uuuuuu] (3.5,0.5) circle (1.5pt);
+    \end{scriptsize}
+\end{tikzpicture}
+\end{document}

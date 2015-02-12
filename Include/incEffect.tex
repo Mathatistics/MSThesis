@@ -1,0 +1,68 @@
+\documentclass{standalone}
+\usepackage{amsmath}
+\usepackage{pgf, tikz}
+\usetikzlibrary{plotmarks,arrows,calc}
+\usepackage{pgfplots}
+
+\begin{document}
+% Defining Colors
+\definecolor{uuuuuu}{rgb}{0.3,0.3,0.3}
+\definecolor{xdxdff}{rgb}{0.5,0.5,1.}
+\definecolor{rdarw}{rgb}{0.8,0.2,0.1}
+\definecolor{gnarw}{rgb}{0.3,0.7,0.3}
+
+    \begin{tikzpicture}[
+        >=stealth,
+        point/.style = {draw, circle,  fill = uuuuuu, inner sep = .7pt},
+	    dot/.style   = {draw, circle,  fill = xdxdff, inner sep = 1pt},
+	    endpt/.style   = {draw, circle,  fill = black, inner sep = .3pt},
+	    dsh/.style = {dash pattern=on 4*\pgflinewidth off 5*\pgflinewidth},
+	    thkdsh/.style = {->, thick},
+	  ]
+	% Clip Plot Area
+	\clip (-1.5,-1.5) rectangle (8.2,8.2);
+	
+	% Axis
+	\draw [->] (-0.5,0) -- coordinate (x axis mid) (8,0);
+	\draw [->] (0,-0.5) -- coordinate (y axis mid) (0,8);
+	
+	% Ticks
+	\foreach \a in {-0.5,0,1,...,8}
+		\draw (\a, 2pt) -- (\a, -2pt)  (2pt, \a) -- (-2pt, \a);
+	
+	% Axis labels
+	\coordinate[dot] (origin) at (0,0);
+	\node[below, align=center] at (x axis mid) {Quantity of Euro \\ \scriptsize (purchasing Norwegian Krone)};
+	\node[rotate=90, above=0.9cm] at (y axis mid) {Price of Euro (EUR/NOK)};
+	
+	% Supply Line
+	\draw (0,0) coordinate[endpt](s0min) -- node[pos=1, yshift=2mm]{$S_0$} (6,6) coordinate[endpt](s0max);
+	
+	% Demand Line
+	\draw (0,6) coordinate[endpt](d0min) -- node[pos=1, yshift=3mm]{$D_0$} (6,0) coordinate[endpt](d0max);
+	\draw ($(d0min)+(1,1)$) coordinate[endpt](d1min) -- node[pos=1, yshift=3mm]{$D_1$} +($(d0max)-(d0min)$) coordinate[endpt](d1max);
+	
+	% Intersection Points
+	\coordinate[dot] (s0d0) at (intersection of s0min--s0max and d0min--d0max);
+	\coordinate[dot] (s0d1) at (intersection of s0min--s0max and d1min--d1max);
+	
+	% Perpendicular lines to axis
+	\draw[dsh] (s0d0|-origin) coordinate[point](proj0x) -- (s0d0) -- (s0d0-|origin) coordinate[point](proj0y);
+	\draw[dsh] (s0d1|-origin) coordinate[point](proj1x) -- (s0d1) -- (s0d1-|origin) coordinate[point](proj1y);
+	
+	% Text labels on Axis points
+	\draw[->] ($(proj0x)+(0.2,0.2)$) to[bend left] node[anchor=south west]{$Q_{\circ(\text{Euro})}$} (proj0x);
+	\node[left, font=\scriptsize, align=center] at (proj0y) {NOK \\ 8.72};
+	\node[left, font=\scriptsize, align=center] at (proj1y) {NOK \\ 9.10};
+	
+	% Arrows for changes caused
+	\draw[thkdsh, color=gnarw] (s0d0) -- coordinate[midway](dshift) (s0d1);
+	\draw[thkdsh, color=gnarw] (proj0y) -- coordinate[midway](excShift) (proj1y);
+	
+	% Annotations Arrows
+	\draw[->] (4,6) 
+		node[anchor=north, yshift=1cm]{\parbox{3cm}{\scriptsize Increased demand of foreign goods due to increased income levels}} 
+		to[bend right] (dshift);
+		
+	\end{tikzpicture}
+\end{document}

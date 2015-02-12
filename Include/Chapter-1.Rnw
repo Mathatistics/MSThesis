@@ -7,17 +7,3 @@
 	Any international trade is conducted through more than one currencies. Participants in the international trade require to exchange their currency which is performed by foreign exchange market. ``The foreign exchange market (ForEx) is the mechanism that brings together buyers and sellers of different currencies'' (\cite{appleyard2014international}).
 
 
-\section{Norwegian Krone (NOK)}
-\label{sec:KroneIntro}
-	After introduction of Krone in April 1975 (\cite{NorBnkHistory}), Norway was pushed to join the Scandinavian Monetary Union established on 1873 (\cite{nokHistoryOanda}). Although the Union was formally abolished on 1972, Norway decided to keep the names of its currencies. In December 1982, due to heavy speculation, Norges Bank (Central Bank of Norway) decided to fix Norwegian Krone which was floated on 1992 (\cite{NorBnkHistory}).
-
-	Norway has floating exchange rate, i.e. the exchange rate will reflect supply and demand of the currency in the international foreign exchange market. The exchange rate data for NOK/Euro is obtained from Norges Bank; and are middle rates, i.e. the mid-point between buying and selling rates in the interbank market (\cite{faq:NorBnk-ExcRate}).
-
-\section{The Euro (EUR)}
-\label{sec:EuroIntro}
-	Euro, the official currency of Eurozone, was introduced in 1999 as a virtual currency and later on 2002 as physical.
-
-\section{The Foreign Exchange Market (ForEx)}
-\label{sec:ForexIntro}
-
-

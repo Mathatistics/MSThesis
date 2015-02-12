@@ -12,31 +12,4 @@ dataDescTab<-xtable(dataDescription[,1:2], align = "llX", caption = "Variable co
 print(dataDescTab, include.rownames = F, tabular.environment = "tabularx", width = "\\textwidth", floating=FALSE, booktabs = TRUE, add.to.row = list(pos = list(0),command = "\\hline \\endhead "), sanitize.text.function = function(x){x})
 @
 
-\definecolor{mygreen}{rgb}{0,0.6,0}
-\definecolor{mygray}{rgb}{0.5,0.5,0.5}
-\definecolor{mymauve}{rgb}{0.58,0,0.82}
-\lstinputlisting[
-backgroundcolor=\color{white},
-breakatwhitespace=false,
-keepspaces=false,
-morekeywords={*,...},
-numbers=left,
-showspaces=false,
-showstringspaces=false,
-showtabs=false,
-stepnumber=2,
-stringstyle=\color{mymauve},
-title=\Large{\textsc{Code used in this thesis}},
-numbersep=5pt,
-numberstyle=\tiny\color{mygray}, 
-breaklines=true,
-language=R,
-basicstyle=\ttfamily\footnotesize,
-columns=fullflexible,
-commentstyle=\color{mygreen},
-keepspaces=true,
-keywordstyle=\color{blue},
-tabsize=2,
-]
-{Main.R}
 

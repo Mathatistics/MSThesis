@@ -1,0 +1,115 @@
+% !Rnw root = Chapter-2.Rnw
+
+\begin{figure}
+\centering
+
+\definecolor{qqyqqq}{rgb}{0.,0.5,0.}
+\definecolor{zzttqq}{rgb}{0.6,0.2,0.}
+\definecolor{uuuuuu}{rgb}{0.3,0.3,0.3}
+\definecolor{ffqqqq}{rgb}{1.,0.,0.}
+\definecolor{xdxdff}{rgb}{0.5,0.5,1.}
+
+\begin{subfigure}[b]{0.3\textwidth}
+\begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=2.0cm,y=1.7cm]
+    \draw[->,color=black] (-0.2,0.) -- (6.,0.);
+    \foreach \x in {,1.,2.,3.,4.,5.}
+    \draw[shift={(\x,0)},color=black] (0pt,2pt) -- (0pt,-2pt);
+    \draw[->,color=black] (0.,-0.2) -- (0.,5.);
+    \foreach \y in {,1.,2.,3.,4.}
+    \draw[shift={(0,\y)},color=black] (2pt,0pt) -- (-2pt,0pt);
+    \clip(-0.5,-0.5) rectangle (6.,5.);
+    \fill[color=zzttqq,fill=zzttqq,fill opacity=0.1] (2.,2.) -- (2.,3.5) -- (3.,2.5) -- cycle;
+    \draw (4.,0.)-- (0.,4.);
+    \draw (0.,1.)-- (4.,3.);
+    \draw [dash pattern=on 1pt off 1pt] (2.,0.)-- (2.,2.);
+    \draw [dash pattern=on 1pt off 1pt] (0.,2.)-- (2.,2.);
+    \draw [->] (2.,2.) -- (3.,2.5);
+    \draw (5.,0.5)-- (1.,4.5);
+    \draw [dash pattern=on 1pt off 1pt,color=ffqqqq] (2.,2.)-- (2.,3.5);
+    \draw [dash pattern=on 1pt off 1pt,color=ffqqqq] (2.,3.5)-- (0.,3.5);
+    \draw [color=zzttqq] (2.,2.)-- (2.,3.5);
+    \draw [color=zzttqq] (2.,3.5)-- (3.,2.5);
+    \draw [color=zzttqq] (3.,2.5)-- (2.,2.);
+    \draw (1.8,-0.05) node[anchor=north west] {$Q_0$};
+    \draw [dash pattern=on 1pt off 1pt,color=qqyqqq] (0.,2.5)-- (3.,2.5);
+    \draw [dash pattern=on 1pt off 1pt,color=qqyqqq] (3.,0.)-- (3.,2.5);
+    \draw (-0.4,2.15) node[anchor=north west] {$e_0$};
+    \draw (-0.4,3.65) node[anchor=north west] {$e_{d'}$};
+    \draw (-0.4,2.65) node[anchor=north west] {$e_1$};
+    \draw (2.8,-0.05) node[anchor=north west] {$Q_1$};
+    \draw (3.9,3) node[anchor=north west] {Supply Function};
+    \draw (3.9,0.35) node[anchor=north west] {Demand Function};
+    \draw (1,4.7) node[anchor=north west] {Shift in Demand Function};
+    \draw [->] (0.,2.) -- (0.,2.5);
+    \draw [->] (2.,0.) -- (3.,0.);
+    \begin{scriptsize}
+        \draw [fill=xdxdff] (4.,0.) circle (1.5pt);
+        \draw [fill=xdxdff] (0.,4.) circle (1.5pt);
+        \draw [fill=xdxdff] (0.,1.) circle (1.5pt);
+        \draw [fill=xdxdff] (2.,2.) circle (1.5pt);
+        \draw [fill=xdxdff] (3.,2.5) circle (1.5pt);
+        \draw [fill=xdxdff] (5.,0.5) circle (1.5pt);
+        \draw [fill=xdxdff] (1.,4.5) circle (1.5pt);
+        \draw [fill=uuuuuu] (2.,3.5) circle (1.5pt);
+        \draw [fill=uuuuuu] (2.,0.) circle (1.5pt);
+        \draw [fill=uuuuuu] (0.,2.) circle (1.5pt);
+        \draw [fill=uuuuuu] (0.,3.5) circle (1.5pt);
+        \draw [fill=uuuuuu] (0.,2.5) circle (1.5pt);
+        \draw [fill=uuuuuu] (3.,0.) circle (1.5pt);
+    \end{scriptsize}
+\end{tikzpicture}
+\caption{Demand Shift and Exchange Rate Equilibrium}
+\label{fig:demandShift}
+\end{subfigure}
+\begin{subfigure}[b]{0.3\textwidth}
+\begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=2.0cm,y=1.7cm]
+    \draw[->,color=black] (-0.2,0.) -- (6.,0.);
+    \foreach \x in {,1.,2.,3.,4.,5.}
+    \draw[shift={(\x,0)},color=black] (0pt,2pt) -- (0pt,-2pt);
+    \draw[->,color=black] (0.,-0.2) -- (0.,4.5);
+    \foreach \y in {,1.,2.,3.,4.}
+    \draw[shift={(0,\y)},color=black] (2pt,0pt) -- (-2pt,0pt);
+    \clip(-0.5,-0.5) rectangle (6.,4.5);
+    \fill[line width=0.4pt,color=zzttqq,fill=zzttqq,fill opacity=0.1] (2.5,1.5) -- (3.5,2.5) -- (3.5,0.5) -- cycle;
+    \draw (4.,0.)-- (0.,4.);
+    \draw (0.,1.)-- (3.,4.);
+    \draw [dash pattern=on 2pt off 2pt] (1.5,0.)-- (1.5,2.5);
+    \draw [dash pattern=on 2pt off 2pt] (0.,2.5)-- (1.5,2.5);
+    \draw [->] (1.5,2.5) -- (2.5,1.5);
+    \draw (1.,0.)-- (4.,3.);
+    \draw [dash pattern=on 2pt off 2pt,color=qqyqqq] (0.,1.5)-- (2.5,1.5);
+    \draw [dash pattern=on 2pt off 2pt,color=qqyqqq] (2.5,0.)-- (2.5,1.5);
+    \draw (1.35,-0.05) node[anchor=north west] {$Q_0$};
+    \draw (-0.3,2.65) node[anchor=north west] {$e_0$};
+    \draw [dash pattern=on 2pt off 2pt,color=ffqqqq] (1.5,2.5)-- (3.5,2.5);
+    \draw [dash pattern=on 2pt off 2pt,color=ffqqqq] (3.5,2.5)-- (3.5,0.);
+    \draw (-0.3,1.65) node[anchor=north west] {$e_1$};
+    \draw (3.35,-0.05) node[anchor=north west] {$Q'$};
+    \draw (2.35,-0.05) node[anchor=north west] {$Q_1$};
+    \draw [line width=0.4pt,color=zzttqq] (2.5,1.5)-- (3.5,2.5);
+    \draw [line width=0.4pt,color=zzttqq] (3.5,2.5)-- (3.5,0.5);
+    \draw [line width=0.4pt,color=zzttqq] (3.5,0.5)-- (2.5,1.5);
+    \draw (2.9817503491,3.95651902168) node[anchor=north west] {Supply Function};
+    \draw (3.99986922028,0.291291085431) node[anchor=north west] {Demand Function};
+    \draw (3.69443355893,2.67659815505) node[anchor=north west] {Shift in Supply Function};
+    \draw [->] (0.,2.5) -- (0.,1.5);
+    \draw [->] (1.5,0.) -- (2.5,0.);
+    \begin{scriptsize}
+        \draw [fill=xdxdff] (4.,0.) circle (1.5pt);
+        \draw [fill=xdxdff] (0.,4.) circle (1.5pt);
+        \draw [fill=xdxdff] (0.,1.) circle (1.5pt);
+        \draw [fill=xdxdff] (1.5,2.5) circle (1.5pt);
+        \draw [fill=xdxdff] (2.5,1.5) circle (1.5pt);
+        \draw [fill=uuuuuu] (1.5,0.) circle (1.5pt);
+        \draw [fill=uuuuuu] (2.5,0.) circle (1.5pt);
+        \draw [fill=uuuuuu] (0.,1.5) circle (1.5pt);
+        \draw [fill=uuuuuu] (0.,2.5) circle (1.5pt);
+        \draw [fill=uuuuuu] (3.5,2.5) circle (1.5pt);
+        \draw [fill=uuuuuu] (3.5,0.) circle (1.5pt);
+        \draw [fill=uuuuuu] (3.5,0.5) circle (1.5pt);
+    \end{scriptsize}
+\end{tikzpicture}
+\caption{Supply Shift and Exchange Rate Equilibrium}
+\label{fig:supply`Shift}
+\end{subfigure}
+\end{figure}

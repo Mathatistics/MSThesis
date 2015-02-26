@@ -8,14 +8,14 @@ The functional form for determining exchange rate of Krone per Euro can be writt
 \texttt{PerEURO}=f(\texttt{interest Rate}, \texttt{Trade}, \texttt{Price}, \texttt{Expectation})
 \end{equation}
 
-<<echo=FALSE, warning=FALSE, results='hide'>>=
+<<sigCoef, echo=FALSE, warning=FALSE, results='hide'>>=
 coefMat<-as.data.frame(summary(mdl.ft$linear$model)$coefficients)
 sigVarIdx<-which(coefMat$`Pr(>|t|)`<=0.05)
 @
 In equation-\ref{eq:mlrFuncForm}, interest Rate include both interest rate of Norway and European Central Bank. Trade encorporates import, export and trade balance of Norway. Similarly, Price include Consumer price index and Oil price and Expectation variables are created with the lagged value of response, i.e. \texttt{PerEURO}. The observation for all the model fitting from this point onward are from the training dataset, i.e. from Jan 2000 to Dec 2012. The detail explanation for the variables are in Appendix A. As described in section - \ref{sec:linRegModel}, the linear model is fitted. The results shows that variables in table-\ref{tbl:lmSumry} has significant effect on the Euro vs Norwegian Krone exchange rate.
 
 {\singlespacing
-<<sumryTable.lm, echo=FALSE, results='asis'>>=
+<<sumryTable.lm, echo=FALSE, results='asis', purl=FALSE>>=
 rownames(coefMat)<-paste("\\texttt{", rownames(coefMat), "}", sep="")
 colnames(coefMat)<-c("Estimate", "Std.Error", "t.value", "P-value")
 coefxtable<-xtable(round(coefMat[sigVarIdx, c("Estimate", "P-value")], 4))
@@ -40,7 +40,7 @@ Variable selection is based on criteria to choose best model form the possible s
 
 The best subset is selected using \begin{inlinelist}\item Mallows $C_P$ and \item Adjusted $R^2$ \end{inlinelist}. The plot of number of variable vs these two criteria are plotted in figure-\ref{fig:cpr2plot}. The plot in fig-\ref{fig:cpr2plot1}, shows that including 14 variables which the algorith has selected minimize the Mallow's $C_p$ while fig-\ref{fig:cpr2plot2} suggest to include 16 variables including intercept to maximize the adjusted $R^2$.
 
-<<cpr2plot, echo=FALSE, out.width="0.5\\textwidth", fig.subcap=c("Mallows Cp vs no. of Variable","R2 adjusted vs no. of variable"), fig.cap="Number of variable against the criteria where the red dot corresponds the number of variable to acheave the criteria, i.e. minimum for Cp and maximum for $R^2$ adjusted", fig.pos='!ht'>>=
+<<cpr2plot, echo=FALSE, out.width="0.5\\textwidth", fig.subcap=c("Mallows Cp vs no. of Variable","R2 adjusted vs no. of variable"), fig.cap="Number of variable against the criteria where the red dot corresponds the number of variable to acheave the criteria, i.e. minimum for Cp and maximum for $R^2$ adjusted", fig.pos='!ht', purl=FALSE>>=
 cp.plt<-ggplot(cpdf, aes(p, cp))+geom_line()+geom_point(size=4, shape=21, bg="gray")
 cp.plt<-cp.plt+theme_bw()+theme(text=element_text(size=20))
 cp.plt<-cp.plt+xlab("Number of variable")+ylab("Mallow's Cp")
@@ -56,7 +56,7 @@ print(r2.plt)
 
 The models selected by these criteria when fitted results on very few insignificant variables. The plot of the t-value in fig-\ref{fig:cpr2mdlplt} has only one (for $C_p$ criteria) and two ($R^2$adj criteria) are insignificant. With much less variables than the full model, this model has described the variation almost equally as the the linear model with full variables (table-\ref{tbl:statComp}).
 
-<<cpr2mdlplt, echo=FALSE, out.width="0.5\\textwidth", fig.subcap=c("Model selected from Mallows' $C_p$ criteria","Model selected from $R^2$ adjusted criteria"), fig.cap="Best subset model selected by $C_p$ and $R^2$ adjusted criteria. Red and blue bars are significant and insignificant variables respectively. The estimates rounded at 2 decimals are given on top of the bars.", fig.pos='!ht'>>=
+<<cpr2mdlplt, echo=FALSE, out.width="0.5\\textwidth", fig.subcap=c("Model selected from Mallows' $C_p$ criteria","Model selected from $R^2$ adjusted criteria"), fig.cap="Best subset model selected by $C_p$ and $R^2$ adjusted criteria. Red and blue bars are significant and insignificant variables respectively. The estimates rounded at 2 decimals are given on top of the bars.", fig.pos='!ht', purl=FALSE>>=
 test.plot(mdl.ft$cp.model$model, alpha = 0.05)+
     annotate("text", 1, 10, label=sumryBlock(mdl.ft$cp.model$model), hjust=0, size=6)
 test.plot(mdl.ft$r2.model$model, alpha=0.05)+
@@ -68,7 +68,7 @@ test.plot(mdl.ft$r2.model$model, alpha=0.05)+
 
 Applying AIC and BIC criteria to select best model, exhaustive search algorithm as used by \texttt{leaps} package (\cite{lumley2004leaps}) is used in this thesis. Number of variables required to minimize the information criteria is selected as guide by the plot in figure -\ref{fig:aicbicPlot}. For minimum AIC \Sexpr{nvars[which.min(aic.vec)]} (fig-\ref{fig:aicbicPlot1}) variables are needed and for minimum BIC \Sexpr{nvars[which.min(bic.vec)]}(fig-\ref{aicbicPlot2}) are needed to get the best subsetted model. The models suggested are fitted with results of few insignificant variables (fig-\ref{fig:aicbicmdlplt}). The summary statistic (table-\ref{tbl:statComp}) shows that AIC model has larger $R^2$ adjusted than BIC model due to the addition of more variables.
 
-<<aicbicPlot, echo=FALSE, out.width="0.5\\textwidth", fig.subcap=c("AIC vs no. of Variable","BIC vs no. of variable"), fig.cap="Number of variable against the AIC vs BIC criteria. The red dot corresponds to the number of variables that can minimize the criteria.", fig.pos='!ht'>>=
+<<aicbicPlot, echo=FALSE, out.width="0.5\\textwidth", fig.subcap=c("AIC vs no. of Variable","BIC vs no. of variable"), fig.cap="Number of variable against the AIC vs BIC criteria. The red dot corresponds to the number of variables that can minimize the criteria.", fig.pos='!ht', purl=FALSE>>=
 aic.plt<-ggplot(infoMat, aes(p, aic))+geom_line()+geom_point(size=4, shape=21, bg="gray")
 aic.plt<-aic.plt+theme_bw()+theme(text=element_text(size=20))
 aic.plt<-aic.plt+xlab("Number of variable")+ylab("AIC")
@@ -81,7 +81,7 @@ bic.plt<-bic.plt+xlab("Number of variable")+ylab("BIC")
 bic.plt<-bic.plt+annotate("point", x = nvars[which.min(bic.vec)], y = min(bic.vec), shape=16, color="red", size=3)
 print(bic.plt)
 @
-<<aicbicmdlplt, echo=FALSE, out.width="0.5\\textwidth", fig.subcap=c("Model selected from minimum AIC criteria","Model selected from minimum BIC criteria"), fig.cap="Best subset model selected by AIC and BIC criteria. Red and blue bars are significant and insignificant variables respectively. The estimates rounded at 2 decimals are given on top of the bars.", fig.pos='!ht'>>=
+<<aicbicmdlplt, echo=FALSE, out.width="0.5\\textwidth", fig.subcap=c("Model selected from minimum AIC criteria","Model selected from minimum BIC criteria"), fig.cap="Best subset model selected by AIC and BIC criteria. Red and blue bars are significant and insignificant variables respectively. The estimates rounded at 2 decimals are given on top of the bars.", fig.pos='!ht', purl=FALSE>>=
 test.plot(mdl.ft$aicMdl$model, alpha = 0.05)+
     annotate("text", 1, 10, label=sumryBlock(mdl.ft$aicMdl$model), hjust=0, size=6)
 test.plot(mdl.ft$bicMdl$model, alpha=0.05)+
@@ -93,7 +93,7 @@ test.plot(mdl.ft$bicMdl$model, alpha=0.05)+
 \label{ssec:stepwisePvalue}
 The models fitted in previous sub sections resulted with some insignificant variables because the criteria there was based on model statistics other than the p-value of the respective variables. The stepwise procedure based on the F test fit the model removing the insignificant variable one at a time in forward search and adding variable one at a time in backward search. The fitted results (fig-\ref{fig:FbasedModelSubset}) for the models fitted with backward (fig-\ref{fig:FbasedModelSubset1}) and forward (fig-\ref{fig:FbasedModelSubset2}) stepwise procedure show that all the variables are significant at 5 percent since the \texttt{alpha-to-remove} and \texttt{alpha-to-enter} criteria for the process are set at 0.05.
 
-<<LMstatComp, echo=FALSE, results='asis'>>=
+<<LMstatCompSetup, echo=FALSE, results='hide'>>=
 statcomp.lm<-data.frame(rbind('Linear Model'=model.sumry(mdl.ft$linear$model, F,F,T),
       'Model from $C_p$ criteria'=model.sumry(mdl.ft$cp.model$model, F,F,T),
       'Model from $R^2$ adj criteria'=model.sumry(mdl.ft$r2.model$model, F,F,T),
@@ -105,9 +105,12 @@ statcomp.xtable<-xtable(statcomp.lm, digits=3)
 xtable::caption(statcomp.xtable)<- "Comparision of model summary statistic of full linear Model and models obtained from variable selection using various criteria"
 xtable::label(statcomp.xtable)<-"tbl:statComp"
 xtable::align(statcomp.xtable)<-"X|r|r|r|r|r|r"
+@
+<<LMstatComp, echo=FALSE, results='asis', purl=FALSE>>=
 print.xtable(statcomp.xtable, sanitize.text.function = function(x){x}, floating = TRUE, tabular.environment = 'tabularx', size='small', caption.placement = 'top', width = "\\textwidth", table.placement = '!htpb')
 @
-<<FbasedModelSubset, echo=FALSE, out.width="0.5\\textwidth", fig.subcap=c("Model selected from stepwise forward selection prcedure","Model selected from stepwise backward elimination procedure"), fig.cap="Best subset model selected by F-test based criteria. Red and blue bars are significant and insignificant variables respectively. The estimates rounded at 2 decimals are given on top of the bars.", fig.pos='!ht'>>=
+
+<<FbasedModelSubset, echo=FALSE, out.width="0.5\\textwidth", fig.subcap=c("Model selected from stepwise forward selection prcedure","Model selected from stepwise backward elimination procedure"), fig.cap="Best subset model selected by F-test based criteria. Red and blue bars are significant and insignificant variables respectively. The estimates rounded at 2 decimals are given on top of the bars.", fig.pos='!ht', purl=FALSE>>=
 test.plot(mdl.ft$forward$model, alpha = 0.05)+
     annotate("text", 1, 10, label=sumryBlock(mdl.ft$forward$model), hjust=0, size=6)
 test.plot(mdl.ft$backward$model, alpha=0.05)+
@@ -116,7 +119,7 @@ test.plot(mdl.ft$backward$model, alpha=0.05)+
 
 For comparision, the summary statistic for the forward and backward results obtained are presented with the prevous models fitted above in table-\ref{tbl:statComp}.
 
-<<vifPlot, echo=FALSE, fig.height=6, results='hide', fig.cap='Variance Inflation Factor (VIF) of different models. The red bars represents the variables with VIF greater than 10.', fig.pos='!htb'>>=
+<<vifPlot, echo=FALSE, fig.height=6, results='hide', fig.cap='Variance Inflation Factor (VIF) of different models. The red bars represents the variables with VIF greater than 10.', fig.pos='!htb', purl=FALSE>>=
 vifPlot<-lapply(c("linear","cp.model", "r2.model", "backward"), function(x){
         myName<-names(vif(mdl.ft[[x]][[2]]))
         vifMat<-matrix(vif(mdl.ft[[x]][[2]]))

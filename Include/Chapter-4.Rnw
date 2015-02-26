@@ -13,7 +13,7 @@ This chapter will present the analysis report obtained for different models cons
 The summary report of the variables that are in use during the analysis are in table (\ref{tbl:sumryTabl}),
 
 {\singlespacing\sffamily
-<<sumryTabl, echo=FALSE, results='asis'>>=
+<<sumryTablSetup, echo=FALSE, results='hide'>>=
 sumryTabl<-t(sapply(baseTable[,c(y.var, x.var)], 
                            function(x){c(min=min(x), 
                                          median=median(x), 
@@ -36,12 +36,15 @@ addtorow$command  <- c(paste("\\hline \n",
 
 caption(sumryXtable)<-"Summary Report of all the variables used in this report"
 label(sumryXtable)<-"tbl:sumryTabl"
+@
+<<sumryTabl, echo=FALSE, results='asis', purl=FALSE>>=
 print(sumryXtable, caption.placement = "top", 
       booktabs=TRUE, 
       floating=FALSE, 
       tabular.environment = "longtable",
       add.to.row=addtorow, hline.after=c(-1,-1, nrow(sumryXtable)))
 @
+
 }
 %' It is also desirable to see the time series plot of the related variables given in figure -(\ref{fig:timeSeriesPlot})
 %' <<timeSeriesPlot, echo=FALSE, fig.cap="Time Series plot of different variables", fig.pos="ht">>=
@@ -50,7 +53,7 @@ print(sumryXtable, caption.placement = "top",
 %' @
 
 The correlation between response variable and predictor variable helps us to determine their relationship. Figure -(\ref{fig:rpCorPlot}) shows that only few of the predictor variables have significant correlation with response variable. In the figure first and second lagged variables have strong correlation with response while most of the others have low (weak) correlation. However, being weak correlation, many of them are statistically significant.
-<<rpCorPlot, echo=FALSE, fig.height=5, fig.cap="The bars represents the correlation between response variable (\\texttt{PerEURO}) and other predictor variable. The bars are shaded with the p-value for their signifance test performed by \\texttt{cortest} function. The red horizontal line is the critical value at 5 percent level of significance.">>=
+<<rpCorPlot, echo=FALSE, fig.height=5, fig.cap="The bars represents the correlation between response variable (\\texttt{PerEURO}) and other predictor variable. The bars are shaded with the p-value for their signifance test performed by \\texttt{cortest} function. The red horizontal line is the critical value at 5 percent level of significance.", purl=FALSE>>=
 rpCorTab<-lapply(seq_along(x.var), 
                  function(x){data.frame(var=x.var[x], 
                                         p.value=cor.test(baseTable[,x.var[x]], baseTable[,y.var[1]])$p.value, 

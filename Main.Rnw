@@ -36,22 +36,22 @@ data.path<-path.expand(file.path(dirname(getwd()), "Datasets", "CompleteDataSet.
 @
 
 %% Chapter 3 -----------------------------------------------------------------||||
-<<chapter3-include, child="Include/Chapter-3.Rnw", eval=FALSE>>=
+<<chapter3-include, child="Include/Chapter-3.Rnw", eval=TRUE>>=
 @
 
 %% Chapter 4 -----------------------------------------------------------------||||
-<<chapter4-include, child="Include/Chapter-4.Rnw", eval=FALSE>>=
+<<chapter4-include, child="Include/Chapter-4.Rnw", eval=TRUE>>=
 @
   %% Common Computation ------------------------------------------------------||||
   <<commons, child="Include/Commons.Rnw">>=
   @
 
   %% Multiple Linear Regression with Stepwise reduction -----------------------||||
-  <<chapter4a-include, child="Include/Chapter-4a.Rnw", eval=FALSE>>=
+  <<chapter4a-include, child="Include/Chapter-4a.Rnw", eval=TRUE>>=
   @
   
   %% Principal Component Analysis and Regression ------------------------------||||
-  <<chapter4b-include, child="Include/Chapter-4b.Rnw", eval=FALSE>>=
+  <<chapter4b-include, child="Include/Chapter-4b.Rnw", eval=TRUE>>=
   @
   
   %% Partial Least Square Regression ------------------------------------------||||
@@ -73,10 +73,10 @@ data.path<-path.expand(file.path(dirname(getwd()), "Datasets", "CompleteDataSet.
 
 \appendix
   %% Data Description ------------------------------||||
-  <<appendixVarUsed, child="Include/Appendix-varUsed.Rnw">>=
+  <<appendixVarUsed, child="Include/Appendix-varUsed.Rnw", eval=FALSE>>=
   @
   
-  <<appendixCodeUsed, child="Include/Appendix-codeUsed.Rnw">>=
+  <<appendixCodeUsed, child="Include/Appendix-codeUsed.Rnw", eval=FALSE>>=
   @
 
 \end{document}

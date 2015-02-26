@@ -2,8 +2,7 @@
 
 \chapter{Data and Material}
 \label{ch:DataMaterial}
-
-	Prediction of dynamics of Exchange Rate through Economic and Financial indicators is the main aim of this thesis. From these two broad categories, only those factors were only considered which are believed to be useful to understand the exchange rate dynamics.
+Prediction of dynamics of Exchange Rate through Economic and Financial indicators is the main aim of this thesis. From these two broad categories, only those factors were only considered which are believed to be useful to understand the exchange rate dynamics.
 
 \section{ForeX Market}
 \label{sec:forexMarket}
@@ -13,7 +12,7 @@ Currencies are exchanged for activities like trade, tourism and investments in a
 
 Exchange rate can be set according to different macroeconomic variables, such as interest rate, price index, balance of payment etc. Such exchange rate is called Floating exchange rate. Some country fix exchange rate while others pegged with other currency. Norway currently has a floating exchange rate.
 
-<<tsPerEURO, echo=FALSE, fig.cap="Exchange rate of Norwegian Krone per Euro", fig.height=4>>=
+<<tsPerEURO, echo=FALSE, fig.cap="Exchange rate of Norwegian Krone per Euro", fig.height=4, purl=FALSE>>=
 tsPerEURO<-ggplot(baseTable, aes(Date, PerEURO))
 tsPerEURO<-tsPerEURO+geom_line()+theme_bw()
 tsPerEURO<-tsPerEURO+scale_x_date(labels = date_format("%y%b"), breaks = "6 month")
@@ -80,7 +79,7 @@ Inflation is the steady rise in overall price level, i.e. a decrease in the valu
 Statistics Norway prepares and publishes the official figures for inflation, the consumer price index (CPI) with base year at 1998. Since the real value of money is constantly decling, high inflation means that storing money is expensive. while low and stable inflation contributes to an efficient distribution of resources in a market economy (\cite{NorgesBank2007faq}). Data for CPI is obtained for this thesis from Norges bank, since this is an inportant factor that can influence exchange rate. The time-series plot for CPI in figure-\ref{fig:tsCPI} shows an steady increment over the time. 
 
 \begin{figure} 
-<<tsCPI, echo=FALSE, fig.width=7, fig.height=3.5>>=
+<<tsCPI, echo=FALSE, fig.width=7, fig.height=3.5, purl=FALSE>>=
 cpi.ts<-ggplot(baseTable, aes(Date, CPI))+geom_line()+theme_bw()
 cpi.ts<-cpi.ts+scale_x_date(breaks = "10 months", labels=date_format("%y%b"))
 cpi.ts<-cpi.ts+scale_y_continuous(breaks=round(seq(min(baseTable$CPI), 
@@ -119,7 +118,7 @@ The influence of market interest rate flows through multiple channel such as dem
 
 According to \citet{madura2012international}, change in interest rate in third country can also affect the exchange rates between NOK and Euro. For instance, the sudden increase of interest rate in US would shift the european investment from Norway to US which consequently reduce the demand of NOK resulting a downward pressure on its exchange rate with Euro.
 
-<<intRates, echo=FALSE, warning=FALSE, fig.height=4, fig.cap="Interest Rates from Norway and Eurozone and their comparision with Exchange Rate showing a distinct inverse relationship", fig.pos='!htbp'>>=
+<<intRates, echo=FALSE, warning=FALSE, fig.height=4, fig.cap="Interest Rates from Norway and Eurozone and their comparision with Exchange Rate showing a distinct inverse relationship", fig.pos='!htbp', purl=FALSE>>=
 intRates<-melt(baseTable[,c("Date", "PerEURO", "KeyIntRate", "LoanIntRate", "EuroIntRate")], 1:2)
 levels(intRates$variable)<-c("Norwegian Key Interest Rate", "Norweign Loan Interst Rate", "Eurozone Key Interest Rate")
 irp<-ggplot(intRates, aes(Date, value))
@@ -187,24 +186,40 @@ Balance of payment can be classified into two broad categories - \begin{inlineli
 
 \subsection{Current Account}
 \label{ssec:currentAccount}
-Current account measures net imports and exports of a country. Imports and exports are divied into three sub categories - \begin{inlinelist}\item Trade of goods, \item Trade of services and \item Income \end{inlistlist} which includes the interest and dividend payed to international firms operating within home country and interest and dividends earned from domestically owned firms abroad.
+Current account measures net imports and exports of a country. Imports and exports are divied into three sub categories -
+\begin{inlinelist}
+    \item Trade of goods, 
+    \item Trade of services and 
+    \item Income 
+\end{inlinelist}
+which includes the interest and dividend payed to international firms operating within home country and interest and dividends earned from domestically owned firms abroad.
 
 The current accound balance is the difference between export and import, i.e.
+
 \begin{equation}
 \label{eq:curAccBal}
 \text{Current Account}=\text{Total Exports}-\text{Total Imports}
 \end{equation}
-The equation \ref{eq:curAccBal} can also be expressed as a form of income and expenditure as,
+
+Above equation can also be expressed as a form of income and expenditure as,
+
 \begin{equation}
 \label{eq:curAccBal2}
-\text{Current Balance}=\underset{GNP}{\text{Y}}-\underset{Total Domestic Consumption}{\left(\text{C}+\text{I}+\text{G}\right)}
+\text{Current Account Balance}=
+\underbrace{\text{Y}}_\text{GNP}-
+\underbrace{\left(\text{C}+\text{I}+\text{G}\right)}_{\substack{\text{Total Domestic}\\\text{Consumption}}}
 \end{equation}
+
 where,
-\begin{tabular}
-C &=& Consumption\\
-I &=& Investment \\
-G &=& Government Purchases\\
+
+{\singlespacing
+\begin{tabular}{rcl}
+C & = & Consumption \\
+I & = & Investment \\
+G & = & Government Purchases \\
 \end{tabular}
+}
+
 \subsection{Capital Account}
 \label{ssec:capitalAccount}
 Something about Capital Account

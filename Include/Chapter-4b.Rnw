@@ -6,7 +6,7 @@ Principal Component Analysis(PCA) creates a new set of mutually orthogonal and i
 The first seven component in the analysis are explaining the variation greater than the original variables (table-\ref{tbl:pcaSumry}). In addition, From figure - (\ref{fig:pcaPlots1}), it can be seen that on considering twelve components, around 99 percent of variation in x-variables are captured.
 
 {\singlespacing\sffamily
-<<pcaSumry, echo=FALSE, results='asis'>>=
+<<pcaSumrySetup, echo=FALSE, results='hide'>>=
 stdev<-pc.a$sdev
 varprop<-pc.a$sdev^2/sum(pc.a$sdev^2)
 pcaSumry1<-xtable(data.frame(rbind(`Standard Deviation`=stdev, 
@@ -14,15 +14,18 @@ pcaSumry1<-xtable(data.frame(rbind(`Standard Deviation`=stdev,
                                   `Cumulative Proportion`=cumsum(varprop)))[,1:7], digits = 3)
 caption(pcaSumry1)<- "Dispersion of data explained by principal components"
 label(pcaSumry1)<- "tbl:pcaSumry"
+@
+<<pcaSumry, echo=FALSE, results='asis', purl=FALSE>>=
 print.xtable(pcaSumry1, floating = FALSE,
       tabular.environment = 'longtable', 
       caption.placement = "top", 
       size = 'footnotesize', hline.after = c(-1,-1,0,nrow(pcaSumry1)))
 @
+
 }
 Something about BiPlot ....?
 
-<<biPlotPCA, echo=FALSE, fig.cap="Biplot of PCA analysis on predictor variables", fig.width="0.8\\textwidth">>=
+<<biPlotPCASetup, echo=FALSE, results='hide'>>=
 biplot.pca<-ggbiplot(pc.a, obs.scale =1, 
                      var.scale = 1, 
                      varname.adjust = 2, 
@@ -37,8 +40,11 @@ biplot.pca<-biplot.pca+ theme_bw(base_size = 24)+
   theme(axis.text=element_text(size=15), 
         axis.title=element_text(size=15), 
         panel.border = element_rect(color="black"))
+@
+<<biPlotPCA, echo=FALSE, fig.cap="Biplot of PCA analysis on predictor variables", fig.width="0.8\\textwidth", purl=FALSE>>=
 print(biplot.pca)
 @
+
 
 Thus, a model can be constructed for prediction of response considering few of these components instead of all original variables. This will not only remove the complexity of the model but also gives mutually independent components (new variables).
 
@@ -47,10 +53,12 @@ Thus, a model can be constructed for prediction of response considering few of t
 A Principal Component Regression (PCR) can be used for this purpose. In this models, the number of components to be considered are set by using the RMSE (Root Mean Square Error) of the model. The results obtained in PCR can be summarized in table-\ref{tbl:pcrSumry} shows that 
 
 {\singlespacing\sffamily
-<<pcrSumry, echo=FALSE, results='asis'>>=
+<<pcrSumrySetup, echo=FALSE, results='hide'>>=
 pcr.expVar.x<-cumsum(explvar(mdl.ft$PCR$model))
 pcr.expVar.y<-apply(fitted(mdl.ft$PCR$model), 3, var)/var(mdl.ft$PCR$dataset[,y.var])*100
 pcrSumry<-data.frame(Components=paste("Comp",1:length(pcr.expVar.x), sep="."), X=pcr.expVar.x, PerEURO=pcr.expVar.y, row.names = NULL)
+@
+<<pcrSumry, echo=FALSE, results='asis', purl=FALSE>>=
 print(xtable(cbind(pcrSumry[1:7,], 
                    pcrSumry[8:14,], 
                    pcrSumry[15:21,]),
@@ -64,6 +72,7 @@ print(xtable(cbind(pcrSumry[1:7,],
       floating = FALSE,
       include.rownames = FALSE)
 @
+
 %' }
 %' 
 %' <<PCRpredValPlot, echo=FALSE, results='hide'>>=

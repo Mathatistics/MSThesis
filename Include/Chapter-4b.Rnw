@@ -1,62 +1,88 @@
 % !Rnw root = ../Main.Rnw
 \section{Principal Component Analysis}
-Principal Component Analysis(PCA) creates a new set of mutually orthogonal and independent variables called components. The PCA analysis is done for centered and scaled x-variables (Predictor variables) that are considered in this analysis from Jan 2000 to Aug 2014. However, an observation of Jan 2000 is omitted due to introduction of lagged variable of response as a predictor variable.
-<<PCAplot, echo=FALSE, fig.cap="Scree Plot showing the variation explained by each components">>=
-pc.a<-prcomp(baseTable[,x.var], center = T, scale. = T, na.action = "na.omit")
-pc.var<-data.frame(Lag=1:length(x.var), Variance=pc.a$sdev^2, cumVar=cumsum(pc.a$sdev^2/sum(pc.a$sdev^2)*100))
-PCcompPlot<-ggplot(pc.var, aes(Lag, cumVar))+geom_path(na.rm=T)+geom_point(na.rm=T)+theme_bw(base_size = 24)
-PCcompPlot<-PCcompPlot+ggtitle("Variance Explained by the Principal Components")
-PCcompPlot<-PCcompPlot+xlim(0,20)+ylab("Variance Explained")
-PCcompPlot<-PCcompPlot+scale_y_reverse()+geom_hline(yintercept=99, color="red", linetype="dashed")
-PCcompPlot<-PCcompPlot+annotate("text", x=0, y=97, label="Variance Explained=99", col="red", hjust=-0.1)
-PCcompPlot<-PCcompPlot+theme(axis.text=element_text(size=15), axis.title=element_text(size=15), title=element_text(size=15), panel.border = element_rect(color="black"))
+\label{sec:pcaAnalysis}
+Principal Component Analysis(PCA) creates a new set of mutually orthogonal and independent variables called components. The PCA analysis is done from full dataset (Jan 2000 - Nov 2014) which are first centered and scaled x-variables (Predictor variables).
+
+The first seven component in the analysis are explaining the variation greater than the original variables (table-\ref{tbl:pcaSumry}). In addition, From figure - (\ref{fig:pcaPlots1}), it can be seen that on considering twelve components, around 99 percent of variation in x-variables are captured.
+
+{\singlespacing\sffamily
+<<pcaSumry, echo=FALSE, results='asis'>>=
+stdev<-pc.a$sdev
+varprop<-pc.a$sdev^2/sum(pc.a$sdev^2)
+pcaSumry1<-xtable(data.frame(rbind(`Standard Deviation`=stdev, 
+                                  `Proportion of Variance`=varprop, 
+                                  `Cumulative Proportion`=cumsum(varprop)))[,1:7], digits = 3)
+caption(pcaSumry1)<- "Dispersion of data explained by principal components"
+label(pcaSumry1)<- "tbl:pcaSumry"
+print.xtable(pcaSumry1, floating = FALSE,
+      tabular.environment = 'longtable', 
+      caption.placement = "top", 
+      size = 'footnotesize', hline.after = c(-1,-1,0,nrow(pcaSumry1)))
 @
-<<biPlotPCA, echo=FALSE, fig.cap="Biplot of PCA analysis on predictor variables">>=
+}
+Something about BiPlot ....?
+
+<<biPlotPCA, echo=FALSE, fig.cap="Biplot of PCA analysis on predictor variables", fig.width="0.8\\textwidth">>=
 biplot.pca<-ggbiplot(pc.a, obs.scale =1, 
                      var.scale = 1, 
                      varname.adjust = 2, 
                      choices = c(1,2), 
                      varname.size = 4)
-biplot.pca<-biplot.pca+annotate("text",
-                                pc.a$x[which(pc.a$x[,2]==max(pc.a$x[,2])),1], 
-                                pc.a$x[which(pc.a$x[,2]==max(pc.a$x[,2])),2], 
-                                label=which(pc.a$x[,2]==max(pc.a$x[,2]))+1, 
-                                hjust=-.5, size=4, col="black")
+# biplot.pca<-biplot.pca+annotate("text",
+#                                 pc.a$x[which(pc.a$x[,2]==max(pc.a$x[,2])),1], 
+#                                 pc.a$x[which(pc.a$x[,2]==max(pc.a$x[,2])),2], 
+#                                 label=which(pc.a$x[,2]==max(pc.a$x[,2]))+1, 
+#                                 hjust=-.5, size=4, col="black")
 biplot.pca<-biplot.pca+ theme_bw(base_size = 24)+
   theme(axis.text=element_text(size=15), 
         axis.title=element_text(size=15), 
         panel.border = element_rect(color="black"))
-@
-The first seven component in the analysis are explaining the variation greater than the original variables (table-\ref{tbl:pcaSumry}). In addition, From figure - (\ref{fig:pcaPlots1}), it can be seen that on considering twelve components, around 99 percent of variation in x-variables are captured.
-<<pcaSumry, echo=FALSE, results='asis'>>=
-stargazer(round(summary(pc.a)$importance, 3)[,1:10], title = "Summary table for variation explained with PCA", label="tbl:pcaSumry", flip = T)
-@
-However biplot (fig-\ref{fig:pcaPlots2}) shows that the score at 108 row has second principle component.
-<<pcaPlots, fig.cap='Principal Component Analysis Plots', ref.label='pcaPlots', echo=FALSE, fig.subcap=c('Scree Plot showing the variation explained by each components', 'Biplot of PCA analysis on predictor variables'), out.width='.49\\textwidth'>>=
-print(PCcompPlot)
 print(biplot.pca)
 @
+
+Thus, a model can be constructed for prediction of response considering few of these components instead of all original variables. This will not only remove the complexity of the model but also gives mutually independent components (new variables).
+
 \section{Principal Component Regression}
-From the RMSEP and R2 plot in fig-\ref{fig:PCRPlots1}, one can suggest to include only 16 component since, on taking 16 components RMSEP drops significantly down and R2Prediction increased dramatically. However, the increase does not stop there. On taking 25 components, R2prediction exceed 0.85 and RMSEP also decreases to 0.125. So, It is better taking 25 components and drop the remaining 5 components as residuals. The Measured vs Predicted plot of the Principal Component Regression taking those 25 components are plotted in figure-\ref{fig:PCRPlots2} which is very much aligned to the diagonal line (line with slope of 45 degree).
+\label{sec:pcrAnalysis}
+A Principal Component Regression (PCR) can be used for this purpose. In this models, the number of components to be considered are set by using the RMSE (Root Mean Square Error) of the model. The results obtained in PCR can be summarized in table-\ref{tbl:pcrSumry} shows that 
 
-<<PCRpredValPlot, echo=FALSE, results='hide'>>=
-PCRvld<-data.frame(comp=0:length(x.var)+1, 
-                   rmsep=as.vector(RMSEP(mdl.ft$PCR$model)$val), 
-                   r2=as.vector(R2(mdl.ft$PCR$model)$val))
-stk.PCRvld<-melt(PCRvld, 1)
-names(stk.PCRvld)<-c("comp", "validation", "value")
-PCRvldPlot<-ggplot(stk.PCRvld, aes(comp, value))+
-  geom_line(aes(linetype=validation))+theme_bw(base_size = 24)+
-  theme(legend.title=element_blank(), legend.position="top")
+{\singlespacing\sffamily
+<<pcrSumry, echo=FALSE, results='asis'>>=
+pcr.expVar.x<-cumsum(explvar(mdl.ft$PCR$model))
+pcr.expVar.y<-apply(fitted(mdl.ft$PCR$model), 3, var)/var(mdl.ft$PCR$dataset[,y.var])*100
+pcrSumry<-data.frame(Components=paste("Comp",1:length(pcr.expVar.x), sep="."), X=pcr.expVar.x, PerEURO=pcr.expVar.y, row.names = NULL)
+print(xtable(cbind(pcrSumry[1:7,], 
+                   pcrSumry[8:14,], 
+                   pcrSumry[15:21,]),
+             caption="Variation Explained by PCR model in Response and Predictor",
+             label="tbl:pcrSumry",
+             align="lrrr|rrr|rrr",
+             digits=2),
+      tabular.environment = "longtable",
+      caption.placement = "top",
+      size="footnotesize",
+      floating = FALSE,
+      include.rownames = FALSE)
 @
-<<PCRpredPlot, echo=FALSE, results='hide'>>=
-predPCR<-data.frame(Original=mdl.ft$PCR$dataset[,y.var], Predicted=predict(mdl.ft$PCR$model)[,,4])
-PCRpredPlot<-ggplot(predPCR, aes(Original, Predicted))+geom_point(size=4, pch=21)+theme_bw(base_size = 24)
-PCRpredPlot<-PCRpredPlot+annotate("text", 8, max(predPCR[,2]+0.02), label="X-variation Explained:\nY-variation Explained:", hjust=1)
-@
-
-<<PCRPlots, echo=FALSE, fig.cap="Fitted Results for Principal Component Regression", fig.subcap=c('RMSEP and R2 plot to determine the required components to consider','Measured vs Prediction plot. The points aligned to the line with slope of 45 degree are considered to be fitted better'), ref.label='PCRPlots', out.width='0.49\\textwidth'>>=
-print(PCRvldPlot)
-print(PCRpredPlot)
-@
-
+%' }
+%' 
+%' <<PCRpredValPlot, echo=FALSE, results='hide'>>=
+%' PCRvld<-data.frame(comp=0:length(x.var)+1, 
+%'                    rmsep=as.vector(RMSEP(mdl.ft$PCR$model)$val), 
+%'                    r2=as.vector(R2(mdl.ft$PCR$model)$val))
+%' stk.PCRvld<-melt(PCRvld, 1)
+%' names(stk.PCRvld)<-c("comp", "validation", "value")
+%' PCRvldPlot<-ggplot(stk.PCRvld, aes(comp, value))+
+%'   geom_line(aes(linetype=validation))+theme_bw(base_size = 24)+
+%'   theme(legend.title=element_blank(), legend.position="top")
+%' @
+%' <<PCRpredPlot, echo=FALSE, results='hide'>>=
+%' predPCR<-data.frame(Original=mdl.ft$PCR$dataset[,y.var], Predicted=predict(mdl.ft$PCR$model)[,,4])
+%' PCRpredPlot<-ggplot(predPCR, aes(Original, Predicted))+geom_point(size=4, pch=21)+theme_bw(base_size = 24)
+%' PCRpredPlot<-PCRpredPlot+annotate("text", 8, max(predPCR[,2]+0.02), label="X-variation Explained:\nY-variation Explained:", hjust=1)
+%' @
+%' 
+%' <<PCRPlots, echo=FALSE, fig.cap="Fitted Results for Principal Component Regression", fig.subcap=c('RMSEP and R2 plot to determine the required components to consider','Measured vs Prediction plot. The points aligned to the line with slope of 45 degree are considered to be fitted better'), ref.label='PCRPlots', out.width='0.49\\textwidth'>>=
+%' print(PCRvldPlot)
+%' print(PCRpredPlot)
+%' @

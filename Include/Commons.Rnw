@@ -3,29 +3,79 @@
 <<modelFitting, echo=FALSE, results='hide'>>=
 pls.options(plsralg="oscorespls")
 mdl<-c("lm", "pcr", "plsr", "linearRidge")
-mdl.ft<-list()
-
-for(i in seq_along(mdl)){
-    mdl.ft[[i]]<-fit.model(mdl[i], y.var, x.var, baseTable, scaling=mdl[i] %in% c("plsr", "pcr"))
-}
-
+mdl.ft<-lapply(seq_along(mdl), 
+               function(x){
+                   do.call(fit.model, list(
+                        mdl[x], 
+                        y.var, 
+                        x.var, 
+                        baseTable[train,], 
+                        scaling=c(mdl %in% c("plsr", "pcr"))[x]
+                   ))
+                   })
 names(mdl.ft)<-c("linear", "PCR", "PLS", "ridge")
 
+## --------------------------------------------------------------------|
+## Model selected by Mallows Cp Criteria
+cp.leaps<-leaps(x=mdl.ft$linear$dataset[,x.var],
+                y=mdl.ft$linear$dataset[,y.var],
+                method="Cp", nbest = 1, names = x.var)
+
+# Prepare for plot
+cpdf<-data.frame(p=cp.leaps$size, cp=cp.leaps$Cp)
+
+# Model fitting
+cp.which<-names(which(cp.leaps$which[which.min(cp.leaps$Cp),]))
+mdl.ft$cp.model<-do.call(fit.model, list("lm", y.var, cp.which, baseTable[train,], scaling = FALSE))
+
+## --------------------------------------------------------------------|
+## Model selected by R-sq Adjusted Criteria
+r2adj.leaps<-leaps(x=mdl.ft$linear$dataset[,x.var],
+                y=mdl.ft$linear$dataset[,y.var],
+                method="adjr2", nbest = 1, names=x.var)
+# Prepare for plot
+r2df<-data.frame(p=r2adj.leaps$size, r2adj=r2adj.leaps$adjr2)
+
+# Model fitting
+r2.which<-names(which(r2adj.leaps$which[which.max(r2adj.leaps$adjr2),]))
+mdl.ft$r2.model<-do.call(fit.model, list("lm", y.var, r2.which, baseTable[train,], scaling=FALSE))
+
+## --------------------------------------------------------------------|
+## Model selected by AIC and BIC criteria
+lmBstSetSmry <- summary(regsubsets(mdl.ft$linear$dataset[,x.var],
+                                   mdl.ft$linear$dataset[,y.var], 
+                                   nbest = 1, nvmax = length(x.var)))
+nvars<-apply(lmBstSetSmry$which, 1, sum)
+bic.vec<-lmBstSetSmry$bic
+aic.vec<-bic.vec-nvars*log(sum(train))+nvars
+infoMat<-data.frame(p=nvars, aic=aic.vec, bic=bic.vec)
+
+## Fitting selected linear model
+aic.which<-names(which(lmBstSetSmry$which[which.min(aic.vec),]))[-1]
+bic.which<-names(which(lmBstSetSmry$which[which.min(bic.vec),]))[-1]
+
+mdl.ft$aicMdl<- do.call(fit.model, list("lm", y.var, aic.which, dataSet = baseTable[train,], scaling = F))
+mdl.ft$bicMdl<- do.call(fit.model, list("lm", y.var, bic.which, dataSet = baseTable[train,], scaling = F))
+
+## --------------------------------------------------------------------|
 ## Forward Selection Model (criteria: level of significance)
-mdl.ft$lm.forward.alpha<-list(formula=mdl.ft$linear$formula, model=forward(lm(formula = mdl.ft$linear$formula, data=mdl.ft$linear$data), alpha = 0.05, full = FALSE), data=mdl.ft$linear$data)
+mdl.ft$forward<-list(formula=mdl.ft$linear$formula, model=forward(lm(formula = mdl.ft$linear$formula, data=mdl.ft$linear$data), alpha = 0.05, full = FALSE), data=mdl.ft$linear$data)
 
 ## Backward Elimination Model (criteria: level of significance)
-mdl.ft$lm.back.alpha<-list(formula=mdl.ft$linear$formula, model=backward(lm(formula = mdl.ft$linear$formula, data=mdl.ft$linear$data), alpha = 0.05, full = FALSE, hierarchy = TRUE), data=mdl.ft$linear$data)
+mdl.ft$backward<-list(formula=mdl.ft$linear$formula, model=backward(lm(formula = mdl.ft$linear$formula, data=mdl.ft$linear$data), alpha = 0.05, full = FALSE, hierarchy = TRUE), data=mdl.ft$linear$data)
 
-## Forward Selection Model (criteria: AIC)
-mdl.ft$lm.forward.aic<-list(formula=mdl.ft$linear$formula, model=step(lm(formula = mdl.ft$linear$formula, data=mdl.ft$linear$data), direction = "forward", trace=FALSE, k = 2), data=mdl.ft$linear$data)
+## --------------------------------------------------------------------|
+## Labeling the models
+mdl.labels<-c("Linear Model", "Principal Component Regression", "Partial Least Square Regression", "Ridge Regression", "Subset Model\n(criteria:Mallows Cp)", "Subset Model\n(criteria:R-sq adjusted)", "Model selected \n(criteria:AIC)","Model selected\n(criteria:BIC)", "Forward Selection Model \n(criteria:F-test)", "Backward Elimination Model \n(criteria: F-test)")
 
-## Backward Elimination Model (criteria: AIC)
-mdl.ft$lm.back.aic<-list(formula=mdl.ft$linear$formula, model=step(lm(formula = mdl.ft$linear$formula, data=mdl.ft$linear$data), direction = "backward", trace=FALSE, k = 2), data=mdl.ft$linear$data)
-
-mdl.labels<-c("Linear Model", "Principal Component Regression", "Partial Least Square Regression", "Ridge Regression", "Forward Selection Model (criteria:level of significance)", "Backward Elimination Model (criteria: level of significance)", "Forward Selection Model (criteria:AIC)", "Backward Elimination Model (criteria: AIC)")
 for(i in 1:length(mdl.ft)){
+    # Label the model
     Hmisc::label(mdl.ft[[i]][[2]])<-mdl.labels[i]
+    # Reverse the class
     class(mdl.ft[[i]][[2]])<-rev(class(mdl.ft[[i]][[2]]))
 }
+
+## --------------------------------------------------------------------|
+## Principal Component Analysis
+pc.a<-princomp(baseTable[, x.var], cor = TRUE, )
 @

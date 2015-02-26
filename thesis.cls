@@ -29,7 +29,7 @@
   \else
   \fi
 
-  %%%%\tableofcontents  %%% CHANGE AFTERWARDS
+  \tableofcontents
   \clearpage
 }
 %% Setup a command to add extra space only if in singlespacing mode
@@ -48,11 +48,10 @@
 %%   to be declared from within the document itself. 
 \newcommand*{\makefrontmatter}{
 \bodyspacing
-\frontmatter\maketitlepage%\makecopyrightpage\makeabstract
-%\makeacknowledgements\makededication\maketoc
-%\makelot\clearpage\makelof\clearpage\makelos
-%\clearpage
-\mainmatter
+\frontmatter\maketitlepage\makecopyrightpage\makeabstract
+\makeacknowledgements\makededication\maketoc
+\makelot\clearpage\makelof\clearpage\makelos
+\clearpage\mainmatter
 }
 \def\@submitted{\@submittedmonth~\@submittedyear}
 \def\@dept{Mathematics}

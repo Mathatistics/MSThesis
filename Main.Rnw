@@ -15,10 +15,9 @@ Sys.setenv(TEXINPUTS=getwd(),
 #data.path<-path.expand(file.path(dirname(dirname(getwd())), "Datasets", "CompleteDataSet.xlsx"))
 data.path<-path.expand(file.path(dirname(getwd()), "Datasets", "CompleteDataSet.xlsx"))
 @
-
 \begin{document}
-
 \makefrontmatter
+
 
 % Reading Function File
 <<readFun, child="Include/functions.Rnw">>=
@@ -33,11 +32,11 @@ data.path<-path.expand(file.path(dirname(getwd()), "Datasets", "CompleteDataSet.
 @
 
 %% Chapter 2 -----------------------------------------------------------------||||
-<<chapter2-include, child="Include/Chapter-2.Rnw", eval=FALSE>>=
+<<chapter2-include, child="Include/Chapter-2.Rnw", eval=TRUE>>=
 @
 
 %% Chapter 3 -----------------------------------------------------------------||||
-<<chapter3-include, child="Include/Chapter-3.Rnw", eval=TRUE>>=
+<<chapter3-include, child="Include/Chapter-3.Rnw", eval=FALSE>>=
 @
 
 %% Chapter 4 -----------------------------------------------------------------||||

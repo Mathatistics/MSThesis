@@ -25,7 +25,7 @@ The linear regression model with a single response $(\mbf{Y})$ and $p$ predictor
     \label{eq:linearRegModel}
 \end{equation}
 
-The model - \ref{eq:linearRegModel} is linear function of $p$ unknown parameters $\vl{\beta}{p}$ which is generally refered as regression coefficients. In matrix notation, eqn (\ref{eq:linearRegModel}) becomes,
+The model - \ref{eq:linearRegModel} is linear function of $p$ unknown parameters $\vl{\beta}{p}$ which is generally referred as regression coefficients. In matrix notation, equation- (\ref{eq:linearRegModel}) becomes,
 
 \begin{equation}
   \label{eq:linRegMatModel}
@@ -80,7 +80,57 @@ Here eq-\ref{eq:predEquation} gives predicted values of $\mbf{Y}$ which on subtr
 
 Here, $\mbf{H}$ is called Hat matrix and is the orthogonal projection of $y$ onto the space spanned by $X$.
 
+\section{Variable selection}
+\label{sec:varSelection}
+Although including many variables in the model can add information, they are also the source of unnecessary noise. In addition, many variables in a model is also the cause of multicollinearity. So, a model that is simple yet contain usefull information is always diserable. Variable selection is intended for selecting best subset of predictor variables. Some of the criteria for variable selection as discribed in (\cite{weisberg2005applied}) are discussed below:
 
+\subsection{Criteria for variable selection}
+\label{ssec:vsCriteria}
+Suppose $X_s$ is selected set of variable which gives the predicted output of,
+\begin{equation}
+\label{eq:selectedVarModel}
+\hat{Y}=E\left(Y|X_s-x_s\right)=\beta'_s x_s
+\end{equation}
+If $X_s$ misses important variables, the residual sum of squares of fitted model in equation-\ref{eq:selectedVarModel} will be larger than the full model. Lack of fit for selecting the set $X_s$ is measured by its Error sum of square.
+\begin{description}
+\item[Model statistic Approach]\hfill\\
+When a model is fitted, various statistics such as $R^2$, $R^2$-adj, F-statistic are obtained which measures the quality of that model. Based on these statistic, a model is selected as better than other.
+\item[Information Criteria \label{itm:infCriteria}]\hfill \\
+Another common criterion, which balances the size of the residual sum of squares with the number of parameters in the model (\cite[p.~386]{johnson2007applied}), for selecting subset of predictor variable is AIC (\textit{Akaike Information Criterion}). It is given as,
+\begin{equation}
+\label{eq:aicFormula}
+\text{AIC} = n \log(\text{RSS}_s/n) + \text{k}
+\end{equation}
+where, RSS$=$Residual Sum of Square, $n=$number of observation and $k=$Number of variables included in the model
+
+A model with smaller value of AIC obtained from eq-\ref{eq:aicFormula} is better better than other with larger AIC. An alternative to AIC is its Bayesian analogue, also known as Schwarz or Bayesian information criteria. Bayesian Information Criteria provides between model complexity and lack of fit. Smaller value of BIC is better.
+\begin{equation}
+\label{eq:bicFormula}
+\text{BIC} = n \log(\text{RSS}_s/n) + \text{k} \log(n)
+\end{equation}
+A third criterion that balances the complexity and lack of fit of a model is Mallows’ $C_p$ (\cite{mallows1973some}), where the subscript $p$ is the number of variables in the candidate model. The formula for this statistic is given in equation-\ref{eq:malCp},
+\begin{equation}
+\label{eq:malCp}
+\text{Mallows } C_p= \frac{\text{RSS}}{\hat{\sigma}^2} + 2k − n
+\end{equation}
+Where, $\hat{\sigma}^2$ is from the full model. A plot of $C_p$ vs $k$ for each subset of predictors indicate models that predict the responses well. Better models usually lie near the $45^\circ$ line of the plot.
+\end{description}
+
+\subsection{Computational procedure for variable selection}
+\label{ssec:compProcVarSelction}
+When a model is large, fitting all possible subsets is not feasible. \citet{furnival1974regressions} suggested several algorithm to calculate residual sum of square of all possible regression called leap and bound technique which has been widely implemented in statistical software. However, this method is not appropriate for criteria based on model statistic where Stepwise methods can be used. Stepwise methods has three basic variation (\cite[p.~221]{weisberg2005applied}).
+
+\begin{description}
+\item[Forward selection procedure \label{itm:forwardSelection}] \hfill\\
+Model is started without any variable and in each step a variable is added and the model is fitted. The variable is left in the model if the subset minimizes the criterion of interest . Similar process is repeated for other predictor variable.
+
+\item[Backward elimination procedure \label{itm:backwardElimination}]\hfill\\
+This process is like the reverse of \hyperref[itm:forwardSelection]{Forward selection procedure}. In this process, the model is fitted with all the predictor variable and variables are removed one at a time except those that are forced to be in the model. The model is examined against the considered criteria. Usually, the term with smallest t-value is removed since this give rise to the residual sum of square.
+
+\item[Stepwise procedure \label{itm:stepwise}]\hfill\\
+This combines both \hyperref[itm:forwardSelection]{Forward selection procedure} and \hyperref[itm:backwardElimination]{Backward elimination procedure}. In each step, a predictor variable is either deleted or added so that resulting model minimizes the criterion function of interest.
+
+\end{description}
 
 \section{Principal Component Analysis}
 \label{sec:pca}
@@ -274,6 +324,7 @@ Further, the hat matrix for Ridge regression is given as,
 All the theory behind Ridge Regression described above are cited from \citetitle{hoerl1970ridge} by \citet{hoerl1970ridge}.
 
 \section{Comparision Criteria}
+\label{sec:compCriteria}
 After fitting models with various methods, it becomes necessary to test their validity for their results to be trusted. Models react differently for the new information during prediction as the quality of model hightly depends on their estimates. Since the purpose of this thesis is to compare different models on the quality of their prediction, models are compared on the basis of their \begin{inlinelist}\item Goodness of fit and \item Predictability \end{inlinelist}.
 
 \subsection{Goodness of fit}
@@ -293,6 +344,7 @@ AIC (Akaike information criterion) and BIC (Bayesian information criterion or Sc
 \text{AIC} = (-2)\log(\mathcal{L}) + 2(k)
 \end{equation}
 where, $\mathcal{L} =$ maximum likelihood and $k =$ number of independently adjusted parameters  within the model
+For least square case, above formula resembles to equation - \ref{eq:aicFormula} (\cite{hu2007akaike}).
 \end{description}
 
 \subsection{Predictability}
@@ -323,7 +375,32 @@ This is a special case of $k-$ fold cross-validation where $k=n$ (number of obse
 
 \subsubsection{Prediction Error}
 \label{sssec:predErr}
+Prediction of a model becomes precise if the error is minimum. Models can be compared according to their predictability. Understanding of different measures of prediction error is necessary acknoledge their predictability and eventually perform model comparison.
+\begin{description}
+\item[Root Mean Square Error (RMSE)]\hfill\\
+RMSE is the measure of how well the model fit the data.
+\begin{equation}
+\text{RMSE}=\sqrt{\frac{1}{n}\sum_{i=1}^n{\left(y_i-\hat{y}_i\right)^2}}
+\end{equation}
+Where, \\
+$\hat{y}_i$ are predicted values for $y_i$ and\\
+$n$ is the number of observation
 
+\item[Root Mean Square Error of Cross-Validation (RMSECV)]\hfill\\
+RMSECV gives the models ability to predict new samples that were not present in the model during calibration. It is obtained as,
+\begin{align}
+\text{RMSECV} &=\sqrt{\frac{\text{PRESS}}{n}} \label{eq:rmsecv}\\
+\text{Where, } & \nonumber \\
+\text{PRESS} &=\sqrt{\sum_{i=1}^n{\left(y_i-\hat{y}_{(i)}\right)^2}} \label{eq:press}
+\end{align}
+\end{description}
+In the special case of leave one out cross validation, $i$ represents each sample.
 
 \subsubsection{R-squared for Prediction}
 \label{sssec:rseqPred}
+R-squared for prediction is analogus to the R-sq in the case of model estimation. In the case of cross-validation, it is also denoted by $Q^2$. It is obtained by subtracting the ratio of PRESS obtained from equation-\ref{eq:press} to Total sum of square from 1. i.e,
+\begin{equation}
+\label{eq:rsqpred}
+R^2_{CV}=Q^2=1-\frac{\text{PRESS}}{\text{TSS}} = 1-\frac{\sum_{i=1}^n{\left(y_i-\hat{y}_{(i)}\right)^2}}{\sum_{i=1}^n{\left(y_i-\bar{y}\right)^2}}
+\end{equation}
+Here, $Q^2<1$ and when prediction is very bad, PRESS may exceed TSS resulting negative value suggesting that the average value is better than the prediction using the model. 

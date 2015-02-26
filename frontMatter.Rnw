@@ -31,12 +31,12 @@
 \usepackage{xcolor}
 \usepackage{standalone}
 \usepackage{bm}
-\usetikzlibrary{plotmarks,arrows, shapes, calc, backgrounds, fit, decorations.markings}
+\usetikzlibrary{plotmarks,arrows, shapes, calc, backgrounds, fit, decorations.markings, shadows}
 \addbibresource{reference.bib}
 
 % Loading R Packages
 <<LoadingPkgs, echo=FALSE, message=FALSE, warning=FALSE, results='hide'>>=
-req.package<-c("pls", "xtable", "MASS", "car", "corrplot", "gdata", "dplyr", "ggplot2", "reshape2","ridge", "grid", "gridExtra", "stargazer", "devtools", "ggbiplot", "mixlm", "Hmisc", "knitr")
+req.package<-c("pls", "xtable", "MASS", "car", "corrplot", "gdata", "dplyr", "ggplot2", "reshape2","ridge", "grid", "gridExtra", "stargazer", "devtools", "ggbiplot", "mixlm", "Hmisc", "knitr", "leaps", "rockchalk")
 lapply(req.package, require, character.only=TRUE, quietly = T, warn.conflicts = F)
 @
 
@@ -59,6 +59,13 @@ lapply(req.package, require, character.only=TRUE, quietly = T, warn.conflicts = 
 \setlength{\LTcapwidth}{\textwidth}
 \newlist{inlinelist}{enumerate*}{1}
 \setlist*[inlinelist,1]{label=(\alph*)}
+%% Table Customization changing font
+\makeatletter
+\renewenvironment{table}%
+  {\renewcommand{\familydefault}{\sfdefault}\selectfont
+  \@float{table}}
+  {\end@float}
+\makeatother
 
 
 
@@ -111,7 +118,7 @@ lapply(req.package, require, character.only=TRUE, quietly = T, warn.conflicts = 
 \makeatother
 
 % make the page number rather than the text be the link for ToC entries
-%\hypersetup{linktocpage}
+\hypersetup{linktocpage}
 \fi % proquest or online formatting
 \fi % printed or online formatting
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\
@@ -159,11 +166,12 @@ lapply(req.package, require, character.only=TRUE, quietly = T, warn.conflicts = 
 %%%% Front-matter
 
 % For early drafts, you may want to disable some of the frontmatter. Simply change this to "\ifodd 1" to do so.
-\ifodd 0
+\ifodd 1
 % front-matter disabled while writing chapters
 \renewcommand{\maketitlepage}{}
 \renewcommand*{\makecopyrightpage}{}
 \renewcommand*{\makeabstract}{}
+
 
 % you can just skip the \acknowledgements and \dedication commands to leave out these sections.
 
@@ -181,7 +189,6 @@ lapply(req.package, require, character.only=TRUE, quietly = T, warn.conflicts = 
 }
 
 \dedication{To my parents.}
-
 \fi  % disable frontmatter
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%/
 

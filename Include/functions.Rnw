@@ -17,23 +17,25 @@ plotTS<-function(dataSet, vars, colVar=NA){
 }
 
 ## Plotting Model Coefficients with their state of significance
-test.plot<-function(coef.matrix, alpha=0.05){
+test.plot<-function(model, alpha=0.05){
   .e<-environment()
+  coef.matrix<-data.frame(summary(model)$coef)
   names(coef.matrix)<-c("Estimate", "StdError", "t.value", "p.value")
   idx<-order(row.names(coef.matrix))
   cp<-ggplot(coef.matrix[idx,], aes(x=row.names(coef.matrix[idx,]), y=t.value), environment = .e)
   cp<-cp+geom_bar(stat="identity", position = "identity",
-                  fill=ifelse(coef.matrix[idx,"p.value"]<alpha, "firebrick3", "dodgerblue3"))
-  cp<-cp+geom_text(aes(y=ifelse(coef.matrix[idx, "t.value"]>0,t.value+0.5, t.value-0.5), 
-                       label=round(coef.matrix[idx,"Estimate"], 2)), angle=90, size=3)
+                  fill=ifelse(coef.matrix[idx,"p.value"]<alpha, "coral3", "cornflowerblue"))
+  cp<-cp+geom_text(aes(y=ifelse(coef.matrix[idx, "t.value"]>0,t.value+0.7, t.value-0.7), 
+                       label=round(coef.matrix[idx,"Estimate"], 2)), angle=45, size=5)
   cp<-cp+theme_bw()+labs(x="", y="T-Value")
-  cp<-cp+theme(axis.text.x=element_text(angle=90, hjust=1, size=10))
-  cp<-cp+scale_fill_manual("Status", values=c("firebrick3", "dodgerblue3"), 
+  cp<-cp+theme(axis.text.x=element_text(angle=90, hjust=1))
+  cp<-cp+theme(text=element_text(size=20))
+  cp<-cp+scale_fill_manual("Status", values=c("firebrick2", "dodgerblue3"), 
                            labels=c("Significant", "Non-Significant"))
-  cp<-cp+geom_hline(yintercept=c(-1,1)*qt(alpha/2, df = abs(diff(dim(coef.matrix))), lower.tail = F), 
+  cp<-cp+geom_hline(yintercept=c(-1,1)*qt(alpha/2, df = abs(diff(dim(model$model[,-1]))), lower.tail = F), 
                     color="red", linetype="dashed")
   cp<-cp+theme(legend.title=element_blank(), 
-               legend.position=c(0.8,0.9))
+               legend.position=c(0.8, 0.2))
   cp<-cp+geom_hline(yintercept=0, color="black", size=.2)
   return(cp)
 }
@@ -89,11 +91,12 @@ diagPlot<-function(model){
 
 ## Generate summary plot from a fitted model to annotate other plot
 sumryBlock<-function(model){
-  return(paste("R-Sq = ",signif(summary(model)$r.squared, 2),
-                       "\nAdj R-Sq =",signif(summary(model)$adj.r.squared, 2),
-                       "\nSigma =",signif(summary(model)$sigma, 2),
-                       "\nF =",signif(as.vector(summary(model)$fstatistic[1]), 2))
-         )
+  return(paste("R-Sq = ",signif(summary(model)$r.squared, 3),
+               "\nAdj R-Sq =",signif(summary(model)$adj.r.squared, 3),
+               "\nSigma =",signif(summary(model)$sigma, 3),
+               "\nF =",signif(as.vector(summary(model)$fstatistic[1]), 4),
+               paste("(",paste(as.vector(summary(mdl.ft$cp.model$model)$f[2:3]), collapse=','),")", sep="")
+         ))
 }
 
 model.sumry<-function(model, call=TRUE, coefMat=TRUE, sumry=TRUE){
@@ -116,11 +119,15 @@ model.sumry<-function(model, call=TRUE, coefMat=TRUE, sumry=TRUE){
             printCoefmat(summary(model)$coef, digits = 3)
         }
         if(sumry){
-            cat("\n sigma: ",s, " on ", df[2], " degrees of freedom\n",
-            "Multiple R-squared: ", r.sq, "\n",
-            "Adjusted R-Squared: ", adj.r.sq,"\n",
-            "F-statistic: ", f, "on", f.df.num,"and",f.df.den, "degree of freedom\n",
-            "P-value: ", pf(f, f.df.num, f.df.den, lower.tail = FALSE))
+            data.frame(Sigma=summary(model)$sigma, 
+                       R.Sq=summary(model)$r.squared, 
+                       R.Sq.adj=summary(model)$adj.r.squared, 
+                       F.value=summary(model)$fstatistic[1], 
+                       df=paste(summary(model)$fstatistic[2:3], collapse=","), 
+                       p.value=pf(summary(model)$fstatistic[1], 
+                                  summary(model)$fstatistic[2],
+                                  summary(model)$fstatistic[3], 
+                                  lower.tail = FALSE))
         }
     }
 }

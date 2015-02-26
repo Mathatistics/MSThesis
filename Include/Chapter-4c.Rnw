@@ -1,6 +1,54 @@
 % !Rnw root = ../Main.Rnw
 \section{Partial Least Square Regression}
-\label{sec:pls}
+\label{sec:plsAnalysis}
+
+{\singlespacing\sffamily
+<<plsSumry, echo=FALSE, results='hide'>>=
+pls.expVar.x<- cumsum(explvar(mdl.ft$PLS$model))
+pls.expVar.y<-apply(fitted(mdl.ft$PLS$model), 3, var)/var(mdl.ft$PCR$dataset[,y.var])*100
+plsSumry<-data.frame(Components=paste("Comp",1:length(pls.expVar.x), sep="."), X=pls.expVar.x, PerEURO=pls.expVar.y, row.names = NULL)
+@
+<<plsSumryPrint, echo=FALSE, purl=FALSE, results='asis'>>=
+print(xtable(cbind(plsSumry[1:7,], 
+                   plsSumry[8:14,], 
+                   plsSumry[15:21,]),
+             caption="Variation Explained by PLS model in Response and Predictor",
+             label="tab:pcrSumry",
+             align="lrrr|rrr|rrr",
+             digits=2),
+      tabular.environment = "longtable",
+      caption.placement = "top",
+      size="footnotesize",
+      floating = FALSE,
+      include.rownames = FALSE)
+@
+
+}
+
+\textbf{Components to consider:}\hfill\\
+\label{sec:PLSnPCRcomp}
+<<PLSnPCRcomp, echo=FALSE, results='hide'>>=
+PLSnPCRcomp<-melt(list(`PCR Model`=list(`Predictor Variable`=pcr.expVar.x, 
+                                `Response Variable`=pcr.expVar.y),
+                       `PLS Model`=list(`Predictor Variable`=pls.expVar.x, 
+                                `Response Variable`=pls.expVar.y)))
+names(PLSnPCRcomp)<-c("Variance Explained", "type", "model")
+PLSnPCRcomp$Components<-factor(1:length(pcr.expVar.x), levels = 1:length(pcr.expVar.x))
+@
+<<PLSnPCRcompPlot, echo=FALSE, fig.width="\\textwidth", fig.height=4, fig.cap="Variation Explained by PLS and PCR model on Predictor Variable and Response Variable", fig.pos="!htpb", purl=FALSE>>=
+ggplot(PLSnPCRcomp, aes(Components, `Variance Explained`, group=model, color=model))+
+    geom_line(size=0.75)+facet_wrap(~type)+theme_bw()+
+    geom_point(shape=21, fill="gray", color="black", size=2)+
+    theme(axis.text.x=element_text(angle=90, hjust=1, vjust=0.5),
+          text=element_text(size=12),
+          legend.position="top",
+          legend.title=element_blank())+
+    scale_y_reverse()
+@
+
+
+\section{Cross Validation}
+\label{sec:crossvalidation}
 
 
 {\singlespacing

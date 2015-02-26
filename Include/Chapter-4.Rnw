@@ -2,35 +2,66 @@
 
 \chapter{Data Analysis}
 \label{ch:dataAnalysis}
-This chapter will present the analysis report obtained for different models and also compare those models with criteria like goodness of fit, prediction error, variation explained during prediction. During this analysis, only the observations from Jan 2000 to December 20012. The model will be exposed to predict the average monthly exchange rate of Euro vs Norwegian Krone and compare the prediction with original value for its accuracy.
+This chapter will present the analysis report obtained for different models considered in chapter-\ref{chap:modelsmethods}. The analysis process includes following series of steps,
+
+\begin{enumerate}
+\item The model is trained from the observation from the trained period (Jan 2000 - Dec 2012) through cross validation.
+\item Prediction on the average monthly exchange rate of Euro vs Norwegian Krone is made for the test period (Jan 2013 - Nov 2014)
+\item Compare them on the basis of criteria discussed in section-\ref{sec:compCriteria}
+\end{enumerate}
 
 The summary report of the variables that are in use during the analysis are in table (\ref{tbl:sumryTabl}),
 
-{\singlespacing
+{\singlespacing\sffamily
 <<sumryTabl, echo=FALSE, results='asis'>>=
-sumryTabl<-xtable(t(sapply(baseTable[,c(y.var[1], x.var)], function(x){c(min=min(x), median=median(x), max=max(x), mean=mean(x), stdev=sd(x))})))
-caption(sumryTabl)<-"Summary Report of all the variables used in this report"
-label(sumryTabl)<-"tbl:sumryTabl"
-print(sumryTabl, caption.placement = "top", booktabs=TRUE, floating=FALSE, tabular.environment = "longtable", hline.after=c(-1,0,0,nrow(sumryTabl)))
+sumryTabl<-t(sapply(baseTable[,c(y.var, x.var)], 
+                           function(x){c(min=min(x), 
+                                         median=median(x), 
+                                         max=max(x), 
+                                         mean=mean(x), 
+                                         stdev=sd(x))}))
+sumryXtable<-xtable(sumryTabl)
+
+## Repeat Table Header Row for longtable ########
+addtorow          <- list()
+addtorow$pos      <- list()
+addtorow$pos[[1]] <- c(0)
+addtorow$command  <- c(paste("\\hline \n",
+                             "\\endhead \n",
+                             "\\hline \n",
+                             "{\\footnotesize Continued on next page} \n",
+                             "\\endfoot \n",
+                             "\\endlastfoot \n",sep=""))
+## ------------------------ #########
+
+caption(sumryXtable)<-"Summary Report of all the variables used in this report"
+label(sumryXtable)<-"tbl:sumryTabl"
+print(sumryXtable, caption.placement = "top", 
+      booktabs=TRUE, 
+      floating=FALSE, 
+      tabular.environment = "longtable",
+      add.to.row=addtorow, hline.after=c(-1,-1, nrow(sumryXtable)))
 @
 }
-It is also desirable to see the time series plot of the related variables given in figure -(\ref{fig:timeSeriesPlot})
-<<timeSeriesPlot, echo=FALSE, fig.cap="Time Series plot of different variables", fig.pos="ht">>=
-stkTabl<-melt(baseTable[,c("Date", y.var, x.var, y2.var)], id.vars = c("Date", y2.var))
-plotTS(stkTabl, x.var, y2.var)
-@
-The correlation plot in figure -(\ref{fig:corAnalysisPlot1}) will give some idea about the correlation among various predictor variables. In the plot, high correlation between independent variables indicates multicollinearity in the model.
+%' It is also desirable to see the time series plot of the related variables given in figure -(\ref{fig:timeSeriesPlot})
+%' <<timeSeriesPlot, echo=FALSE, fig.cap="Time Series plot of different variables", fig.pos="ht">>=
+%' stkTabl<-melt(baseTable[,c("Date", y.var, x.var, y2.var)], id.vars = c("Date", y2.var))
+%' plotTS(stkTabl, x.var, y2.var)
+%' @
 
-Further, the fig-(\ref{fig:corAnalysisPlot2}) shows that only few of the predictor variables have significant correlation with response variable.
-<<rpCorPlot, echo=FALSE, fig.show='hide'>>=
-rpCorTab<-lapply(seq_along(x.var), function(x){data.frame(var=x.var[x], p.value=cor.test(baseTable[,x.var[x]], baseTable[,y.var[1]])$p.value, correlation=cor.test(baseTable[,x.var[x]], baseTable[,y.var[1]])$estimate)})
+The correlation between response variable and predictor variable helps us to determine their relationship. Figure -(\ref{fig:rpCorPlot}) shows that only few of the predictor variables have significant correlation with response variable. In the figure first and second lagged variables have strong correlation with response while most of the others have low (weak) correlation. However, being weak correlation, many of them are statistically significant.
+<<rpCorPlot, echo=FALSE, fig.height=5, fig.cap="The bars represents the correlation between response variable (\\texttt{PerEURO}) and other predictor variable. The bars are shaded with the p-value for their signifance test performed by \\texttt{cortest} function. The red horizontal line is the critical value at 5 percent level of significance.">>=
+rpCorTab<-lapply(seq_along(x.var), 
+                 function(x){data.frame(var=x.var[x], 
+                                        p.value=cor.test(baseTable[,x.var[x]], baseTable[,y.var[1]])$p.value, 
+                                        correlation=cor.test(baseTable[,x.var[x]], baseTable[,y.var[1]])$estimate)})
 ## Plotting
-cp<-ggplot(melt(rpCorTab, 1:2), aes(var, value))+geom_bar(stat="identity", position="identity", aes(fill=p.value))+theme_bw()+theme(axis.text.x=element_text(angle=90, hjust=1))+ylab("Correlation Estimate")+scale_fill_continuous("P-value")+geom_hline(yintercept=c(1,-1)*0.05, col="red", linetype="dashed")
-@
-<<corAnalysisPlot, echo=FALSE, ref.label='corAnalysisPlot', fig.cap="Correlation Analysis of Dataset", fig.subcap=c('Correlation Plot of different predictor variables','Correlation betwen  Response and Predictor Variables. The red dashed lines give the critical region of 0.05 significance level'), out.width='0.49\\textwidth', fig.env='sidewaysfigure'>>=
-corPlot<-corrplot(cor(baseTable[,x.var]), method="ellipse", type="lower", cl.pos="b", tl.cex=.8, diag = F, tl.col = "black", outline=T)
+cp<-ggplot(melt(rpCorTab, 1:2), aes(var, value))
+cp<-cp+geom_bar(stat="identity", position="identity", aes(fill=p.value))
+cp<-cp+theme_bw()+theme(axis.text.x=element_text(angle=90, hjust=1, vjust=0.5))
+cp<-cp+ylab("Correlation Estimate")+scale_fill_continuous("P-value", low="deepskyblue2", high="firebrick2")
+cp<-cp+geom_hline(yintercept=c(1,-1)*0.05, col="red", linetype="dashed")
+cp<-cp+ggtitle("Correlation test of Response Variable (PerEURO) \nwith other predictor variable")
 print(cp)
 @
-<<ResetMarParameter, echo=FALSE, results='hide'>>=
-par(mar=c(5, 4, 4, 2) + 0.1)
-@
+According to the paper \citetitle{taylor1990interpretation} by \citet{taylor1990interpretation}, the significance of the low correlation, which would have little practical importance, is due to the large number of observation. According to him, A correlation coefficients is an abstract measure which does not give direct precise interpretations. A more useful measure is the coefficient of determination which can be obtained during the model fitting.

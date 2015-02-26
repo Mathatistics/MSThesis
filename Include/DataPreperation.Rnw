@@ -4,6 +4,12 @@
 baseTable<-read.xls(data.path, sheet = "FinalData")
 baseTable[,1]<-as.Date(baseTable[,1], format="%d/%m/%Y")
 baseTable[,"Testrain"]<-as.logical(baseTable[,"Testrain"])
+baseTable1<-baseTable
+
+## Log Transform some variable using log1p() Function
+baseTable[, "ImpOldShip"]<-log1p(baseTable[, "ImpOldShip"])
+baseTable[, "ExpOilPlat"]<-log1p(baseTable[, "ExpOilPlat"])
+baseTable[, "ExpExShipOilPlat"]<-log1p(baseTable[, "ExpExShipOilPlat"])
 
 
 ## Label Variables in baseTable
@@ -25,5 +31,6 @@ season<-grep("season", names(baseTable), value=TRUE)
 train<-grep("Testrain", names(baseTable), value=TRUE)
 
 x.var<-c(fin.var, price.var, import.var, export.var, tradeBal.var, expct.var)
+train<-baseTable[,"Testrain"]
 @
 

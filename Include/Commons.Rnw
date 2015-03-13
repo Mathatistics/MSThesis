@@ -59,14 +59,17 @@ mdl.ft$bicMdl<- do.call(fit.model, list("lm", y.var, bic.which, dataSet = baseTa
 
 ## --------------------------------------------------------------------|
 ## Forward Selection Model (criteria: level of significance)
-mdl.ft$forward<-list(formula=mdl.ft$linear$formula, model=forward(lm(formula = mdl.ft$linear$formula, data=mdl.ft$linear$data), alpha = 0.05, full = FALSE), data=mdl.ft$linear$data)
+fw.model.log <- capture.output(fw.model<-forward(lm(formula = mdl.ft$linear$formula, data=mdl.ft$linear$data), alpha = 0.1, full = FALSE))
+mdl.ft$forward<-list(formula=mdl.ft$linear$formula, model=fw.model, data=mdl.ft$linear$data)
 
 ## Backward Elimination Model (criteria: level of significance)
-mdl.ft$backward<-list(formula=mdl.ft$linear$formula, model=backward(lm(formula = mdl.ft$linear$formula, data=mdl.ft$linear$data), alpha = 0.05, full = FALSE, hierarchy = TRUE), data=mdl.ft$linear$data)
+bw.model.log<-capture.output(bw.model<-backward(lm(formula = mdl.ft$linear$formula, data=mdl.ft$linear$data), alpha = 0.1, full = FALSE, hierarchy = TRUE))
+mdl.ft$backward<-list(formula=mdl.ft$linear$formula, model=bw.model, data=mdl.ft$linear$data)
 
 ## --------------------------------------------------------------------|
 ## Labeling the models
-mdl.labels<-c("Linear Model", "Principal Component Regression", "Partial Least Square Regression", "Ridge Regression", "Subset Model\n(criteria:Mallows Cp)", "Subset Model\n(criteria:R-sq adjusted)", "Model selected \n(criteria:AIC)","Model selected\n(criteria:BIC)", "Forward Selection Model \n(criteria:F-test)", "Backward Elimination Model \n(criteria: F-test)")
+mdl.labels<-c("Linear Model", "Principal Component Regression", "Partial Least Square Regression", "Ridge Regression", "Subset Model (criteria:Mallows Cp)", "Subset Model (criteria:R-sq adjusted)", "Model selected (criteria:AIC)","Model selected (criteria:BIC)", "Forward Selection Model(criteria:F-test)", "Backward Elimination Model (criteria: F-test)")
+mdl.prnt.lab<-c("Linear Model", "Principal Component \\\\ Regression", "Partial Least Square \\\\ Regression", "Ridge Regression", "Subset Model \\\\ (criteria:Mallows Cp)", "Subset Model \\\\ (criteria:R-sq adjusted)", "Model selected \\\\ (criteria:AIC)","Model selected (criteria:BIC)", "Forward Selection Model \\\\ (criteria:F-test)", "Backward Elimination Model \\\\ (criteria: F-test)")
 
 for(i in 1:length(mdl.ft)){
     # Label the model
@@ -78,4 +81,26 @@ for(i in 1:length(mdl.ft)){
 ## --------------------------------------------------------------------|
 ## Principal Component Analysis
 pc.a<-princomp(baseTable[, x.var], cor = TRUE, )
+
+## --------------------------------------------------------------------|
+## Setting up Ridge Parameter lambda
+lmd.seq<-seq(0,0.01,0.0005)
+tuningRidge<-ldply(lmd.seq, function(x){
+    rdg.rmsep<-mdl.cv(baseTable[train,], x.var, y.var, 
+                      model="ridge", split=12, lmd = x)$rmsep
+    rdg.r2pred<-mdl.cv(baseTable[train,], x.var, y.var, 
+                       model="ridge", split=12, lmd = x)$r2pred
+    data.frame(lmd=x, rmsep=rdg.rmsep, r2pred=rdg.r2pred)
+})
+tuningRidge<-data.frame(tuningRidge)
+lmd<-lmd.seq[which.min(tuningRidge$rmsep)]
+
+## --------------------------------------------------------------------|
+## Updating Linear Ridge model with new paramter lmd
+mdl.ft$ridge$model<-linearRidge(mdl.ft$ridge$formula, 
+                                data=mdl.ft$ridge$dataset, 
+                                lambda = lmd)
+
+## Color for crisis period
+cperiod.col<-cp.cat(cperiod)
 @

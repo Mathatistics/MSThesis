@@ -1,0 +1,338 @@
+% !Rnw root = ../Main.Rnw
+\section{Cross Validation}
+\label{sec:crossvalidation}
+
+<<rmsepPLSnPCR, echo=FALSE>>=
+## Fitting PCR and PLS using Cross-validation
+pcr.cv<-pcr(mdl.ft$PCR$formula, data=mdl.ft$PCR$dataset, 
+            scale=TRUE, validation="CV", segments=12, 
+            segments.type="consecutive")
+pls.cv<-plsr(mdl.ft$PCR$formula, data=mdl.ft$PCR$dataset, 
+            scale=TRUE, validation="CV", segments=12, 
+            segments.type="consecutive")
+## RMSEP using Cross-validation
+rmsep.pcr<-data.frame(comp=RMSEP(pcr.cv)$comps, 
+                      r2pred=as.vector(R2(pcr.cv)$val), 
+                      t(sapply(RMSEP(pcr.cv)$comps, 
+                               function(x){RMSEP(pcr.cv)$val[,,x+1]})))
+rmsep.pls<-data.frame(comp=RMSEP(pls.cv)$comps, 
+                      r2pred=as.vector(R2(pls.cv)$val), 
+                      t(sapply(RMSEP(pls.cv)$comps, 
+                               function(x){RMSEP(pls.cv)$val[,,x+1]})))
+rmsep.mat<-melt(list(PCR=rmsep.pcr, PLS=rmsep.pls), 1)
+@
+<<cvStat, echo=FALSE>>=
+pcr.sc<-15:17
+pls.sc<-6:9
+
+lm.cv<-mdl.cv(baseTable[train,], x.var, y.var)
+aic.cv<-mdl.cv(baseTable[train,], x.var, y.var, step = TRUE, criteria = "AIC", split = 12)
+bic.cv<-mdl.cv(baseTable[train,], x.var, y.var, step = TRUE, criteria = "BIC", split = 12)
+backward.cv<-mdl.cv(baseTable[train,], x.var, y.var, step = TRUE, criteria = "backward", split = 12)
+ridge.cv<-mdl.cv(baseTable[train,], x.var, y.var, step=FALSE, split=12, model = "ridge", lmd = lmd)
+
+rmse.cv<-data.frame(RMSEP=c(Linear=lm.cv$rmsep, 
+            AICModel=aic.cv$rmsep, 
+            BICModel=bic.cv$rmsep,
+            BackModel=backward.cv$rmsep,
+            Ridge=ridge.cv$rmsep,
+            PCR=rmsep.pcr[rmsep.pcr$comp%in%pcr.sc, "adjCV"],
+            PLS=rmsep.pls[rmsep.pls$comp%in%pls.sc, "adjCV"]))
+r2pred.cv<-data.frame(R2pred=c(Linear=lm.cv$r2pred, 
+            AICModel=aic.cv$r2pred, 
+            BICModel=bic.cv$r2pred,
+            BackModel=backward.cv$r2pred,
+            Ridge=ridge.cv$r2pred,
+            PCR=rmsep.pcr[rmsep.pcr$comp%in%pcr.sc, "r2pred"],
+            PLS=rmsep.pls[rmsep.pls$comp%in%pls.sc, "r2pred"]))
+cvStat<-data.frame(rmse.cv, r2pred.cv)
+rownames(cvStat)[grep("PCR", rownames(cvStat))]<-paste("PCR.Comp", pcr.sc, sep="")
+rownames(cvStat)[grep("PLS", rownames(cvStat))]<-paste("PLS.Comp", pls.sc, sep="")
+
+pls.min.comp<-as.numeric(summarize(cvStat[grep("PLS", rownames(cvStat)), ], pls.sc[which.min(RMSEP)]))
+pcr.min.comp<-as.numeric(summarize(cvStat[grep("PCR", rownames(cvStat)), ], pcr.sc[which.min(RMSEP)]))
+@
+
+Usually, a predictive model is expected to predict test responses not included in the sample. A model which can well predict the in-sampled observation may not perform well for out-of-sample observations. Cross-validation can verify the ablity of model during prediction of such observations. Since time-series has a sequential form of ordered by date, a random prediction is unsuitable. A cross-validation technique is appled to the training dataset dividing them into 12 consecutive segments. Each time a segment is removed from the fitted model which then predict the segment which was not included. The process is repeated for all the segments and RMSECV and $R^2$ prediction ($Q^2$) are computed using the equation-\ref{eq:rmsecv} and equation-\ref{eq:rsqpred} respectively. The validation is performed for all the models discussed above, from which RMSECV and $R^2$ predicted are computed as in table-\ref{tbl:valdSumry}.
+
+The table shows that PLS with \Sexpr{pls.min.comp} components and PCR with \Sexpr{pcr.min.comp} components have least RMSECV and highest $R^2$ predicted. This also indicate that those models speaks better with the new observation, that are not included in the models, in compared with other linear models.
+
+<<rmsepPlot, echo=FALSE, purl=FALSE, fig.height=5, fig.cap="RMSEP plot for PCR and PLS model with and without cross-validation. Cross-validation is done with 12 observation in each consecutive segments within training dataset.", fig.scap="RMSEP plot for PCR and PLS", fig.pos='htpb', fig.width='0.8\\textwidth'>>=
+rp<-ggplot(rmsep.mat, aes(comp, value, color=variable, group=variable))
+rp<-rp+geom_line()+geom_point(shape=21, aes(fill=variable), color="gray3")
+rp<-rp+facet_grid(.~L1)
+rp<-rp+scale_x_continuous(breaks=unique(rmsep.mat$comp))
+rp<-rp+theme_bw()
+rp<-rp+theme(legend.position="top", 
+             legend.background=element_rect(fill="white", 
+                                            color="gray"),
+             axis.text.x=element_text(angle=90, hjust=1, vjust=0.5),
+             text=element_text(size=7),
+             legend.title=element_blank())
+rp<-rp+labs(x="Components", y="R-sq pred value and RMSECV")
+
+pprp<-ggplot(rmsep.mat, aes(comp, value, linetype=L1))
+pprp<-pprp+geom_line()+geom_point(shape=21, size=1.5, color="gray3")
+pprp<-pprp+theme_bw()
+pprp<-pprp+labs(x="Components", y="RMSECV and R-sq pred Value")
+pprp<-pprp+scale_linetype_discrete(name="Model")
+pprp<-pprp+scale_x_continuous(breaks=unique(rmsep.mat$comp))
+pprp<-pprp+theme(legend.position="top", 
+                 legend.direction="horizontal", 
+                 legend.background=element_rect(fill="white", color="gray"),
+                 legend.title=element_blank(),
+                 axis.text.x=element_text(size=8))
+pprp<-pprp+facet_wrap(~variable, scale="free_y")
+print(pprp)
+@
+
+Further analysis is made on PLS and PCR models by computing the RMSECV and $R^2$ predicted, and plotted them against all the components. Figure-\ref{fig:rmsepPlot} shows that the curve of RMSECV and $R^2$ predicted fluctuate over components in contrast to the results without cross-validation. In the case without cross-validation, RMSEP continually decreases initially and gets stable and $R^2$ predicted continually increases and gets stable. 
+
+In the plot, PLS model starts predicting better from very beginning while PCR meets the quality only after considering \Sexpr{pcr.min.comp} components. From the results of cross-validation, it is expected to have best prediction from the PLS model with \Sexpr{pls.min.comp} components.
+
+\section{Predection on test Dataset}
+\label{sec:predTest}
+<<predMat, echo=FALSE>>=
+lm.pred<-predict(mdl.ft$linear$model, 
+                      newdata = baseTable[!train, x.var])
+pcr.pred<-list()
+pls.pred<-list()
+pcr.pred<-lapply(pcr.sc, function(x){as.vector(predict(mdl.ft$PCR$model, 
+                                   newdata = baseTable[!train, x.var], 
+                                   ncomp = x))})
+pls.pred<-lapply(pls.sc, function(x){as.vector(predict(mdl.ft$PLS$model,
+                                   newdata=baseTable[!train, x.var],
+                                   ncomp=x))})
+names(pcr.pred)<-paste("Comp",pcr.sc, sep="")
+names(pls.pred)<-paste("Comp",pls.sc, sep="")
+
+ridge.pred<-predict(mdl.ft$ridge$model,
+                         newdata = baseTable[!train, x.var])
+cp.model.pred<-predict(mdl.ft$cp.model$model,
+                       newdata=baseTable[!train, x.var])
+aicMdl.pred<-predict(mdl.ft$aicMdl$model,
+                       newdata=baseTable[!train, x.var])
+bicMdl.pred<-predict(mdl.ft$bicMdl$model,
+                       newdata=baseTable[!train, x.var])
+backward.pred<-predict(mdl.ft$backward$model,
+                       newdata=baseTable[!train, x.var])
+## Predicting Testset
+predMat.test<-data.frame(Date=baseTable[!train, "Date"],
+                    TrueValue=baseTable[!train, "PerEURO"],
+                    Linear=lm.pred,
+                    AICModel=aicMdl.pred,
+                    BICModel=bicMdl.pred,
+                    BackModel=backward.pred,
+                    Ridge=ridge.pred,
+                    PCR=pcr.pred,
+                    PLS=pls.pred)
+
+## Predicting Trainset
+predMat.train<-data.frame(Date=baseTable[train, "Date"],
+                TrueValue=baseTable[train, "PerEURO"],
+                Linear=predict(mdl.ft$linear$model),
+                AICModel=predict(mdl.ft$aicMdl$model),
+                BICModel=predict(mdl.ft$bicMdl$model),
+                BackModel=predict(mdl.ft$backward$model),
+                Ridge=predict(mdl.ft$ridge$model),
+                PCR=predict(mdl.ft$PCR$model, ncomp = pcr.sc),
+                PLS=predict(mdl.ft$PLS$model, ncomp = pls.sc))
+
+names(predMat.train)[grep("PCR", names(predMat.train))]<-paste("PCR.Comp", pcr.sc, sep="")
+names(predMat.train)[grep("PLS", names(predMat.train))]<-paste("PLS.Comp", pls.sc, sep="")
+
+predMat<-rbind(train=predMat.train, test=predMat.test)
+stkPredMat<-melt(list(train=predMat.train, test=predMat.test), 1:2)
+stkPredMat$L1<-factor(stkPredMat$L1, levels = c("train", "test"))
+
+predMat.rpSumry<-ddply(stkPredMat, .(variable, L1), summarize,
+      RMSEP=sqrt(1/length(value)*sum((TrueValue-value)^2)),
+      R2pred=1-(sum((TrueValue-value)^2)/sum((TrueValue-mean(TrueValue))^2)))
+@
+<<testPredErr, echo=FALSE>>=
+errMat<-lapply(3:ncol(predMat.test), function(x){rmserr(predMat.test[,2], predMat.test[,x])})
+names(errMat)<-names(predMat.test)[-c(1:2)]
+errStkMat<-melt(errMat)
+errStkMat$L1<-factor(errStkMat$L1, levels = names(errMat))
+@
+After getting some idea about the prediction ability of a model from cross-validation procedure, it is time to observe its performance in the case of test dataset. Exchange Rate from Jan 2013 to Nov 2014 are predicted using the training dataset which includes the financial and commodity variables from Jan 2000 to Dec 2012. For the prediction, a multiple linear regression model, its subsets selected from various selection criteria, a PLS model with \Sexpr{pls.sc} components, a PCR model with \Sexpr{pcr.sc} components and a ridge regression model with paramter $\lambda=\Sexpr{lmd}$ are applied. A prediction is also made on the calibration set and the results for both predictions - Training set and Test set are plotted on figure-\ref{fig:forecast}.
+
+The plot shows that the predictions from all the models are very close to the true value. From the RMSEP and R2pred value at the top left corner of each panel, subset model selected from minimum BIC criteria and model selected from Backward elimination procedure with F-value based criteria are predicted the test observations more closely as they have minimum RMSEP and maximum R2pred. However, in the case of in-sample prediction on the training dataset, linear model has least RMSEP, but since it is suffered from multi-collinearity problem, PLS model with 8 components can be an alternative.
+
+\section{Comparison of Models}
+\label{sec:modelComp}
+
+Models can be compared on the basis of their predictability and goodness of fit. As discussed in chapter-\ref{chap:modelsmethods}, the goodness of fit of a model can be accessed from \begin{inlinelist} \item variation the model has described,\item distribution of residuals and \item information criteria  \end{inlinelist} and the predictability of the model can be compared from \begin{inlinelist} \item RMSEP and \item $R^2$ predicted \end{inlinelist} for calibration set and testset.
+
+\subsection{Goodness of fit}
+\label{ssec:gof}
+All the linear models (full and subset) have explained almost 90 percent of variation in response which is seen in $R^2$ and $R^2$ adjusted presented in table-\ref{tbl:gofSumry}. Further, the models are significant as their p-value is very close to zero. However, subset model chosen from maximum $R^2$ adjusted and minimum AIC have minimum AIC and BIC value. Both the models have selected same set of variables so both of them are equivalent. In addition, these models have the least model standard deviation (sigma). Hence, these models can be selected as best model among all the linear models.
+<<gofSumry, echo=FALSE>>=
+gofSumry<-ldply(names(mdl.ft)[-c(2:4)], function(x){
+    data.frame(Model=x,
+               AIC=AIC(mdl.ft[[x]][[2]]), 
+               BIC=AIC(mdl.ft[[x]][[2]], 
+                       k = log(nrow(mdl.ft[[x]][[3]]))),
+               `R-Sq`=summary(mdl.ft[[x]][[2]])$r.squared,
+               `R-Sq Adj`=summary(mdl.ft[[x]][[2]])$adj.r.squared,
+               `Sigma`=summary(mdl.ft[[x]][[2]])$sigma,
+               `F-value`=summary(mdl.ft[[x]][[2]])$fstat[1],
+               `P-value`=signif(pf(summary(mdl.ft[[x]][[2]])$fstat[1], 
+                            summary(mdl.ft[[x]][[2]])$fstat[2], 
+                            summary(mdl.ft[[x]][[2]])$fstat[3], 
+                            lower.tail = FALSE), 3))
+})
+@
+<<gofSumryPrint, echo=FALSE, purl=FALSE, results='asis', size='footnotesize'>>=
+print(xtable(gofSumry, 
+             caption="Summary statistic and information criteria for model comparison", 
+             label="tbl:gofSumry", 
+             align="lXrrrrrrr", digits = 4),
+      sanitize.text.function = function(x){x},
+      tabular.environment = 'tabularx',
+      width = '\\textwidth',
+      include.rownames = FALSE, 
+      caption.placement = "top")
+@
+
+Further, the residues obtained from these selected regression models are nearly Normal and random which can be seen from the diagnostic plots in \ref{diagPlot} but still there are some outliers due to the globel financial crisis discussed in chapter-\ref{ch:...}. Despite having outliers in these models, the outliers are not very influencial as their cook's distace is still less than a unit.
+
+\subsection{Predictability}
+\label{ssec:prdblty}
+The main concert of this thesis is about the predictability of a model. The predictability of a model is measured using RMSEP and $R^2$ predicted. A model exhibit different nature in the case of prediction in training dataset, during cross-validation and when implementing it to predict the test dataset. The plot in fig-\ref{fig:ValdSumryPlot} shows this discripancies.
+<<ValdSumry, echo=FALSE, results='hide'>>=
+ValdSumry<-rbind(predMat.rpSumry, data.frame(variable=rownames(cvStat), L1="cv", cvStat, row.names = NULL))
+names(ValdSumry)<-c("Model", "Type", "RMSEP", "R2pred")
+vs.cast<-dcast(melt(ValdSumry, 1:2), Model~Type+variable)[, c(1:3,6:7,4:5)]
+
+ValdSumryTabl<-xtable(vs.cast, digits = 4)
+caption(ValdSumryTabl)<-"Validation result containing RMSEP and R2pred for training set, cross-validation set and test set"
+label(ValdSumryTabl)<-"tbl:valdSumry"
+align(ValdSumryTabl)<-"lrrrrrrr"
+tblHeader<-paste("\\hline Model & 
+                 \\multicolumn{2}{c}{Training} & 
+                 \\multicolumn{2}{c}{Cross Validation} & 
+                 \\multicolumn{2}{c}{Test} \\\\ 
+                 \\cline{2-7} &", 
+                 paste(rep(c("RMSEP", "R2pred"), 3), 
+                       collapse=" & "), 
+                 '\\\\')
+@
+<<ValdSumryPlotSetup, echo=FALSE>>=
+vss<-ddply(ValdSumry, .(Type), summarize,
+      Model.rmsep=Model[which.min(RMSEP)],
+      Model.r2pred=Model[which.max(R2pred)],
+      RMSEP=min(RMSEP),
+      R2pred=max(R2pred))
+vss1<-filter(melt(vss,1:3), variable=='RMSEP')[,-3]
+vss2<-filter(melt(vss,1:3), variable=='R2pred')[,-2]
+names(vss1)<-names(vss2)<-c("Type", "Model", "variable", "value")
+vss<-rbind(vss1, vss2)
+@
+<<ValdSumryPlot, echo=FALSE, fig.height=4.5, fig.cap="Comparision of Model on the ground of calibration model, cross-validation models and prediction model on the basis of RMSEP and $R^2$ predicted", purl=FALSE>>=
+mdlComp.Plot<-ggplot(melt(ValdSumry, 1:2), aes(Model, value, 
+                                 group=Type, color=Type))+
+    geom_line()+facet_wrap(~variable, scale="free_y")+
+    geom_point()+geom_point(shape=21, color="gray3")+theme_bw()+
+    theme(axis.text.x=element_text(angle=90, hjust=1))+
+    labs(x="Models", y='Value (RMSEP/ R-sq pred)')+
+    theme(legend.position="top", 
+          legend.direction="horizontal", 
+          legend.title=element_blank())+
+    geom_point(data=melt(vss, 1:3), 
+               aes(Model, value), 
+               shape="O", color="red", size=6)
+print(mdlComp.Plot)
+@
+
+For all the candidate models considered as best, RMSEP and $R^2$ predicted are tabulated for training dataset, during cross-validation and for test dataset. It is observed that Linear Model has generated least prediction error when predicting the samples on training dataset. During cross-validation, PLS model with \Sexpr{pls.min.comp} components perform best by giving least RMSEP (\Sexpr{filter(vs.cast, Model=='PLS.Comp9')[,'cv_RMSEP']}). The main concert of this this thesis is the prediction of test dataset. The Subset of linear model selected from minimum BIC criteria has least prediction error (RMSEP=\Sexpr{filter(vs.cast, Model=='BICModel')[,'test_RMSEP']}) and maximum $R^2$ predicted (\Sexpr{filter(vs.cast, Model=='BICModel')[,'cv_R2pred']}).
+<<ValdSumryPrnt, echo=FALSE, results='asis', purl=FALSE>>=
+print(ValdSumryTabl, include.rownames = FALSE, 
+      include.colnames = FALSE, 
+      caption.placement = "top", 
+      add.to.row = list(pos=as.list(-1), 
+                        command=tblHeader))
+@
+
+\section{Coefficients Estimates}
+\label{sec:coefEst}
+<<coefMat, echo=FALSE>>=
+coefMat<-cbind(sapply(c(1,4), function(x){coef(mdl.ft[[x]][[2]])[-1]}), 
+               coef(mdl.ft$PCR$model, ncomp = pcr.min.comp), 
+               coef(mdl.ft$PLS$model, ncomp=pls.min.comp))
+coefMat<-data.frame(variable=rownames(coefMat), coefMat, row.names = NULL)
+names(coefMat)<-c("vars","linear", "ridge", "pcr", "pls")
+coefMat$vars<-factor(coefMat$vars, levels = coefMat$vars[order(coefMat$linear)])
+@
+<<coefPlot, echo=FALSE, purl=FALSE, fig.height=4.5, fig.cap="Comparision plot for coefficients estimates of predictor variables. The variables are sorted according to their estimates from linear model.", fig.scap="Cofficients estimates for predictor variables", fig.pos='htpb'>>=
+cp<-ggplot(melt(coefMat[order(coefMat$linear),], 1), 
+       aes(vars, value, group=variable, color=variable))
+cp<-cp+geom_hline(yintercept=0, width=0.3, color="grey2")
+cp<-cp+geom_line()+geom_point(shape=21, size=1.5, aes(fill=variable), color="gray2")+theme_bw()
+cp<-cp+theme(axis.text.x=element_text(hjust=1, angle=90, vjust=0.5), 
+             legend.position=c(0.5,0.8),
+             legend.direction="horizontal",
+             legend.background=element_rect(fill="white", color="gray"))
+cp<-cp+scale_color_discrete(label=c("Linear", "Ridge", 
+                                   paste("PCR(",pcr.min.comp,"comp)"), 
+                                   paste("PLS(",pls.min.comp,"comp)")), 
+                            name="Models:")
+cp<-cp+scale_fill_discrete(label=c("Linear", "Ridge", 
+                                   paste("PCR(",pcr.min.comp,"comp)"), 
+                                   paste("PLS(",pls.min.comp,"comp)")), 
+                            name="Models:")
+cp<-cp+ylab("Coefficients")+xlab("Variables")
+print(cp)
+@
+The estimated coefficients of a linear model are larger in magnitude than the Ridge, PCR and PLS models. The first lagged response has very high (\Sexpr{round(max(coefMat[, "linear"]), 4)}) positive coefficient and has large influence on the model. The plot in figure-\ref{fig:coefPlot} shows that Import of old ship has larger coefficients than other import and export variables. On Dec 2008, a large sum of money is used to import elderly ships in Norway (\ref{fig:tsPlotImp}) which has an impact on its effect on the exchange rate models.
+
+In addition, the PLS (\Sexpr{pls.min.comp} Comp) and PCR (\Sexpr{pcr.min.comp} Comp) model have identified Oil spot price, Key interest rate, CPI and its lagged value as influential variable apart from the two lagged response variables. Some of the variables having higher coefficients obtained from these two models are presented in table -\ref{tbl:coefEstdTbl}.
+
+<<impExpShip, echo=FALSE, purl=FALSE, fig.cap="Import and Export of new and old ship in Norway from Jan 2000 to November 2014", fig.width='0.8\\textwidth', fig.height=3, eval=FALSE, fig.show='hide'>>=
+impExpShipPlt<-suppressWarnings(
+    ggplot(melt(baseTable[,c("Date", 
+                             ls(baseTable, pattern = "^(Imp|Exp).+Ship$"))], 1), 
+           aes(Date, value))+
+        geom_area(aes(fill=variable, alpha=variable), 
+                  color="grey", size=0.25)+
+        theme_bw()+theme(legend.position=c(0.2, 0.8), 
+                         legend.direction="horizontal", 
+                         legend.title=element_blank())+
+        scale_fill_discrete(guide=guide_legend(nrow=2))+
+        ggtitle("Import and Export of new and old ships in Norway")
+    )
+@
+
+
+<<coefMatPrint, echo=FALSE, results='asis'>>=
+coefMatxTable<-xtable(coefMat[c(order(coefMat$pcr, coefMat$pls)[1:4], 
+                                order(coefMat$pcr, coefMat$pls, 
+                                      decreasing = TRUE)[1:4]), c(1,4:5)], 
+                      digits = 4,
+                      caption = c("Top four (both positive and negative) Coefficient Estimate of PLS and PCR model", "Coefficient Estimate for PLS and PCR model"),
+                      label="tbl:coefEstdTbl")
+print.xtable(coefMatxTable, include.rownames = FALSE,
+             caption.placement = 'top', table.placement = 'htp')
+@
+
+
+<<forecast, echo=FALSE, fig.cap="Prediction made on trained and test dataset using different models", fig.height=9.5, fig.width="\\textwidth">>=
+ggplot(stkPredMat, aes(Date, value))+
+    geom_line(aes(color="red"))+
+    facet_wrap(~variable+L1, 
+               scale="free_x", 
+               ncol = 4)+
+    geom_line(aes(y=TrueValue, color="blue"), 
+              shape=21)+
+    theme_bw()+
+    theme(axis.text.x=element_text(angle=45, hjust=0.5, vjust=0.5),
+          text=element_text(size=9),
+          legend.title=element_blank(),
+          legend.position="top")+
+    geom_text(data=predMat.rpSumry, 
+              aes(label=paste("RMSEP:", round(RMSEP, 3), 
+                              "\nR2pred", round(R2pred, 3))), 
+              x=-Inf, y=Inf, hjust=-0.1, vjust=1.1, size=2.5)+
+    scale_color_manual(values=c("red", "blue"), 
+                       labels=c("Predicted", "Original"))
+@

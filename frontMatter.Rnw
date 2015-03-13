@@ -31,12 +31,13 @@
 \usepackage{xcolor}
 \usepackage{standalone}
 \usepackage{bm}
-\usetikzlibrary{plotmarks,arrows, shapes, calc, backgrounds, fit, decorations.markings, shadows}
+\usepackage{multirow}
+\usetikzlibrary{plotmarks,arrows, shapes.geometric, calc, backgrounds, fit, decorations.markings, shadows, positioning}
 \addbibresource{reference.bib}
 
 % Loading R Packages
 <<LoadingPkgs, echo=FALSE, message=FALSE, warning=FALSE, results='hide'>>=
-req.package<-c("pls", "xtable", "MASS", "car", "corrplot", "gdata", "dplyr", "ggplot2", "reshape2","ridge", "grid", "gridExtra", "stargazer", "devtools", "ggbiplot", "mixlm", "Hmisc", "knitr", "leaps", "rockchalk")
+req.package<-c("MASS", "car", "pls", "xtable", "grid", "gridExtra", "knitr", "leaps", "zoo", "gdata","ridge", "plyr", "dplyr", "ggplot2", "reshape2", "scales","mixlm")
 lapply(req.package, require, character.only=TRUE, quietly = T, warn.conflicts = F)
 @
 
@@ -166,7 +167,7 @@ lapply(req.package, require, character.only=TRUE, quietly = T, warn.conflicts = 
 %%%% Front-matter
 
 % For early drafts, you may want to disable some of the frontmatter. Simply change this to "\ifodd 1" to do so.
-\ifodd 1
+\ifodd 0
 % front-matter disabled while writing chapters
 \renewcommand{\maketitlepage}{}
 \renewcommand*{\makecopyrightpage}{}
@@ -189,6 +190,7 @@ lapply(req.package, require, character.only=TRUE, quietly = T, warn.conflicts = 
 }
 
 \dedication{To my parents.}
+
 \fi  % disable frontmatter
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%/
 

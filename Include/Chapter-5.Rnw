@@ -1,0 +1,15 @@
+% !Rnw root = ../Main.Rnw
+
+\chapter{Discussions and Conclusion}
+\label{ch:conclusion}
+It is always a priliminary idea to use basic liner model. A full linear model does not results always on selecting important and significant variables. An attempts of choosing a subset of linear model with variable selection technique results on selecting a model with minimum Mallows Cp.
+
+The plot in appendix - \ref{fig:diagPlot} contains four plot. The first one is the fitted value vs square root of standardize residuals. In the plot the crisis period have higher fitted values and have greater residues. the second plot elaborate the problem a step forward. The plot clearly shows that the distortion on the normality are due the observation of the crisis period. The third plot of cook's distance shows the most of the outlier observation are from the crisis period which have larger influence. Their influence is shown in the fourth plot of Leverage vs standardized residuals.
+
+Although have some influntial outliers, the observations are still within the limit. The value of most influencing outlier is from Dec 2008 which is a crutial time point of the recent great recession (\cite{FinCrisis2009Kred}).
+
+The loading plot (appendix-\ref{fig:loadingPlot}) for PLS model shows that component one constitute the effect of lagged value of response which generate high positive values in loadings of first components. Some of the export related variables which has positive contribution on second components has negative contribution on first components. The second components has high negative influence of interest rate variable while this component has positive contribution of the oil spot price. Since there is more than 77 percent of contribution of first component, it shows that the lagged value of response has huge contribution on explaining the variation present on Exchange rate. In addition, the effect of interest rate , Oil price and export related variables are gathered by the second components.
+
+Additionally, score plots (appendix-\ref{fig:scorePlot}) for the first three components of partial least square regression revels the fact that the second componets which contains \Sexpr{round(pls.expVar.x[2]-pls.expVar.x[1], 2)} percent of \mbf{X} variation has accumulate the effect of crisis period. Most of the positive large scores of second components are from the crisis period.
+
+Although the models have made close predictions, on the basis of comparision criteria set before, \texttt{cp.model}(Model selected with minimum Mallow's Cp criteria) and \texttt{backward}(Model selected with criteria of F-test using backward elimination procedure) models can be selected as better than other linear models. These models have minimum AIC

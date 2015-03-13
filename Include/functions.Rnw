@@ -1,18 +1,26 @@
 % !Rnw root = ../Main.Rnw
 
-
 %% Plotting Time Series Data Series
 <<functions, echo=FALSE, cache=FALSE, warning=FALSE>>=
-plotTS<-function(dataSet, vars, colVar=NA){
-  plt<-ggplot(filter(dataSet, variable%in%vars), aes(Date))
-  ifelse(is.na(colVar),
-  plt<-plt+geom_line(aes(y=value), size=.3),
-  plt<-plt+geom_line(aes_string(y="value", col=colVar), size=.3)    
-  )
+
+## Setting up Crisis Period
+cp.cat<-function(dateVec){
+cp.col<-ifelse(dateVec<cperiod[1] | dateVec>cperiod[2],
+               "Normal Period", 
+               "Crisis Period")
+return(cp.col)
+}
+
+## Timeseries plot
+plotTS<-function(dataSet, dateVarColIdx, nc){
+  plt<-ggplot(melt(dataSet, dateVarColIdx), aes(Date, (value/100)))
+  plt<-plt+geom_line()
+  plt<-plt+facet_wrap(~variable, 
+                      ncol=nc, 
+                      scale="free_y")
   plt<-plt+theme_bw()
-  plt<-plt+theme(axis.text=element_text(size=7), strip.text.x=element_text(size=8))
-  plt<-plt+facet_wrap(~variable, scales = "free_y", ncol=3)
-  plt<-plt+theme(legend.position="top", legend.title=element_blank())
+  plt<-plt+theme(text=element_text(size=12))
+  plt<-plt+labs(x="Date (Monthly)", y="Value (NOK hundreds)")
   return(plt)
 }
 
@@ -54,33 +62,45 @@ fit.model<-function(Model, yVar, xVars, dataSet, scaling=TRUE){
 
 
 ## Diagnostic Plot using GGPlot
-diagPlot<-function(model){
-  p1<-ggplot(model, aes(.fitted, .resid))+geom_point()
-  p1<-p1+stat_smooth(method="loess")+geom_hline(yintercept=0, col="red", linetype="dashed")
+diagPlot<-function(model, cp.color){
+  p1<-ggplot(model, aes(.fitted, .resid))+geom_point(aes_string(color=cp.color))
+  p1<-p1+stat_smooth(method="loess")
+  p1<-p1+geom_hline(yintercept=0, col="red", linetype="dashed")
   p1<-p1+xlab("Fitted values")+ylab("Residuals")
   p1<-p1+ggtitle("Residual vs Fitted Plot")+theme_bw()
   
-  p2<-ggplot(model, aes(qqnorm(as.vector(.stdresid))[[1]], .stdresid))+geom_point(na.rm = TRUE)
-  p2<-p2+geom_abline(aes(qqline(as.vector(.stdresid))))+xlab("Theoretical Quantiles")+ylab("Standardized Residuals")
+  ## qline slope and intercept
+  qline<-ldply(data.frame(res=stdres(mdl.ft$linear$model)), function(x){
+      slope = (quantile(x,p=.75)-quantile(x,.25))/(qnorm(.75)-qnorm(.25))
+      intercept = quantile(x,.25) - slope*qnorm(.25)
+      data.frame(slope, intercept)})
+  
+  p2<-ggplot(model, aes(sample=.stdresid))+stat_qq(aes_string(color=cp.color))
+  p2<-p2+geom_abline(data = qline, aes(slope, intercept))+xlab("Theoretical Quantiles")+ylab("Standardized Residuals")
   p2<-p2+ggtitle("Normal Q-Q")+theme_bw()
   
-  p3<-ggplot(model, aes(.fitted, sqrt(abs(.stdresid))))+geom_point(na.rm=TRUE)
+  p3<-ggplot(model, aes(.fitted, sqrt(abs(.stdresid))))+geom_point(na.rm=TRUE, aes_string(color=cp.color))
   p3<-p3+stat_smooth(method="loess", na.rm = TRUE)+xlab("Fitted Value")
   p3<-p3+ylab(expression(sqrt("|Standardized residuals|")))
   p3<-p3+ggtitle("Scale-Location")+theme_bw()
   
-  p4<-ggplot(model, aes(seq_along(.cooksd), .cooksd))+geom_bar(stat="identity", position="identity")
+  p4<-ggplot(model, aes(seq_along(.cooksd), .cooksd))+geom_bar(stat="identity", position="identity", aes_string(fill=cp.color))
   p4<-p4+xlab("Obs. Number")+ylab("Cook's distance")
+  p4<-p4+geom_text(aes(x=which.max(.cooksd), 
+                   y = max(.cooksd), 
+                   label=format(baseTable[which.max(.cooksd), "Date"], "%b %Y")),
+                   size=4)
   p4<-p4+ggtitle("Cook's distance")+theme_bw()
   
-  p5<-ggplot(model, aes(.hat, .stdresid))+geom_point(aes(size=.cooksd), na.rm=TRUE)
+  p5<-ggplot(model, aes(.hat, .stdresid))
+  p5<-p5+geom_point(aes_string(color=cp.color, size=".cooksd"), na.rm=TRUE)
   p5<-p5+stat_smooth(method="loess", na.rm=TRUE)
   p5<-p5+xlab("Leverage")+ylab("Standardized Residuals")
   p5<-p5+ggtitle("Residual vs Leverage Plot")
   p5<-p5+scale_size_continuous("Cook's Distance", range=c(1,5))
   p5<-p5+theme_bw()+theme(legend.position="bottom")
   
-  p6<-ggplot(model, aes(.hat, .cooksd))+geom_point(na.rm=TRUE)+stat_smooth(method="loess", na.rm=TRUE)
+  p6<-ggplot(model, aes(.hat, .cooksd))+geom_point(na.rm=TRUE, aes_string(color=cp.color))+stat_smooth(method="loess", na.rm=TRUE)
   p6<-p6+xlab("Leverage hii")+ylab("Cook's Distance")
   p6<-p6+ggtitle("Cook's dist vs Leverage hii/(1-hii)")
   p6<-p6+geom_abline(slope=seq(0,3,0.5), color="gray", linetype="dashed")
@@ -100,7 +120,7 @@ sumryBlock<-function(model){
 }
 
 model.sumry<-function(model, call=TRUE, coefMat=TRUE, sumry=TRUE){
-    if("lm"%nin%class(model)){
+    if(!"lm"%in%class(model)){
         stop("Model should be of class 'lm'.\n")
     }
     else{
@@ -153,5 +173,113 @@ vifPlot<-function(model){
 addline_format <- function(x,...){
     gsub('\\s','\n',x)
 }
+
+
+## Function to perform cross-validation splitting into 12 consecutive segments on Linear model and its subsets
+makeFormula<-function(x.var, y.var){
+    formula<-paste(y.var, paste(x.var, collapse="+"), sep="~")
+    return(formula)
+}
+mdl.cv<-function(dataSet, x.var, y.var, model="lm", step=FALSE, criteria=NULL, split=12, lmd=NULL){
+    segment<-split(1:nrow(dataSet), ceiling(1:nrow(dataSet)/split))
+    formula=makeFormula(x.var, y.var)
+    mdl<-list()
+    predVec<-rep(NA, nrow(dataSet))
+    errVec<-rep(NA, nrow(dataSet))
+    
+    for(i in seq_along(segment)){
+        dataset<-dataSet[-segment[[i]],]
+        testset<-dataSet[segment[[i]],]
+        if(step & model=="lm"){
+            if(!criteria %in% c("AIC", "BIC", "Cp", "R2adj", "forward", "backward")){
+                stop("Please! enter the correct criteria")
+            }else{
+                require(leaps)
+                if(criteria=="Cp"){
+                    ## Model selected by Mallows Cp Criteria
+                    cp.leaps<-leaps(x=dataset[,x.var],
+                                    y=dataset[,y.var],
+                                    method="Cp", nbest = 1, names = x.var)
+                    # Model fitting
+                    cp.which<-names(which(cp.leaps$which[which.min(cp.leaps$Cp),]))
+                    formula<-makeFormula(cp.which, y.var)
+                    mdl[[i]]<-lm(formula, data=dataset)
+                }else if(criteria=="R2adj"){
+                    ## Model selected by R2adj Criteria
+                    r2adj.leaps<-leaps(x=dataset[,x.var],
+                                       y=dataset[,y.var],
+                                       method="adjr2", nbest = 1, names=x.var)
+                   # Model fitting
+                    r2.which<-names(which(r2adj.leaps$which[which.max(r2adj.leaps$adjr2),]))
+                    formula<-makeFormula(r2.which, y.var)
+                    mdl[[i]]<-lm(formula, data=dataset)
+                }else if(criteria=="AIC" | criteria=="BIC"){
+                    lmBstSetSmry <- summary(regsubsets(dataset[,x.var],
+                                                       dataset[,y.var], 
+                                                       nbest = 1, nvmax = length(x.var)))
+                    nvars<-apply(lmBstSetSmry$which, 1, sum)
+                    bic.vec<-lmBstSetSmry$bic
+                    aic.vec<-bic.vec-nvars*log(sum(train))+nvars
+                    
+                    ## Fitting selected linear model
+                    aic.which<-names(which(lmBstSetSmry$which[which.min(aic.vec),]))[-1]
+                    bic.which<-names(which(lmBstSetSmry$which[which.min(bic.vec),]))[-1]
+                    if(criteria=="AIC"){
+                        formula<-makeFormula(aic.which, y.var)
+                        mdl[[i]]<-lm(formula, data=dataset)
+                    }else if(criteria=="BIC"){
+                        formula<-makeFormula(bic.which, y.var)
+                        mdl[[i]]<-lm(formula, data=dataset)
+                    }
+                }else if(criteria=="forward"){
+                        require(mixlm)
+                        fm.log<-capture.output({
+                        mdl[[i]]<- forward(do.call(lm, list(formula, dataset)), alpha = 0.05, full = FALSE)
+                    })
+                }else if(criteria=="backward"){
+                        require(mixlm)
+                        fm.log<-capture.output({
+                        mdl[[i]]<- backward(do.call(lm, list(formula, dataset)), alpha = 0.05, full = FALSE)
+                    })
+                }
+            }
+        }else if(step & model!='lm'){
+            stop("Stepwise can only be performed using Linear Model, Please input 'lm' in the model.")
+        }else if(model=='lm'){
+            mdl[[i]]<-lm(formula, dataset)
+        }else if(model=='ridge'){
+            require(ridge)
+            mdl[[i]]<- linearRidge(formula, dataset, lambda = lmd)
+        }else{
+            stop("Model can take 'lm' or 'ridge' value.")
+        }
+        predVec[segment[[i]]]<-predict(mdl[[i]], newdata=testset[,x.var])
+        errVec[segment[[i]]]<-testset[,y.var]-predVec[segment[[i]]]
+    }
+    rmse.cv<-sqrt(1/nrow(dataSet)*sum(errVec^2))
+    r2pred<-1-sum(errVec^2)/sum((predVec-mean(dataSet[,y.var]))^2)
+    invisible(list(Model=mdl, Predicted=predVec, Error=errVec, rmsep=rmse.cv, r2pred=r2pred))
+}
+
+## Grid Arrange with common Legend
+grid_arrange_shared_legend <- function(plotList, ncol=2, main=NULL, ...) {
+    plots <- plotList
+    g <- ggplotGrob(plots[[1]] + 
+                        theme(legend.position="bottom", 
+                              legend.title=element_blank()))$grobs
+    legend <- g[[which(sapply(g, function(x) x$name) == "guide-box")]]
+    lheight <- sum(legend$height)
+    plt.lst<-lapply(plots, function(x){
+        x + theme(legend.position="none")
+    })
+    plt.lst$ncol<-ncol
+    plt.lst$main<-main
+    grid.arrange(
+        do.call(arrangeGrob, plt.lst),
+        legend,
+        ncol = 1,
+        heights = unit.c(unit(1, "npc") - lheight, lheight))
+}
+
 @
 

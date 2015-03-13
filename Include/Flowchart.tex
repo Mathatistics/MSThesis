@@ -1,0 +1,129 @@
+\documentclass{standalone}
+\usepackage{amsmath}
+\usepackage[usenames, dvipsnames]{xcolor}
+\usepackage{tikz, pgf}
+\usetikzlibrary{shapes.geometric, calc, positioning, backgrounds, fit}
+
+\begin{document}
+\tikzset{
+  header node/.style = {
+    font          = \normalsize\ttfamily,
+    text depth    = +0pt,
+    fill          = gray!15,
+    draw},
+  header/.style = {%
+    inner ysep = 0.4cm,
+    append after command = {
+      \pgfextra{\let\TikZlastnode\tikzlastnode}
+      node [header node] (header-\TikZlastnode) at (\TikZlastnode.north) {#1}
+    }
+  },
+  boxHeader/.style = {%
+      inner sep = 0.4cm,
+      node distance=2cm,
+      append after command = {
+        \pgfextra{\let\TikZlastnode\tikzlastnode}
+        node [header node, rotate=90] (header-\TikZlastnode) at (\TikZlastnode.west) {#1}
+      }
+    },
+}
+	\begin{tikzpicture}[
+		node distance=3cm, on grid, auto, font=\Large,
+		oval/.style={draw, ellipse, minimum width=2cm},
+		rect/.style={draw, rectangle, minimum width=3.5cm},
+		arr/.style={->, >=latex},
+		trap/.style={draw, trapezium, trapezium left angle=120, trapezium right angle=60, minimum width=3.5cm},
+		dmnd/.style={draw, diamond, aspect=2},
+	]
+		\node[oval](start) {\textsc{Start}};
+		\node[trap, below of=start, header=Inputs](input)
+		{$\begin{aligned}
+					X&=\text{Matrix of Predictor Variable}\\
+					Y&=\text{Matrix of Response Variable} \\
+					k&=\text{Number of Components to consider}
+				\end{aligned}$
+		};
+		\node[rect, below of = input, header=Centering](center)
+		{$X=X-\bar{X} \text{and } Y=Y-\bar{Y}$};
+		
+		\node[rect, below of=center, header=Initialize u (y-score)](step1)
+		{$u_\text{start}=y_i (\text{Some column of \bf{y}})$};
+
+		    \node[rect, boxHeader=X-block, below of = step1, node distance=2.5cm] (xblock) {
+		    \begin{tikzpicture}[node distance=5cm, inner ysep=0.1cm]
+		    	\node[rect, header=X-weight](step2){$w'=u'X/u'u$};
+    			
+%    			\node[rect, right of=step2, header=Normalize](step3){$w'_\text{new}=w'_\text{old}/\left|w'_\text{old}\right|$};
+    			
+    			\node[rect, right of=step2, header=X-Score](step4){$t=Xw/w'w$};
+    			
+%    			\draw[->, >=latex] (step2) -- (step3);
+    			\draw[->, >=latex] (step2) -- (step4);
+		    \end{tikzpicture}
+		    };
+		    
+    		\node[rect, boxHeader=Y-block, below of = xblock, node distance=3cm] (yblock) {
+    		\begin{tikzpicture}[node distance=5cm, inner ysep=0.1cm]
+    			\node[rect, header=Y-weight](step5){$q'=t'Y/t't$};
+				
+%				\node[rect, right of=step5, header=Normalize](step6){$q'_\text{new}=q'_\text{old}/\left|q'_\text{old}\right|$};
+    					
+				\node[rect, right of=step5, header=Y-Score](step7){$u=Yq/q'q$};	
+				
+				\draw[->, >=latex] (step5) -- (step7);
+%				\draw[->, >=latex] (step6) -- (step7);	
+    		\end{tikzpicture}
+    		};
+    		\node[dmnd,below of = yblock, node distance=2.8cm](step8){$\frac{\left|t_\text{old}-t_\text{new}\right|}{\left|t_\text{old}\right|}<\epsilon$};
+    		
+    		\node[rect, below of=step8, header=Y Loadings](scalingBlock){$p'=t'X/t't$};
+%    		\node[rect, boxHeader=Scaling, below of = step8, node distance=4cm] (scalingBlock) {
+%			\begin{tikzpicture}[node distance=1cm, inner ysep=0.1cm]
+%	    		\node[rect](step9){$p'=t'X/t't$};
+%	    		
+%	    		\node[rect, below of = step9](step10){$p'_\text{new}=p'_\text{old}/\left|p'_\text{old}\right|$};
+%	    		
+%	    		\node[rect, below of = step10](step11) {$t_\text{new}=t_\text{old}/\left|p'_\text{old}\right|$};
+%	    		
+%	    		\node[rect, below of = step11](step12){$w_\text{new}=w_\text{old}/\left|p'_\text{old}\right|$};
+%			\end{tikzpicture}
+%    		};
+    		
+		  \node[trap, below of=scalingBlock, align=left, node distance=3cm, header=Outputs](Output){
+		  For Prediction: $q'$, $p'$ and $w'$ \\
+		  For Diagonstic and Classification: $t$ and $u$};
+		  
+		  \node[rect, below of = Output, header=Coefficients](step13){$b=u't/t't$};
+		  
+		  \node[rect, below of = step13, header=Deflation (Residuals)](step14){$
+		  \begin{aligned}
+		  	E_h&=E_{h-1}-t_hp'_h; \hspace{1cm}X=E_\circ\\
+		  	F_h&=F_{h-1}-b_ht_hq'_h;\hspace{0.7cm} Y=F_\circ
+		  \end{aligned}
+		  $};
+		  
+		  \node[dmnd, below of=step14, text width=4cm, align=center, node distance=3.5cm](nextComp){Want Another Component?};
+		  
+		  \node[oval, below of=nextComp](stop){\textsc{Stop}};
+		  
+		  \draw[->, >=latex] (start) -- (header-input);
+		  \draw[->, >=latex] (input) -- (header-center);
+		  \draw[->, >=latex] (center) -- (header-step1);
+		  \draw[->, >=latex] (step1)  -- node(init)[pos=0.5]{} (xblock) ;
+		  \draw[->, >=latex] (xblock) -- (yblock);
+		  \draw[->, >=latex] (yblock) -- (step8);
+		  \draw[->, >=latex] (step8.east) node[anchor=south west]{\small No} -| +(5,0) |-  node[pos=0.6, above]{Next Iteration} (init.east);
+		  \draw[->, >=latex] (step8.south) node[anchor= north west]{\small Yes} -- (header-scalingBlock);
+		  \draw[->, >=latex] (scalingBlock) -- (header-Output);
+		  \draw[->, >=latex] (Output) -- (header-step13);
+		  \draw[->, >=latex] (step13) -- (header-step14);
+		  \draw[->, >=latex] (step14) -- (nextComp);
+		  \draw[->, >=latex] (nextComp.west) node[anchor=south east]{\small Yes} -| +(-4.2,0) |-node[rect, pos=0.3, fill=white, below]{$
+		  \begin{aligned}
+			  k&=k+1\\ X&=E_h\\ Y&=F_h\\ h&=h+1
+		  \end{aligned}
+		  $} (step1.west);
+ 		  \draw[->, >=latex] (nextComp.south) node[anchor= north west]{\small No} -- (stop);
+		  		 
+	\end{tikzpicture}
+\end{document}

@@ -1,0 +1,12 @@
+% !Rnw root = ../Main.Rnw
+
+\chapter{Flowchart of NIPLS Algorithm}
+\label{ch:NIPLSfloChrt}
+
+\begin{figure}[htbp]
+\centering
+    \includestandalone[width=0.5\textwidth]{include/Flowchart}
+    \flushright\scriptsize{Source: \cite{wold2001pls, Geladi:1986aa}}
+    \caption[NIPLS Algorithm]{Flowchart of NIPLS algorithm to perform Partial Least Square Regression}
+    \label{fig:nipls-alg}
+\end{figure}

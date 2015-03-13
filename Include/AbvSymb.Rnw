@@ -1,0 +1,36 @@
+% !Rnw root = ../Main.Rnw
+
+\begin{center}\textsc{\Large{Abbreviations and Symbols}}\end{center}
+<<getSymb, echo=FALSE, warning=FALSE, message=FALSE, results='asis'>>=
+Abv<-read.xls(file.path(dirname(data.path), "Symbols and Abbrivation.xlsx"), sheet = 1)
+Symb<-read.xls(file.path(dirname(data.path), "Symbols and Abbrivation.xlsx"), sheet = 2)
+@
+\begin{center}\textbf{Abbreviations and their full forms used in this Thesis}\end{center}
+\nopagebreak
+<<AbvPrint, echo=FALSE, results='asis'>>=
+AbvTbl<-xtable(Abv, caption = "Abbreviations and their full forms used in this Thesis", align = 'llX')
+print(AbvTbl, 
+      include.rownames = F, 
+      tabular.environment = "tabularx", 
+      width = "\\textwidth", floating=FALSE, 
+      booktabs = TRUE, add.to.row = list(pos = list(0),
+                                         command = "\\hline \\endhead "), 
+      sanitize.text.function = function(x){x}, 
+      caption.placement = "top", 
+      table.placement = 'htbp')
+@
+\pagebreak
+\begin{center}\textbf{Symbols and their meaning used in this Thesis}\end{center}
+<<symbPrint, echo=FALSE, results='asis'>>=
+SymbTbl<-xtable(Symb, caption = "Symbols and their meaning used in this Thesis", align='llX')
+print(SymbTbl, 
+      include.rownames = F, 
+      tabular.environment = "tabularx", 
+      width = "\\textwidth", floating=FALSE, 
+      booktabs = TRUE, add.to.row = list(pos = list(0),
+                                         command = "\\hline \\endhead "), 
+      sanitize.text.function = function(x){x}, 
+      caption.placement = "top", 
+      table.placement = 'htbp')
+@
+

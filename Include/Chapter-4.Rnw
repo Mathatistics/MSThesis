@@ -52,8 +52,8 @@ print(sumryXtable, caption.placement = "top",
 %' plotTS(stkTabl, x.var, y2.var)
 %' @
 
-The correlation between response variable and predictor variable helps us to determine their relationship. Figure -(\ref{fig:rpCorPlot}) shows that only few of the predictor variables have significant correlation with response variable. In the figure first and second lagged variables have strong correlation with response while most of the others have low (weak) correlation. However, being weak correlation, many of them are statistically significant.
-<<rpCorPlot, echo=FALSE, fig.height=5, fig.cap="The bars represents the correlation between response variable (\\texttt{PerEURO}) and other predictor variable. The bars are shaded with the p-value for their signifance test performed by \\texttt{cortest} function. The red horizontal line is the critical value at 5 percent level of significance.", purl=FALSE>>=
+The correlation between response variable and predictor variable helps us to determine their relationship. Figure -(\ref{fig:rpCorPlot}) shows that only few of the predictor variables have significant correlation with response variable. In the figure first and second lagged response variable have strong correlation with response while most of the others have low (weak) correlation. Although, being weak correlation, many of them are statistically significant.
+<<rpCorPlot, echo=FALSE, fig.height=5, fig.cap="The bars represents the correlation between response variable (\\texttt{PerEURO}) and other predictor variable. The bars are shaded with the p-value for their signifance test performed by \\texttt{cortest} function. The red horizontal line is the critical value at 5 percent level of significance.", fig.scap="Correlation between response (Exchange Rate) and other predictor variable", purl=FALSE>>=
 rpCorTab<-lapply(seq_along(x.var), 
                  function(x){data.frame(var=x.var[x], 
                                         p.value=cor.test(baseTable[,x.var[x]], baseTable[,y.var[1]])$p.value, 
@@ -67,4 +67,4 @@ cp<-cp+geom_hline(yintercept=c(1,-1)*0.05, col="red", linetype="dashed")
 cp<-cp+ggtitle("Correlation test of Response Variable (PerEURO) \nwith other predictor variable")
 print(cp)
 @
-According to the paper \citetitle{taylor1990interpretation} by \citet{taylor1990interpretation}, the significance of the low correlation, which would have little practical importance, is due to the large number of observation. According to him, A correlation coefficients is an abstract measure which does not give direct precise interpretations. A more useful measure is the coefficient of determination which can be obtained during the model fitting.
+According to the paper \citetitle{taylor1990interpretation} by \citet{taylor1990interpretation}, the significance of the low correlation, which would have little practical importance, is due to the large number of observation. According to him, a correlation coefficients is an abstract measure which does not give direct precise interpretations. A more useful measure can be obtained during the model fitting.

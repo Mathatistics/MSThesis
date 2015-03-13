@@ -5,7 +5,7 @@
 @
 
 % Knitr Option Control
-<<setup, include=FALSE, cache=FALSE, echo=FALSE>>=
+<<setup, include=FALSE, cache=FALSE, echo=TRUE>>=
 opts_chunk$set(fig.path='Include', fig.align='center')
 render_listings()
 setwd('~/Dropbox/UMB/Thesis/MSThesis/')
@@ -26,9 +26,15 @@ data.path<-path.expand(file.path(dirname(getwd()), "Datasets", "CompleteDataSet.
 % Data Preperation
 <<data-prep, child="Include/DataPreperation.Rnw">>=
 @
+\clearpage
+\pagenumbering{gobble}
+%% Abbrivation and Symbols --------------------------------------------------||||
+<<AbvSymb-include, child="Include/AbvSymb.Rnw", eval=TRUE>>=
+@
+\clearpage\pagenumbering{arabic}
 
 %% Chapter 1 -----------------------------------------------------------------||||
-<<chapter1-include, child="Include/Chapter-1.Rnw", eval=FALSE>>=
+<<chapter1-include, child="Include/Chapter-1.Rnw", eval=TRUE>>=
 @
 
 %% Chapter 2 -----------------------------------------------------------------||||
@@ -55,8 +61,16 @@ data.path<-path.expand(file.path(dirname(getwd()), "Datasets", "CompleteDataSet.
   @
   
   %% Partial Least Square Regression ------------------------------------------||||
-  <<chapter4c-include, child="Include/Chapter-4c.Rnw", eval=FALSE>>=
+  <<chapter4c-include, child="Include/Chapter-4c.Rnw", eval=TRUE>>=
   @
+  
+  %% Partial Least Square Regression ------------------------------------------||||
+  <<chapter4d-include, child="Include/Chapter-4d.Rnw", eval=TRUE>>=
+  @
+ 
+%% Chapter 5 -----------------------------------------------------------------||||
+<<chapter5-include, child="Include/Chapter-5.Rnw", eval=TRUE>>=
+@
 
 %% Reference ----------------------------------------------------------------- |||
 % Make the bibliography single spaced
@@ -73,10 +87,19 @@ data.path<-path.expand(file.path(dirname(getwd()), "Datasets", "CompleteDataSet.
 
 \appendix
   %% Data Description ------------------------------||||
-  <<appendixVarUsed, child="Include/Appendix-varUsed.Rnw", eval=FALSE>>=
+  <<appendixVarUsed, child="Include/Appendix-varUsed.Rnw", eval=TRUE>>=
   @
   
-  <<appendixCodeUsed, child="Include/Appendix-codeUsed.Rnw", eval=FALSE>>=
+  <<pkgsUsed, child="Include/Appendix-pkgsUsed.Rnw", eval=TRUE>>=
+  @
+  
+  <<revPlots, child="Include/Appendix-revPlots.Rnw", eval=TRUE>>=
+  @
+  
+  <<appendixCodeUsed, child="Include/Appendix-PLSflowchart.Rnw", eval=TRUE>>=
+  @
+  
+  <<appendixCodeUsed, child="Include/Appendix-codeUsed.Rnw", eval=TRUE>>=
   @
 
 \end{document}

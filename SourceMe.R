@@ -1,0 +1,10 @@
+welcome<-paste("|*** All the codes are sourcing ***|")
+bye<-paste("Code Sourced")
+
+cat("\014\n", welcome)
+rm(list=ls())
+library(knitr)
+file.remove("Main.R")
+purl("Main.Rnw")
+source("Main.R", echo = FALSE, print.eval = FALSE)
+cat("\014\n |*** Code Sourced ;-) ***|")

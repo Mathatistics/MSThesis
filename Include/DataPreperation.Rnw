@@ -1,21 +1,22 @@
-% !Rnw root = Main.Rnw
+% !Rnw root = ../Main.Rnw
 
 <<dataSetup, echo=FALSE, message=FALSE, warning=FALSE, results='hide'>>=
 baseTable<-read.xls(data.path, sheet = "FinalData")
 baseTable[,1]<-as.Date(baseTable[,1], format="%d/%m/%Y")
 baseTable[,"Testrain"]<-as.logical(baseTable[,"Testrain"])
-baseTable1<-baseTable
+# baseTable1<-baseTable
 
 ## Log Transform some variable using log1p() Function
-baseTable[, "ImpOldShip"]<-log1p(baseTable[, "ImpOldShip"])
-baseTable[, "ExpOilPlat"]<-log1p(baseTable[, "ExpOilPlat"])
-baseTable[, "ExpExShipOilPlat"]<-log1p(baseTable[, "ExpExShipOilPlat"])
+## baseTable[, "ImpOldShip"]<-log1p(baseTable[, "ImpOldShip"])
+# baseTable[, "ExpOilPlat"]<-log1p(baseTable[, "ExpOilPlat"])
+# baseTable[, "ExpExShipOilPlat"]<-log1p(baseTable[, "ExpExShipOilPlat"])
 
 
 ## Label Variables in baseTable
 labelTable<-read.xls(data.path, sheet = "FinalCodeBook", stringsAsFactors=FALSE)
 for(i in 1:ncol(baseTable)){
     Hmisc::label(baseTable[,i])<-labelTable[i,2]
+    class(baseTable[,i])<-rev(class(baseTable[,i]))
 }
 
 # Variable Declaration
@@ -31,6 +32,14 @@ season<-grep("season", names(baseTable), value=TRUE)
 train<-grep("Testrain", names(baseTable), value=TRUE)
 
 x.var<-c(fin.var, price.var, import.var, export.var, tradeBal.var, expct.var)
+# baseTable$Testrain<-baseTable$Date<"2013-01-01"
 train<-baseTable[,"Testrain"]
+
+balTot<-balTot<-read.xls(file.path(dirname(data.path), "Balance of Payment Quarterly Data.xlsx"), sheet = "BalTot")
+balTot<-balTot[-nrow(balTot),]
+balTot$Date<-as.yearqtr(gsub("K", "Q", balTot$Date))
+
+## Crisis Period
+cperiod<-c("2007-06-01", "2009-06-01") ## Three Years of crisis Period
 @
 

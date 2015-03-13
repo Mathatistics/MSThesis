@@ -6,44 +6,36 @@
 \section{A statistical Model}
 \label{sec:statModel}
 
-A statistical model describes the relationship between a cause and its effect. A vector $\mbf{y}$ contains $n$ number of responses. $\mbf{X}$ be a $n\times p$ matrix whose columns are independent variables and each of them have $n$ observations. These variables in $\mbf{X}$ can affect $\mbf{y}$ so, the relationship between $\mbf{X}$ and $\mbf{y}$ can be written in a functional form as, 
+A statistical model describes the relationship between a cause and its effect. A vector $\mbf{y}$ contains $n$ number of responses. Let $\mbf{X}$ be a $n\times p$ matrix whose columns are predictor variables and each of them have $n$ observations. These variables in $\mbf{X}$ can affect $\mbf{y}$ so, the relationship between $\mbf{X}$ and $\mbf{y}$ can be written in a functional form as, 
 
 \begin{equation}
   \label{eq:functionalForm}
   \mbf{y}=f(\mbf{X})+\mbf{\epsilon}
 \end{equation}
 
-where, $\mbf{\epsilon}$ is a vector of unknown errors usually referred as `white noise' when dealing with time-series data which is assumed to have zero mean and constant variance.
+where, $\mbf{\epsilon}$ is a vector of unknown errors usually referred as `white noise' when dealing with time-series data which is assumed to have zero mean, constant variance and no autocorrelation.
 
 \section{Linear Regression Model}
 \label{sec:linRegModel}
 
-The linear regression model with a single response $(\mbf{Y})$ and $p$ predictor variable $\vl{x}{p}$ has form,
+The linear regression model with a single response $(\mbf{Y}=y_{t1}, y_{t2},\ldots, y_{tp})$ and $p$ predictor variable $\vl{X}{p}$ has form,
 
 \begin{equation}
-    \underbracket[0.5pt][5pt]{\mbf{Y}}_{\text{Response}}=\underbracket[0.5pt][5pt]{\beta_0+\beta_1x_1+\beta_2x_2+\ldots+\beta_px_p}_{\text{Mean Response explained by predictors only}}+\underbracket[0.5pt][5pt]{\epsilon}_{\text{Error Term}}
+    \underbracket[0.6pt][5pt]{\mbf{Y}}_{\text{Response}}=\underbracket[0.5pt][5pt]{\beta_0+\beta_1X_{t1}+\beta_2X_{t2}+\ldots+\beta_pX_{tp}}_{\text{Mean Response explained by predictors only}}+\underbracket[0.6pt][5pt]{\epsilon}_{\text{Error Term}}
     \label{eq:linearRegModel}
 \end{equation}
 
-The model - \ref{eq:linearRegModel} is linear function of $p$ unknown parameters $\vl{\beta}{p}$ which is generally referred as regression coefficients. In matrix notation, equation- (\ref{eq:linearRegModel}) becomes,
+The model - \ref{eq:linearRegModel} is linear function of $p+1$ unknown parameters $\beta_\circ, \vl{\beta}{p}$ which is generally referred as regression coefficients. In matrix notation, equation- (\ref{eq:linearRegModel}) becomes,
 
 \begin{equation}
   \label{eq:linRegMatModel}
   \underset{n\times 1}{\mbf{Y}}=\underset{n\times(p+1)}{\mbf{X}}\underset{(p+1)\times 1}{\bs{\beta}}+\underset{n\times 1}{\bs{\epsilon}}
 \end{equation}
 
-The residual term $\bs{\epsilon}$ requires following assumptions,
-
-\begin{align}
-  \text{\bf{E}}(\bs{\epsilon})&=\mbf{0} \notag \\
-  \text{and } \text{\bf{cov}}\bs{(\epsilon)}&=E(\bs{\epsilon\epsilon^t})=\sigma^2\mbf{I}
-  \label{eq:linMatModelAssumption}
-\end{align}
-
 \subsection{Least Square Estimation}
 \label{ssec:lstSqEstimation}
 
-The unknown parameter $\bs{\beta}$ in (\ref{eq:linRegMatModel}) is obtained by minimizing the sum of square of residuals (\cite{yeniay2002comparison}), 
+The estimate of the unknown parameter vector $\mbf{\beta}$ in (\ref{eq:linRegMatModel}) is obtained by minimizing the sum of square of residuals, 
 The sum of square of residuals is,
 
 \begin{equation}
@@ -58,7 +50,29 @@ On minimizing eq - \ref{eq:errorSq}, we get the OLS estimate of $\bs{\beta}$ as,
   \label{eq:estOLS}
 \end{equation}
 
-Under the assumption in eq-\ref{eq:linMatModelAssumption}, the OLS estimate obtained from eq-\ref{eq:estOLS} is best linear unbiased estimator of $\beta$ (\cite{wooldridge2012introductory}).
+For ordinary least square estimation, following basic assumptions (\cite{wooldridge2012introductory}) are required,
+\begin{enumerate}
+\item Linear in parameter \label{ass1}
+\item Absence of Multicollinearity \label{ass2}
+\item No correlation between Error terms and predicotor variable, mathematically,
+\[
+E(\mbf{\epsilon}_i|\mbf{X})=0, t=1,2,\ldots, n
+\]
+The equation implies that the error term at time $t$ should be uncorrelated with each explanatory variable in every time period
+\item Homoskedastic Error terms, i.e, \label{ass3}
+\[
+\var{\bs{\epsilon}_t|\mbf{X}}=\var{\mbf{\epsilon}_t}=\sigma^2\mbf{I}
+\]
+\item No serial correlation (autocorrelation) in error terms, i.e, \label{ass4}
+\[
+\corr{\bs{\epsilon}_t, \mbf{\epsilon}_s}=0, \forall t\ne s
+\]
+\end{enumerate}
+For Hypothesis testing and inference using $t$ and $F$ test, an additional assumption of normality is needed, i.e
+\[
+\mbf{\epsilon}_t\sim N(\mbf{0}, \sigma^2\mbf{I})
+\]
+Under the assumption from \ref{ass1} to \ref{ass4}, the OLS estimate obtained from eq-\ref{eq:estOLS} is best linear unbiased estimator of $\beta$.
 
 \subsection{Prediction}
 \label{ssec:pred}
@@ -72,13 +86,13 @@ Using $\hat{\bs{\beta}}$ obtained in eq-\ref{eq:estOLS}, following two matrices 
 \end{align}
 \end{subequations}
 
-Here eq-\ref{eq:predEquation} gives predicted values of $\mbf{Y}$ which on subtracting from the observed value give the error terms as is presented in eq-\ref{eq:OLSResid}. Eq-\ref{eq:predEquation} can also be written as, 
+Here eq-\ref{eq:predEquation} gives predicted values of $\mbf{Y}$ which on subtracting from observed value give the predicted error terms as is presented in eq-\ref{eq:OLSResid}. Eq-\ref{eq:predEquation} can also be written as, 
 
 \begin{equation}
   \hat{\mbf{Y}} =\mbf{X}\hat{\bs{\beta}}=\mbf{HY} \label{eq:predHatEquation}
 \end{equation}
 
-Here, $\mbf{H}$ is called Hat matrix and is the orthogonal projection of $y$ onto the space spanned by $X$.
+Here, $\mbf{H}$ is called Hat matrix and is the orthogonal projection of $y$ onto the space spanned by the columns of $\mbf{X}$.
 
 \section{Variable selection}
 \label{sec:varSelection}
@@ -135,65 +149,56 @@ This combines both \hyperref[itm:forwardSelection]{Forward selection procedure} 
 \section{Principal Component Analysis}
 \label{sec:pca}
 
-The purpose of PCA is to express the information in $\bs{X}=(\vl{X}{p})$ by a less number of variables $\hat{Z}=(\vl{Z}{q}); q<p$ called principal components of X (\cite{martens1992multivariate}). These principal components are orthogonal and linearly independent. Since they are computed from the linear combinations of $\bs{X}$ variables, the variation in these variables are compressed in first few principal components. In other words, the first principal components is the direction along which the $\bs{X}$ variables have the largest variance (\cite{massart1998handbook}). In this situation, the multicollinearity in $\bs{X}$ is not a problem any more.
+The purpose of PCA is to express the information in $\bs{X}=(\vl{X}{p})$ by a less number of variables $\mbf{Z}=(\vl{Z}{q}); q<p$ called principal components of \mbf{X} (\cite{martens1992multivariate}). These principal components are orthogonal and linearly uncorrelated. Since they are computed from the linear combinations of $\bs{X}$ variables, the variation in \mbf{X} variables are compressed in first few principal components. In other words, the first principal components is the direction along which the $\bs{X}$ variables have the largest variance (\cite{massart1998handbook}). In this situation, the multicollinearity in $\bs{X}$ is not a problem any more.
 
-The principal components can be performed on Covariance matrix or in Correlation matrix. If the variables are of same units and their variances do not differ much, we can use the covariance matrix. In this thesis, the correlation matrix is used to compute principal components since, the $X$ variables are of different units and their variations have large difference. Construction of principal components requires following steps,
+The principal components can be performed on Covariance or Correlation matrix. If the variables are of same units and their variances do not differ much, a covariance matrix can be used. However the population correlation matrix is unknown, its estimate can be used. In this thesis, sample correlation matrix is used to compute sample principal components. Construction of principal components requires following steps,
 \begin{enumerate}
-\item Calculate the correlation of data matrix $\bs{X}$
+\item Estimate the correlation matrix $\bs{A}$ of $\bs{X}$ as,
+    \begin{equation}
+        \corr{\bs{X}}=\left(\diag{\Sigma}\right)^{-\frac{1}{2}}\Sigma\left(\diag{\Sigma}\right)^{-\frac{1}{2}}
+        \label{eq:corFormula}
+    \end{equation}
+    Using sample observation, equation-\ref{eq:corFormula} can be estimated as,
+    \begin{equation}
+        \mbf{A}=\corr{\bs{X}}=\left(\diag{\mbf{S}}\right)^{-\frac{1}{2}}\mbf{S}\left(\diag{\mbf{S}}\right)^{-\frac{1}{2}}
+        \label{eq:corSampFormula}
+    \end{equation}
+    Where \mbf{S} is the sample estimate of covariance matrix \bs{\Sigma},
+    \begin{equation}
+    	\mbf{S}=\mbb{E} \left[ \left( \mathbf{X} - \mbb{E}[\mathbf{X}] \right) \left( \mathbf{X} - \mbb{E}[\mathbf{X}] \right)^{\textrm{T}} \right] 
+    \end{equation}
 
-\begin{equation}
-    \corr{\bs{X}}=\left(\diag{\Sigma}\right)^{-\frac{1}{2}}\Sigma\left(\diag{\Sigma}\right)^{-\frac{1}{2}}
-    \label{eq:corFormula}
-\end{equation}
-Where,
-\begin{equation}
-	\Sigma=\mathrm{E} \left[ \left( \mathbf{X} - \mathrm{E}[\mathbf{X}] \right) \left( \mathbf{X} - \mathrm{E}[\mathbf{X}] \right)^{\rm T} \right] 
-\end{equation}
-
-\item Calculate eigenvalue and eigenvector of the correlation matrix obtained in eq-\ref{eq:corFormula}. An eigenvalue $\Lambda$ of a square matrix $\mbf{A}$ of rank $p$ is a diagonal matrix of order p which satisfies, 
+\item Calculate eigenvalue and eigenvector of the correlation matrix obtained in eq-\ref{eq:corFormula}. An eigenvalue $\mbf{\Lambda}$ of a square matrix $\mbf{A}$ of rank $p$ is a diagonal matrix of order $p$ which satisfies, 
 
   \begin{equation}
     \mbf{AE}=\mbf{E\Lambda}
     \label{eq:eigenEqn}
   \end{equation}
   
-Each column of matrix $\mbf{E}$ is called an eigenvector corresponding to the eigenvalues $\lambda_i$, an $i^\text{th}$ element of diagonal matrix $\Lambda$. Equivalently, $|\mbf{A}-\lambda_i \mbf{I}_n|\mbf{E}=0$ which can only be realized if $|\mbf{A}-\lambda_i \mbf{I}_n|$ is singular, i.e.,
-
-  \begin{equation}
-    |\mbf{A}-\lambda_i \mbf{I}_n|=0
-    \label{eq:chrEqn}
-  \end{equation}
-  
-Eq-\ref{eq:chrEqn} is called the characteristic equation where, $\mbf{A}$ is the correlation matrix obtained from eq-\ref{eq:corFormula}.  The root of the equation is called eigenvalues (\cite{seber2008matrix}) and the vector $\mbf{E}_i$ is called eigenvector corresponding to the eigenvalue $\lambda_i$.
-
-\item The eigenvector obtaind from eq-\ref{eq:eigenEqn} is normalized, i.e. $||\mbf{E}_i||^2=1$. In matrix form the eq-\ref{eq:eigenEqn} can be written as,
-
-\begin{equation}
-  \mbf{AE}=\mbf{E\Lambda}
-\end{equation}
-
 where,
 
 \begin{equation}
-\begin{bmatrix}
-  \lambda_1 & 0 & \ldots & 0 \\
-  0 & \lambda_2 & \ldots & 0 \\
-  \vdots & \vdots & \ddots & \vdots \\
-  0 & 0 & \ldots & \lambda_p
-\end{bmatrix}
+\bs{\Lambda}=\text{diag}(\vl{\lambda}{p})
 \label{eq:egnMatrix}
 \end{equation}
 
-The matrix in eq-\ref{eq:egnMatrix} has eigenvalues of matrix $A$ in its diagonal. In PCA these eigenvalues are arranged in descending order. i.e. $\lambda_1 \ge \lambda_2 \ge \ldots \ge \lambda_p$ for eigenvectors $\mbf{E}=(\vl{\mbf{v}}{p})$ The eigenvalue decomposition of the matrix $\mbf{A}$ is then written as,
+In PCA these eigenvalues are arranged in descending order, i.e. $\lambda_1 \ge \lambda_2 \ge \ldots \ge \lambda_p$ . For each eigen values there is an eigenvector. Let $\mbf{E}=(\vl{\mbf{v}}{p})$ be the matrix of eigen vector so that the correlation matrix $\mbf{A}$ can be decomposed and expressed as,
 
 \begin{equation}
   \mbf{A}=\mbf{E}\bs{\Lambda} \mbf{E}^{-1}=\mbf{E}\bs{\Lambda}\mbf{E}^T
   \label{eq:egnDecomp}
 \end{equation}
 
-Since, $\mbf{E}$ is a orthogonal matrix generated from a symmetric and positive definite matrix $\mbf{A}$
+Equivalently, $|\mbf{A}-\lambda_i \mbf{I}_n|\mbf{E}=0$ which can only be realized if $\mbf{A}-\lambda_i \mbf{I}_n$ is singular, i.e.,
 
-\item Since, the variation explained in data are accumulated in first few  principal components, only $k$ eigenvalues in descending order are considered while computing it. The corresponding eigenvectors of those eigenvalues is called projection matrix. The projection matrix is,
+  \begin{equation}
+    |\mbf{A}-\lambda_i \mbf{I}_n|=0
+    \label{eq:chrEqn}
+  \end{equation}
+  
+Eq-\ref{eq:chrEqn} is called the characteristic equation where, $\mbf{A}$ is the correlation matrix obtained from eq-\ref{eq:corFormula}.  The root of the equation is called eigenvalues (\cite{seber2008matrix}) and the vector $\mbf{E}_i$ is called eigenvector corresponding to the eigenvalue $\lambda_i$. The eigenvector obtaind from eq-\ref{eq:eigenEqn} are then normalized, i.e. $||\mbf{E}_i||^2=1$. 
+
+\item Since, the variation explained in data are accumulated in first few  principal components, only $k$ eigenvalues are considered. The corresponding eigenvectors of those eigenvalues is called projection matrix. The projection matrix is,
 
 \begin{equation}
   \mbf{P}=\begin{pmatrix} \mbf{E}_1^T & \mbf{E}_k^T & \ldots & \mbf{E}_k^T\end{pmatrix}^T
@@ -212,13 +217,12 @@ The columns vectors of matrix $Z$ obtained from \ref{eq:projComp} are the orthog
 	\text{var}(\mbf{Z}_i)&=\lambda_i \text{ and }\\
 	\text{cov}(\mbf{Z}_i\mbf{Z}_j)&=0\text{ for }i\ne j
 \end{align*}
-
 \end{enumerate}
 
 \section{Principal Component Regression}
 \label{sec:pcr}
 
-The components obtained from Principal Component Analysis contains the variation in predictor variables are accumulated on first few components. Since these components contains the variation of data, a linear regression is fitted with only those components. However, \citet{jolliffe1982note} in his paper \citetitle{jolliffe1982note}, has given many examples taken from different papers of various fields where the components with low variance are also included in regression equation in order to explain most variation in the response variable. Following are the steps to perform Principal Component Regression. These steps are based on the paper \citetitle{yeniay2002comparison} by \cite{yeniay2002comparison}.
+The components of Principal Component Analysis (PCA) accumulate the variation in predictor variables on first few components. A linear regression fitted with only those components can give a similar results as the full linear model. However, \citet{jolliffe1982note} in his paper \citetitle{jolliffe1982note}, has given many examples taken from different papers of various fields where the components with low variance are also included in regression equation in order to explain most variation in the response variable. Following are the steps to perform Principal Component Regression. These steps are based on the paper \citetitle{yeniay2002comparison} by \cite{yeniay2002comparison}.
 
 \begin{enumerate}
 \item First principal components are obtained for \mbf{X} as explained in section-\ref{sec:pca}. The PCs obtained are orthogonal to each other.
@@ -230,7 +234,7 @@ The components obtained from Principal Component Analysis contains the variation
 \item Here, $\alpha_m = \left(\mbf{Z}_m^T\mbf{Z}_m\right)^{-1}\mbf{Z}_m^T\mbf{Y}$ are the coefficients obtained from OLS methods. Using this alpha, one can obtain the estimate of $\bs{\beta}$ as,
 
 \begin{equation}
-	\bs{\hat{\beta}}_\text{PCR}=\left(\bs{P}^T\bs{X}^T\bs{XP}\right)^{-1}\bs{P}^T\bs{X}^T\bs{Y}
+	\bs{\hat{\beta}}_\text{PCR}=\bs{P}\left(\bs{P}^T\bs{X}^T\bs{XP}\right)^{-1}\bs{P}^T\bs{X}^T\bs{Y}
 \end{equation}
 Here, \bs{P} is a projection matrix defined in equation-\ref{eq:projMatrix}.
 \end{enumerate}
@@ -293,14 +297,14 @@ In matrix notation this can be written as,
 \end{equation}
 Thus, the estimates of PLS coefficients are obtained as,
 \begin{align}
-b_{mk}&=\sum_a{q_{ma}w_{ka}^*}\\
+\hat{b}_{mk}&=\sum_a{q_{ma}w_{ka}^*}\\
 i.e., \bs{B}_\text{PLS} &= \bs{W}^*\bs{C}^t
 \end{align}
 }
 \end{enumerate}
 Above process is repreated for each components ($a$), the matrix \bs{X} and \bs{Y} are ``deflated'' by subtracting their best summaries ($\bs{TP}^t$ for \bs{X} and $\bs{QC}^t$ for \bs{Y}). The Residuals obtained are used as new \bs{X} and \bs{Y} in the computation process for new component. However, the deflation of \bs{Y} is not necessary since the result is equivalent with or without the deflation (\cite[p.~5]{wold2001pls}).
 
-Various algorithm exist to perform PLS regression among which NIPLS and SIMPLS are in fashion. This thesis has opted NIPLS (Nonlinear Iterative Partial Least Square) regression which is performed by \texttt{oscores} method of \texttt{pls} package in R. Appendix - \ref{...} shows the flowchart for the algorithm. In the algorithm, the first weight vector ($\bs{w}_1$) is the first eigenvector of the combined variance-covariance matrix $\bs{X}^t\bs{YY}^t\bs{X}$ and the following weight vectors are computed using the deflated version. Similarly, the first score vector ($\bs{t}_1$) is computed as the first eigenvector of $\bs{XX}^t\bs{YY}^t$ and the following x-scores uses the deflated version of the matrices.
+Various algorithm exist to perform PLS regression among which NIPLS and SIMPLS are in fashion. This thesis has opted NIPLS (Nonlinear Iterative Partial Least Square) regression which is performed by \texttt{oscores} method of \texttt{pls} package in R. Appendix - \ref{ch:NIPLSfloChrt} shows the flowchart for the algorithm. In the algorithm, the first weight vector ($\bs{w}_1$) is the first eigenvector of the combined variance-covariance matrix $\bs{X}^t\bs{YY}^t\bs{X}$ and the following weight vectors are computed using the deflated version. Similarly, the first score vector ($\bs{t}_1$) is computed as the first eigenvector of $\bs{XX}^t\bs{YY}^t$ and the following x-scores uses the deflated version of the matrices.
 
 \section{Ridge Regression}
 \label{sec:ridgeRegression}
@@ -359,7 +363,7 @@ Furthermore, a model exhibits an \textit{external validity} if it closely predic
 \begin{figure}[ht]
 \centering
     \includestandalone[width=\linewidth]{include/calcProcedure}
-    \caption{Procedure adopted in the thesis for model comparision.A cross-validation technique is used to validate the trained dataset. The trained model is used to predict the test response from with prediction errors are obtained.}
+    \caption[Procedure adopted in the thesis]{Procedure adopted in the thesis for model comparision.A cross-validation technique is used to validate the trained dataset. The trained model is used to predict the test response from with prediction errors are obtained.}
     \label{fig:calcProcedure}
 \end{figure}
 
@@ -391,7 +395,7 @@ RMSECV gives the models ability to predict new samples that were not present in 
 \begin{align}
 \text{RMSECV} &=\sqrt{\frac{\text{PRESS}}{n}} \label{eq:rmsecv}\\
 \text{Where, } & \nonumber \\
-\text{PRESS} &=\sqrt{\sum_{i=1}^n{\left(y_i-\hat{y}_{(i)}\right)^2}} \label{eq:press}
+\text{PRESS} &=\sum_{i=1}^n{\left(y_i-\hat{y}_{(i)}\right)^2} \label{eq:press}
 \end{align}
 \end{description}
 In the special case of leave one out cross validation, $i$ represents each sample.

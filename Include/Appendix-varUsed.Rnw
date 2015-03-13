@@ -1,6 +1,7 @@
 % !Rnw root = ../Main.Rnw
 
 \chapter{Data Description}
+\label{ch:dataDesc}
 <<dataDescData, echo=FALSE, warning=FALSE, results='hide'>>=
 dataDescription<-read.xls(data.path, sheet = 2)
 @

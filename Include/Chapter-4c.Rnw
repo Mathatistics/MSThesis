@@ -1,19 +1,22 @@
 % !Rnw root = ../Main.Rnw
 \section{Partial Least Square Regression}
 \label{sec:plsAnalysis}
+Principal Component Regression aims to collect the variation present in predictor variables with its first few components but it does not give any consideration to the variation present in response. In many cases, PCA can caputre the variation present in response variable but in other situations, it fails or become slower (need more components) to explain it. In such case, Partial Least Square (PLS) regression can be a solution.
+
+Partial Least Square (PLS) regression when fitted with seven components can explain more than 90 percent of variation in Exchange Rate while it explain only 76 percent of variation in predictor variable. Table-\ref{tab:plsSumry} shows that the percentage of variation explained in Exchange rate has increased dramatically in first two components which then settled down. If all the components are considered in the model, the variation explained in the case resembles with the $R^2$ value of linear model. Since, the later components contains only residuals and have no useful information, the idea of including them only increases the model complexity and can leads to overfitting which is also true for PCR model.
 
 {\singlespacing\sffamily
 <<plsSumry, echo=FALSE, results='hide'>>=
 pls.expVar.x<- cumsum(explvar(mdl.ft$PLS$model))
 pls.expVar.y<-apply(fitted(mdl.ft$PLS$model), 3, var)/var(mdl.ft$PCR$dataset[,y.var])*100
-plsSumry<-data.frame(Components=paste("Comp",1:length(pls.expVar.x), sep="."), X=pls.expVar.x, PerEURO=pls.expVar.y, row.names = NULL)
+plsSumry<-data.frame(Comp=1:length(pls.expVar.x), X=pls.expVar.x, PerEURO=pls.expVar.y, row.names = NULL)
 @
 <<plsSumryPrint, echo=FALSE, purl=FALSE, results='asis'>>=
 print(xtable(cbind(plsSumry[1:7,], 
                    plsSumry[8:14,], 
                    plsSumry[15:21,]),
-             caption="Variation Explained by PLS model in Response and Predictor",
-             label="tab:pcrSumry",
+             caption="Percentage of variation Explained by PLS model in Response and Predictor",
+             label="tab:plsSumry",
              align="lrrr|rrr|rrr",
              digits=2),
       tabular.environment = "longtable",
@@ -22,11 +25,8 @@ print(xtable(cbind(plsSumry[1:7,],
       floating = FALSE,
       include.rownames = FALSE)
 @
-
 }
 
-\textbf{Components to consider:}\hfill\\
-\label{sec:PLSnPCRcomp}
 <<PLSnPCRcomp, echo=FALSE, results='hide'>>=
 PLSnPCRcomp<-melt(list(`PCR Model`=list(`Predictor Variable`=pcr.expVar.x, 
                                 `Response Variable`=pcr.expVar.y),
@@ -35,30 +35,40 @@ PLSnPCRcomp<-melt(list(`PCR Model`=list(`Predictor Variable`=pcr.expVar.x,
 names(PLSnPCRcomp)<-c("Variance Explained", "type", "model")
 PLSnPCRcomp$Components<-factor(1:length(pcr.expVar.x), levels = 1:length(pcr.expVar.x))
 @
-<<PLSnPCRcompPlot, echo=FALSE, fig.width="\\textwidth", fig.height=4, fig.cap="Variation Explained by PLS and PCR model on Predictor Variable and Response Variable", fig.pos="!htpb", purl=FALSE>>=
-ggplot(PLSnPCRcomp, aes(Components, `Variance Explained`, group=model, color=model))+
+<<PLSnPCRcompPlot, echo=FALSE, fig.width="\\textwidth", fig.height=3.5, fig.cap="Variation Explained by PLS and PCR model on Predictor Variable and Response Variable", fig.pos="!htpb", purl=FALSE, fig.scap="Variation Explained by PLS and PCR">>=
+ggplot(PLSnPCRcomp[as.numeric(PLSnPCRcomp$Components)<=17,], aes(Components, `Variance Explained`, group=model, color=model))+
     geom_line(size=0.75)+facet_wrap(~type)+theme_bw()+
-    geom_point(shape=21, fill="gray", color="black", size=2)+
+    geom_point(shape=21, size=1.5, color="gray2", aes(fill=model))+
     theme(axis.text.x=element_text(angle=90, hjust=1, vjust=0.5),
           text=element_text(size=12),
           legend.position="top",
-          legend.title=element_blank())+
-    scale_y_reverse()
+          legend.background=element_rect(fill="white", color="gray"))+
+    scale_y_reverse()+
+    scale_color_discrete(name="Model:")+
+    scale_fill_discrete(name="Model:")
 @
-
-
-\section{Cross Validation}
-\label{sec:crossvalidation}
-
-
-{\singlespacing
-<<plsSummary, echo=FALSE, comment=NA>>=
-summary(mdl.ft$PLS$model)
-@
-}
+The actual difference between PLS and PCR model can also be observed from the variation explained plot in figure-\ref{fig:PLSnPCRcompPlot}. The plot shows that PCR explain more of the predictor variation with few components while PLS explain more of the response variation with lesser components than PCR. However, on taking more components, both the models agrees at some point of variation explanation.
 
 \section{Ridge Regression}
-\section{Prediction}
-  \subsection{Leave one out(LOO) cross-validation}
-  \subsection{Future Forecast}
-\section{Comparison of Models}
+\label{sec:ridgeReg}
+
+Ridge regression in this thesis is performed using \texttt{ridge} package. Although the package has implement semi-automatic method (\cite{cule2012semi}) to choose the ridge regression paramter($\lambda$), this thesis has chosen $\lambda$ from a range [\Sexpr{min(lmd.seq)}, \Sexpr{max(lmd.seq)}] by implementing cross validation technique. The parameter is found to be \Sexpr{lmd} which can results minimum RMSECV. An alternative way is to choose $\lambda$ by maximizing the $R^2$ predicted (fig-\ref{fig:lmdaTuning}). The parameter is also known as shrinkage parameter as it shrink the coefficients estimates which was enlarged by the Multicollinearity problem. Coefficient estimates plotted in figure -\ref{fig:coefPlot} shows that the coefficients obtained from linear model has fluctuated due to the presence of multicolliniearity. In the figure, the coefficients obtained from ridge regression were pulled down towards zero.
+
+
+<<lmdaTuning, echo=FALSE, purl=FALSE, fig.align='center', fig.cap="RMSE and R2pred plots for different ridge regression paramter $\\lambda$. The red dots refers to the maximum $R^2$ pred and minimum RMSEP.", fig.height=3, fig.pos='htbp'>>=
+lg1<-ggplot(tuningRidge, aes(lmd, rmsep))+
+    geom_line()+geom_point()+
+    annotate("point", 
+             tuningRidge$lmd[which.min(tuningRidge$rmsep)], 
+             min(tuningRidge$rmsep), 
+             color="red")+theme_bw()+
+    xlab(expression(lambda))+ylab("RMSEP")
+lg2<-ggplot(tuningRidge, aes(lmd, r2pred))+
+    geom_line()+geom_point()+
+    annotate("point", 
+             tuningRidge$lmd[which.max(tuningRidge$r2pred)], 
+             max(tuningRidge$r2pred), 
+             color="red")+theme_bw()+
+    ylab(expression(R^2*" prediction"))+xlab(expression(lambda))
+grid.arrange(lg1, lg2, ncol=2)
+@

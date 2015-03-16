@@ -33,7 +33,7 @@
 	% Axis labels
 	\coordinate[dot] (origin) at (0,0);
 	\node[below, align=center] at (x axis mid) {Quantity of Euro \\ \scriptsize (purchasing Norwegian Krone)};
-	\node[rotate=90, above=0.9cm] at (y axis mid) {Price of Euro (EUR/NOK)};
+	\node[anchor=south, rotate=90, yshift=0.8cm] at (y axis mid) {Price of Euro (EUR/NOK)};
 	
 	% Supply Line
 	\draw (0,0) coordinate[endpt](s0min) -- node[pos=1, yshift=2mm]{$S_0$} (6,6) coordinate[endpt](s0max);

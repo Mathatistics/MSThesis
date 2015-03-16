@@ -5,7 +5,7 @@
 <<diagPlot,echo=FALSE, fig.width='\\textwidth', fig.show='hold', fig.height=5, fig.cap="Diagnostic plot for the subset of linear model selected from minimum $C_p$ criteria. The red bubble represents the two years of crisis period from june 2007 till june 2009. The size of a bubbles in the plot of leverage vs standardized residuals on bottom right corner represents the cooks' distance.", purl=FALSE, fig.pos='h!'>>=
 cp.col<-cp.cat(baseTable[train, "Date"])
 do.call(grid_arrange_shared_legend, 
-        list(plotList=diagPlot(mdl.ft$cp.model$model, 
+        list(plotList=diagPlot(mdl.ft$aicMdl$model, 
                                cp.color = "cp.col")[c(3,2,4:5)], 
              ncol=2, 
              main=paste("Basic Diagnostic Plot for\n",
@@ -53,4 +53,65 @@ sp<-lapply(seq_along(sp), function(x){
         geom_point(shape=21, size=3, alpha=.8)+theme_bw()
 })
 do.call(grid_arrange_shared_legend, list(sp[1:2], ncol=2, main="Score Plot of PLS model"))
+@
+
+<<residPlot, echo=FALSE, purl=FALSE, fig.width='\\textwidth', fig.height=4, fig.cap="Residuals obtained after fitting the model. The plot exhibit randomness without any kind of pattern.">>=
+residMat<-data.frame(Date=baseTable[train, "Date"],
+                     Linear=residuals(mdl.ft$linear$model),
+                     Ridge=baseTable[train, y.var]-predict(mdl.ft$ridge$model),
+                     PCR.16=residuals(mdl.ft$PCR$model)[,,16],
+                     PLS.7=residuals(mdl.ft$PLS$model)[,,7])
+ggplot(suppressWarnings(melt(residMat, 1)), 
+       aes(Date, value))+geom_point()+
+    facet_wrap(~variable)+
+    geom_bar(stat="identity", 
+             position="identity", 
+             aes(fill=rep(cp.col,4)))+
+    stat_smooth(method="loess")+theme_bw()+
+    theme(legend.title=element_blank(), 
+          legend.position="top")+
+    ylab("Residuals")+ggtitle("Residuals Plots")
+@
+
+<<pacfPlot, echo=FALSE, purl=FALSE, fig.width='\\textwidth', fig.height=4, fig.cap="Partial Autocorrelation Function (PACF) of Residuals obtained after fitting the model. The plot exhibit randomness without any kind of pattern.">>=
+pacfMat<-t(ldply(1:4, function(x){
+    apply(residMat[,-1], 2, pacf, plot=F)[[x]]$acf
+}))
+colnames(pacfMat)<-names(residMat)[-1]
+rownames(pacfMat)<-1:nrow(pacfMat)
+pacfMat<- suppressWarnings(melt(pacfMat))
+pacfMat<-data.frame(pacfMat)
+ggplot(pacfMat, 
+       aes(Var1, value))+
+    geom_bar(stat="identity", 
+             position="identity")+
+    facet_wrap(~Var2)+theme_bw()+
+    theme(legend.title=element_blank(), 
+          legend.position="top")+
+    ylab("PACF")+
+    ggtitle("Partial Autocorrelation Function (PACF)")+
+    geom_hline(yintercept=c(-1,1)*qnorm(
+        0.025, lower.tail = FALSE)/sqrt(nrow(residMat)),
+        color="blue", linetype=2)
+@
+
+<<forecast, echo=FALSE, fig.cap="Prediction made on trained and test dataset using different models", fig.height=9.5, fig.width="\\textwidth">>=
+ggplot(stkPredMat, aes(Date, value))+
+    geom_line(aes(color="red"))+
+    facet_wrap(~variable+L1, 
+               scale="free_x", 
+               ncol = 4)+
+    geom_line(aes(y=TrueValue, color="blue"), 
+              shape=21)+
+    theme_bw()+
+    theme(axis.text.x=element_text(angle=45, hjust=0.5, vjust=0.5),
+          text=element_text(size=9),
+          legend.title=element_blank(),
+          legend.position="top")+
+    geom_text(data=predMat.rpSumry, 
+              aes(label=paste("RMSEP:", round(RMSEP, 3), 
+                              "\nR2pred", round(R2pred, 3))), 
+              x=-Inf, y=Inf, hjust=-0.1, vjust=1.1, size=2.5)+
+    scale_color_manual(values=c("red", "blue"), 
+                       labels=c("Predicted", "Original"))
 @

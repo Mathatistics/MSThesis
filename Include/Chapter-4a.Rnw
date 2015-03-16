@@ -2,19 +2,19 @@
 
 \section{Multiple Linear Regression}
 \label{sec:mlr}
-The functional form for determining exchange rate of Krone per Euro can be written as,
+The functional form for determining exchange rate of Norwegian Krone per Euro can be written as,
 \begin{align}
 \label{eq:mlrFuncForm}
-\texttt{PerEURO}&=f(\texttt{interest Rate}, \texttt{Trade}, \texttt{Price}, \texttt{Expectation})+\texttt{Error} \nonumber \\
+\texttt{PerEURO}&=f(\texttt{interest Rate}, \texttt{Trade}, \texttt{Price}, \texttt{Lag Response})+\texttt{Error} \nonumber \\
 &=\alpha_0 +\alpha_1(\texttt{interest Rate})+\alpha_2(\texttt{Trade}) \nonumber \\
-&\hspace{1cm}+\alpha_3(\texttt{Price})+\alpha_4(\texttt{Expectation})+\texttt{Error}
+&\hspace{1cm}+\alpha_3(\texttt{Price})+\alpha_4(\texttt{Lag Response})+\texttt{Error}
 \end{align}
 Where, $f$ is a linear function of regression coefficients \bs{\alpha}.
 <<sigCoef, echo=FALSE, warning=FALSE, results='hide'>>=
 coefMat<-as.data.frame(summary(mdl.ft$linear$model)$coefficients)
 sigVarIdx<-which(coefMat$`Pr(>|t|)`<=0.05)
 @
-In equation-\ref{eq:mlrFuncForm}, interest Rate include both interest rate of Norway and European Central Bank. Trade encorporates import, export and trade balance of Norway. Similarly, Price include Consumer price index and Oil price and Expectation variables are created with the lagged value of response, i.e. \texttt{PerEURO}. The observation for all the model fitting from this point onward are from the training dataset, i.e. from Jan 2000 to Dec 2012. The detail explanation for the variables are in Appendix A. As described in section - \ref{sec:linRegModel}, the linear model is fitted. The results shows that variables in table-\ref{tbl:lmSumry} has significant effect on the Euro vs Norwegian Krone exchange rate.
+In equation-\ref{eq:mlrFuncForm}, interest Rate include both interest rate of Norway and European Central Bank. Trade incorporates import, export and trade balance of Norway. Similarly, Price include Consumer price index and Oil price. The observation for all the model fitting from this point onward are from the training dataset, i.e. from Jan 2000 to Dec 2012. The detail explanation for the variables are in Appendix A. As described in section - \ref{sec:linRegModel}, the linear model is fitted. The results shows that variables in table-\ref{tbl:lmSumry} has significant effect on the Euro vs Norwegian Krone exchange rate.
 
 {\singlespacing
 <<sumryTable.lm, echo=FALSE, results='asis', purl=FALSE>>=
@@ -40,7 +40,7 @@ Variable selection is based on criteria to choose best model form the possible s
 \subsection{Model selection using Mallows $C_p$ and $R^2$ adjusted}
 \label{ssec:mcradj}
 
-The best subset is selected using \begin{inlinelist}\item Mallows $C_P$ and \item Adjusted $R^2$ \end{inlinelist}. The number of variable vs these two criteria are plotted in figure-\ref{fig:cpr2plot}. The plot in fig-\ref{fig:cpr2plot1}, shows that including \Sexpr{cpdf$p[which.min(cpdf$cp)]} variables which the algorithm has selected, minimize the Mallow's $C_p$ while fig-\ref{fig:cpr2plot2} suggest to include \Sexpr{r2df$p[which.max(r2df$r2adj)]} variables including intercept to maximize the adjusted $R^2$.
+The best subset is selected using \begin{inlinelist}\item Mallows $C_P$ and \item Adjusted $R^2$ \end{inlinelist}. The number of variable vs these two criteria are plotted in figure-\ref{fig:cpr2plot}. The plot in fig-\ref{fig:cpr2plot1}, shows that including \Sexpr{cpdf$p[which.min(cpdf$cp)]} variables, minimize the Mallow's $C_p$ while fig-\ref{fig:cpr2plot2} suggest to include \Sexpr{r2df$p[which.max(r2df$r2adj)]} variables including intercept to maximize the adjusted $R^2$.
 
 <<cpr2plot, echo=FALSE, out.width="0.5\\textwidth", fig.subcap=c("Mallows Cp vs no. of Variable","R2 adjusted vs no. of variable"), fig.cap="Number of variable against the criteria where the red dot corresponds the number of variable to acheave the criteria, i.e. minimum for Cp and maximum for $R^2$ adjusted", fig.pos='!ht', purl=FALSE>>=
 cp.plt<-ggplot(cpdf, aes(p, cp))+geom_line()+geom_point(size=4, shape=21, bg="gray")
@@ -56,7 +56,7 @@ r2.plt<-r2.plt+annotate("point", x = r2df$p[which.max(r2df$r2adj)], y = max(r2df
 print(r2.plt)
 @
 
-The models selected by these criteria when fitted results on few insignificant variables. The plot of the t-value in fig-\ref{fig:cpr2mdlplt} has only one (for $C_p$ criteria) and two ($R^2$adj criteria) are insignificant. With fewer variables than the full model, this model has described the variation almost equally as the the linear model with full variables (table-\ref{tbl:gofSumry}).
+The models selected by these criteria when fitted result few insignificant variables. The plot of the t-value in fig-\ref{fig:cpr2mdlplt} has \Sexpr{sum(summary(mdl.ft$cp.model$model)$coef[,4]>0.05)} (for $C_p$ criteria) and \Sexpr{sum(summary(mdl.ft$r2.model$model)$coef[,4]>0.05)} ($R^2$adj criteria) are insignificant. With fewer variables than the full model, this model has described the variation almost equally as full linear model (table-\ref{tbl:gofSumry}).
 
 <<cpr2mdlplt, echo=FALSE, out.width="0.5\\textwidth", fig.subcap=c("Model selected from Mallows' $C_p$ criteria","Model selected from $R^2$ adjusted criteria"), fig.cap="Model selected by $C_p$ and $R^2$ adjusted criteria. Red and blue bars are significant and insignificant variables respectively. The estimates rounded at 2 decimals are given on top of the bars.", fig.pos='!ht', purl=FALSE>>=
 cp.mdl.t.max<-max(summary(mdl.ft$cp.model$model)$coef[,3])
@@ -70,7 +70,7 @@ test.plot(mdl.ft$r2.model$model, alpha=0.05)+
 \subsection{Model selection using AIC and BIC criteria}
 \label{ssec:aicbicModel}
 
-Applying AIC and BIC criteria to select best model, exhaustive search algorithm as used by \texttt{leaps} package (\cite{lumley2004leaps}) is used in this thesis. Number of variables required to minimize the information criteria is selected as guide by the plot in figure -\ref{fig:aicbicPlot}. For minimum AIC, \Sexpr{nvars[which.min(aic.vec)]} (fig-\ref{fig:aicbicPlot1}) variables are needed and for minimum BIC, \Sexpr{nvars[which.min(bic.vec)]}(fig-\ref{fig:aicbicPlot2}) are needed to get the best subsetted model. The models suggested are fitted with results of few insignificant variables (fig-\ref{fig:aicbicmdlplt}). The summary statistic (table-\ref{tbl:gofSumry}) shows that AIC model has larger $R^2$ adjusted than BIC model due to the addition of more variables.
+Applying AIC and BIC criteria to select best model, exhaustive search algorithm as used by \texttt{leaps} package (\cite{lumley2004leaps}) is used in this thesis. Number of variables required to minimize the information criteria is selected as guide by the plot in figure -\ref{fig:aicbicPlot}. For minimum AIC, \Sexpr{nvars[which.min(aic.vec)]} (fig-\ref{fig:aicbicPlot1}) variables are needed and for minimum BIC, \Sexpr{nvars[which.min(bic.vec)]}(fig-\ref{fig:aicbicPlot2}) are needed to get the best subset model. The models suggested are fitted with results of few insignificant variables (fig-\ref{fig:aicbicmdlplt}). The summary statistic (table-\ref{tbl:gofSumry}) shows that AIC model has larger $R^2$ adjusted than BIC model due to the addition of more variables.
 
 <<aicbicPlot, echo=FALSE, out.width="0.5\\textwidth", fig.subcap=c("AIC vs no. of Variable","BIC vs no. of variable"), fig.cap="Number of variable against the AIC vs BIC criteria. The red dot corresponds to the number of variables that can minimize the criteria.", fig.pos='!ht', purl=FALSE>>=
 aic.plt<-ggplot(infoMat, aes(p, aic))+geom_line()+geom_point(size=4, shape=21, bg="gray")
@@ -95,9 +95,9 @@ test.plot(mdl.ft$bicMdl$model, alpha=0.05)+
 @
 
 
-\subsection{Stepwise procedures based on F-value}
+\subsection{Step wise procedures based on F-value}
 \label{ssec:stepwisePvalue}
-The models fitted in previous sub sections resulted with some insignificant variables because the criteria there was based on model statistics other than the p-value of the respective variables. The stepwise procedure based on the F test fit the model removing the insignificant variable one at a time in forward search and adding variable one at a time in backward search. The fitted results (fig-\ref{fig:FbasedModelSubset}) for the models fitted with backward (fig-\ref{fig:FbasedModelSubset1}) and forward (fig-\ref{fig:FbasedModelSubset2}) stepwise procedure show that all the variables are significant at 5 percent since the \texttt{alpha-to-remove} and \texttt{alpha-to-enter} criteria for the process are set at 0.05.
+The models fitted in previous sub sections resulted with some insignificant variables because the criteria there was based on model statistics other than the p-value of the respective variables. The step wise procedure based on the F-test fit the model removing the insignificant variable one at a time in backward search and adding variable one at a time in forward search. The fitted results (fig-\ref{fig:FbasedModelSubset}) for the models fitted with forward (fig-\ref{fig:FbasedModelSubset1}) and backward (fig-\ref{fig:FbasedModelSubset2}) step wise procedure show that all the variables are significant at 5 percent except (\texttt{\Sexpr{names(which(summary(mdl.ft$backward$model)$coef[,4]>0.05))}}) in backward model since the \texttt{alpha-to-remove} and \texttt{alpha-to-enter} criteria for the process are set at 0.1.
 
 <<FbasedModelSubset, echo=FALSE, out.width="0.5\\textwidth", fig.subcap=c("Model selected from stepwise forward selection prcedure","Model selected from stepwise backward elimination procedure"), fig.cap="Best subset model selected by F-test based criteria. Red and blue bars are significant and insignificant variables respectively. The estimates rounded at 2 decimals are given on top of the bars.", fig.pos='!ht', purl=FALSE>>=
 fw.t.max<-max(summary(mdl.ft$forward$model)$coef[,3])
@@ -126,10 +126,10 @@ getPlot<-function(model){
     vp<-vp+labs(title=Hmisc::label(mdl.ft[[model]][[2]]))
     vp<-vp+scale_fill_manual(values = c("No-VIF"="deepskyblue2", "VIF"="firebrick2"))
 }
-vifPlot<-lapply(c("linear","cp.model", "r2.model", "backward"), getPlot)
+vifPlot<-lapply(c("linear","cp.model", "aicMdl", "bicMdl"), getPlot)
 grid.arrange(vifPlot[[1]], vifPlot[[2]], vifPlot[[3]], vifPlot[[4]], ncol=2)
 @
 
-The models suggested by $R^2$ critera and AIC are same. Similary BIC and stepwise forward selection based on F-test also have suggested the same model. Despite of explaing enough variation in response, some of these models have severe multi-collinearity problem (Fig-\ref{fig:vifPlot}) since the VIF (Variance Inflation Factor) of some of the variables included in the model are much larger than 10 which is usually considered as rule of thumb (\cite{OabRob2007}) for measuring multi-collinearity.
+Here, the models suggested by $R^2$ criteria and AIC are same. Similar BIC and step wise forward selection based on F-test also have suggested the same model. In addition, models fitted with minimum Cp criteria and F-test based backward elimination procedure results with similar set of variables. Despite of explaining enough variation in response, some of these models have severe multicollinearity problem (Fig-\ref{fig:vifPlot}) since the VIF (Variance Inflation Factor) of some of the variables included in the model are much larger than 10 which is usually considered as rule of thumb (\cite{OabRob2007}) for measuring multicollinearity.
 
-Multicollinearity in a model distorts the estimate and consequently distorts the prediction made by the model. An alternative solution for the multicollineary problem is using principal component related model such as PLS and PCR or one can use ridge regression as well. 
+Multicollinearity in a model distorts the estimate and consequently distorts the prediction made by the model. An alternative solution for the multicollinearity problem is using principal component related model such as PLS and PCR or one can use ridge regression as well. 

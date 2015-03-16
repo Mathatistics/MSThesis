@@ -12,20 +12,33 @@ pcaSumry$Comp<-1:nrow(pcaSumry)
 pcaSumry1<-xtable(cbind(pcaSumry[1:7,], pcaSumry[8:14,]), digits = 3)
 caption(pcaSumry1)<- "Dispersion of data explained by principal components"
 label(pcaSumry1)<- "tbl:pcaSumry"
-align(pcaSumry1)<- "lrrrr|rrrr"
+align(pcaSumry1)<- "rrrrr|rrrr"
 @
-Principal Component Analysis(PCA) creates a new set of mutually orthogonal and independent variables called components. The PCA analysis is done from full dataset (Jan 2000 - Nov 2014) which are first centered and scaled.
+Principal Component Analysis(PCA) creates a new set of mutually orthogonal and uncorrelated variables called components. The PCA analysis is done from full dataset (Jan 2000 - Nov 2014) which are first centered and scaled.
 
-Since the standard deviation of first \Sexpr{sum(stdev>=1)} principal components are greater than one (table-\ref{tbl:pcaSumry}), they are explaining the variation greater than the original variables. In addition around 99 percent of variation in x-variables are explained by \Sexpr{min(which(round(cumsum(varprop),2)==0.99))} components of PCA which is seen on the cumulative proportaion of variation in the same table.
+Since the standard deviation of first \Sexpr{sum(stdev>=1)} principal components are greater than one (table-\ref{tbl:pcaSumry}), they are explaining the variation greater than the original variables. In addition around 99 percent of variation in x-variables are explained by \Sexpr{min(which(round(cumsum(varprop),2)==0.99))} components of PCA which is seen on the cumulative proportion of variation in the same table.
 
 {\singlespacing\sffamily
 <<pcaSumry, echo=FALSE, results='asis', purl=FALSE>>=
-print.xtable(pcaSumry1, floating = TRUE,
-      tabular.environment = 'tabularx', 
-      caption.placement = "top", 
-      size = 'footnotesize', 
-      hline.after = c(-1,-1,0,nrow(pcaSumry1)),
-      include.rownames = FALSE, width = '\\textwidth')
+## Repeat Table Header Row for longtable ########
+addtorow          <- list()
+addtorow$pos      <- list()
+addtorow$pos[[1]] <- c(0)
+addtorow$command  <- c(paste("\\hline \n",
+                             "\\endhead \n",
+                             "\\hline \n",
+                             "{\\scriptsize Continued on next page} \n",
+                             "\\endfoot \n",
+                             "\\endlastfoot \n",sep=""))
+## ------------------------ #########
+print.xtable(pcaSumry1,
+      tabular.environment = "longtable",
+      caption.placement = "top",
+      size="footnotesize",
+      floating = FALSE,
+      include.rownames = FALSE, 
+      add.to.row=addtorow, 
+      hline.after=c(-1,-1, nrow(pcaSumry1)))
 @
 }
 
@@ -41,7 +54,7 @@ pcrSumry<-data.frame(Comp=1:length(pcr.expVar.x),
 @
 A prediction model based on the few components instead of all original variables, considered in PCA, not only remove the complexity of the model but also gives mutually orthogonal and uncorrelated components (new variables) which removes the multicollinearity problem during model fitting. A PCA model is fitted with observations in the training dataset (Jan 2000 - Dec 2012), the variation explained on both \mbf{X} and \mbf{Y} are presented in table-\ref{tbl:pcrSumry}.
 
-The results shows that the first \Sexpr{sum(stdev>=1)} components which explain larger variance than the actual variable, as seen in PCA, explain about \Sexpr{round(pcr.expVar.x)[sum(stdev>=1)]} percent of variation in response. If \Sexpr{min(which(round(pcr.expVar.x,1)==99))} components are considered, the percentage of explained variation in response rises to almost 99 percent.
+The results shows that the first \Sexpr{sum(stdev>=1)} components which have explained larger variance than the actual variable, as seen in PCA, explain about \Sexpr{round(pcr.expVar.y)[sum(stdev>=1)]} percent of variation in response. If \Sexpr{min(which(round(pcr.expVar.y,1)>=90))} components are considered, the percentage of explained variation in response rises to almost 90 percent.
 
 {\singlespacing\sffamily
 <<pcrSumry, echo=FALSE, results='asis', purl=FALSE>>=

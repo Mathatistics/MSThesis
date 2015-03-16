@@ -68,8 +68,6 @@ lapply(req.package, require, character.only=TRUE, quietly = T, warn.conflicts = 
   {\end@float}
 \makeatother
 
-
-
 % Opening ---------------------------|
 \title{Evaluation of Models for predicting the average monthly Euro versus Norwegian krone exchange rate from financial and commodity information}
 
@@ -77,7 +75,7 @@ lapply(req.package, require, character.only=TRUE, quietly = T, warn.conflicts = 
 \submitted{Dec 2014}  % degree conferral date (January, April, June, September, or November)
 \copyrightyear{2014}  % year in which the copyright is secured by publication of the dissertation.
 \author{Raju Rimal}
-\adviser{Ellen Sandeberg and Trygve Almoe}%replace with the full name of your adviser
+\adviser{Ellen Sandberg and Trygve Alm\o y}%replace with the full name of your adviser
 %\departmentprefix{Program in}  % defaults to "Department of", but programs need to change this.
 \department{IKBM}
 

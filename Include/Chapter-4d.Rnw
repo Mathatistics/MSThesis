@@ -51,9 +51,10 @@ rownames(cvStat)[grep("PLS", rownames(cvStat))]<-paste("PLS.Comp", pls.sc, sep="
 
 pls.min.comp<-as.numeric(summarize(cvStat[grep("PLS", rownames(cvStat)), ], pls.sc[which.min(RMSEP)]))
 pcr.min.comp<-as.numeric(summarize(cvStat[grep("PCR", rownames(cvStat)), ], pcr.sc[which.min(RMSEP)]))
+pls.min.com.test<-as.numeric(summarize(cvStat[grep("PLS", rownames(cvStat)), ], pls.sc[which.min(RMSEP)]))
 @
 
-Usually, a predictive model is expected to predict test responses not included in the sample. A model which can well predict the in-sampled observation may not perform well for out-of-sample observations. Cross-validation can verify the ablity of model during prediction of such observations. Since time-series has a sequential form of ordered by date, a random prediction is unsuitable. A cross-validation technique is appled to the training dataset dividing them into 12 consecutive segments. Each time a segment is removed from the fitted model which then predict the segment which was not included. The process is repeated for all the segments and RMSECV and $R^2$ prediction ($Q^2$) are computed using the equation-\ref{eq:rmsecv} and equation-\ref{eq:rsqpred} respectively. The validation is performed for all the models discussed above, from which RMSECV and $R^2$ predicted are computed as in table-\ref{tbl:valdSumry}.
+Usually, a predictive model is expected to predict test responses not included in the sample. A model which can well predict the in-sampled observation may not perform well for out-of-sample observations. Cross-validation can verify the ability of model during prediction in such cases. Since time-series has a sequential form of ordered by date, a random prediction is unsuitable. A cross-validation technique is applied to the training dataset dividing them into 12 consecutive segments. Each time a segment is removed from the fitted model which then predict the segment which was not included. The process is repeated for all the segments and RMSECV and $R^2$ prediction ($Q^2$) are computed using the equation-\ref{eq:rmsecv} and equation-\ref{eq:rsqpred} respectively. The validation is performed for all the models discussed above, from which RMSECV and $R^2$ predicted are computed as in table-\ref{tbl:valdSumry}.
 
 The table shows that PLS with \Sexpr{pls.min.comp} components and PCR with \Sexpr{pcr.min.comp} components have least RMSECV and highest $R^2$ predicted. This also indicate that those models speaks better with the new observation, that are not included in the models, in compared with other linear models.
 
@@ -90,7 +91,7 @@ Further analysis is made on PLS and PCR models by computing the RMSECV and $R^2$
 
 In the plot, PLS model starts predicting better from very beginning while PCR meets the quality only after considering \Sexpr{pcr.min.comp} components. From the results of cross-validation, it is expected to have best prediction from the PLS model with \Sexpr{pls.min.comp} components.
 
-\section{Predection on test Dataset}
+\section{Prediction on test Data}
 \label{sec:predTest}
 <<predMat, echo=FALSE>>=
 lm.pred<-predict(mdl.ft$linear$model, 
@@ -155,18 +156,18 @@ names(errMat)<-names(predMat.test)[-c(1:2)]
 errStkMat<-melt(errMat)
 errStkMat$L1<-factor(errStkMat$L1, levels = names(errMat))
 @
-After getting some idea about the prediction ability of a model from cross-validation procedure, it is time to observe its performance in the case of test dataset. Exchange Rate from Jan 2013 to Nov 2014 are predicted using the training dataset which includes the financial and commodity variables from Jan 2000 to Dec 2012. For the prediction, a multiple linear regression model, its subsets selected from various selection criteria, a PLS model with \Sexpr{pls.sc} components, a PCR model with \Sexpr{pcr.sc} components and a ridge regression model with paramter $\lambda=\Sexpr{lmd}$ are applied. A prediction is also made on the calibration set and the results for both predictions - Training set and Test set are plotted on figure-\ref{fig:forecast}.
+After getting some idea about the prediction ability of a model from cross-validation procedure, it is time to observe its performance in the case of test dataset. Exchange Rate from Jan 2013 to Nov 2014 are predicted using the training dataset which includes the financial and commodity variables from Jan 2000 to Dec 2012. For the prediction, a multiple linear regression model, its subsets selected from various selection criteria, a PLS model with \Sexpr{pls.sc} components, a PCR model with \Sexpr{pcr.sc} components and a ridge regression model with parameter $\lambda=\Sexpr{lmd}$ are applied. A prediction is also made on the calibration set and the results for both predictions - Training set and Test set are plotted on figure-\ref{fig:forecast}.
+<<whichtest, echo=FALSE>>=
+pcr.min.comp.test<-predMat.rpSumry[grep("PCR", predMat.rpSumry$variable),]%>%filter(L1=="test") %>% cbind(pcr.sc)%>%filter(RMSEP==min(RMSEP))%>%select(pcr.sc)%>% as.numeric
+pls.min.comp.test<-predMat.rpSumry[grep("PLS", predMat.rpSumry$variable),]%>%filter(L1=="test") %>% cbind(pls.sc)%>%filter(RMSEP==min(RMSEP))%>%select(pls.sc) %>% as.numeric
 
-The plot shows that the predictions from all the models are very close to the true value. From the RMSEP and R2pred value at the top left corner of each panel, subset model selected from minimum BIC criteria and model selected from Backward elimination procedure with F-value based criteria are predicted the test observations more closely as they have minimum RMSEP and maximum R2pred. However, in the case of in-sample prediction on the training dataset, linear model has least RMSEP, but since it is suffered from multi-collinearity problem, PLS model with 8 components can be an alternative.
+pcr.min.comp.train<-predMat.rpSumry[grep("PCR", predMat.rpSumry$variable),]%>%filter(L1=="train") %>% cbind(pcr.sc)%>%filter(RMSEP==min(RMSEP))%>%select(pcr.sc)%>% as.numeric
+pls.min.comp.train<-predMat.rpSumry[grep("PLS", predMat.rpSumry$variable),]%>%filter(L1=="train") %>% cbind(pls.sc)%>%filter(RMSEP==min(RMSEP))%>%select(pls.sc) %>% as.numeric
+@
+The plot shows that the predictions from all the models are very close to the true value. From the RMSEP and R2pred value at the top left corner of each panel, PLS model with \Sexpr{pls.min.comp.test} components have predicted the test observations more closely as they have minimum RMSEP and maximum $R^2$pred. However, in the case of in-sample prediction on the training dataset, linear model has least RMSEP and maximum $R^2$pred, but since it is suffered from multicollinearity problem, PLS model with \Sexpr{pls.min.comp.train} components and PCR with \Sexpr{pcr.min.comp.train} components can be an alternative.
 
 \section{Comparison of Models}
 \label{sec:modelComp}
-
-Models can be compared on the basis of their predictability and goodness of fit. As discussed in chapter-\ref{chap:modelsmethods}, the goodness of fit of a model can be accessed from \begin{inlinelist} \item variation the model has described,\item distribution of residuals and \item information criteria  \end{inlinelist} and the predictability of the model can be compared from \begin{inlinelist} \item RMSEP and \item $R^2$ predicted \end{inlinelist} for calibration set and testset.
-
-\subsection{Goodness of fit}
-\label{ssec:gof}
-All the linear models (full and subset) have explained almost 90 percent of variation in response which is seen in $R^2$ and $R^2$ adjusted presented in table-\ref{tbl:gofSumry}. Further, the models are significant as their p-value is very close to zero. However, subset model chosen from maximum $R^2$ adjusted and minimum AIC have minimum AIC and BIC value. Both the models have selected same set of variables so both of them are equivalent. In addition, these models have the least model standard deviation (sigma). Hence, these models can be selected as best model among all the linear models.
 <<gofSumry, echo=FALSE>>=
 gofSumry<-ldply(names(mdl.ft)[-c(2:4)], function(x){
     data.frame(Model=x,
@@ -183,6 +184,11 @@ gofSumry<-ldply(names(mdl.ft)[-c(2:4)], function(x){
                             lower.tail = FALSE), 3))
 })
 @
+Models can be compared on the basis of their predictability and goodness of fit. As discussed in chapter-\ref{chap:modelsmethods}, the goodness of fit of a model can be accessed from \begin{inlinelist} \item variation the model has described,\item distribution of residuals and \item information criteria  \end{inlinelist}. Also, the predictability of the model can be compared from \begin{inlinelist} \item RMSEP and \item $R^2$ predicted \end{inlinelist} for calibration and test dataset.
+
+\subsection{Goodness of fit}
+\label{ssec:gof}
+All the linear models (full and subset) have explained almost 90 percent of variation in response which is seen in $R^2$ and $R^2$ adjusted presented in table-\ref{tbl:gofSumry}. Further, the models are significant since their p-value is very close to zero. Comparing the models, \texttt{\Sexpr{filter(gofSumry, AIC==min(AIC))$Model[1]}} and \texttt{\Sexpr{filter(gofSumry, AIC==min(AIC))$Model[2]}} have smallest AIC value while \texttt{\Sexpr{filter(gofSumry, BIC==min(BIC))$Model[1]}} and \texttt{\Sexpr{filter(gofSumry, BIC==min(BIC))$Model[2]}} models have smallest BIC. Each pair of these models have selected the same set of variables each set can be considered as equivalent. In addition, \texttt{\Sexpr{filter(gofSumry, R.Sq.Adj==max(R.Sq.Adj))$Model[1]}} and \texttt{\Sexpr{filter(gofSumry, R.Sq.Adj==max(R.Sq.Adj))$Model[2]}} models have maximum $R^2$adj and minimum residual standard error (sigma).
 <<gofSumryPrint, echo=FALSE, purl=FALSE, results='asis', size='footnotesize'>>=
 print(xtable(gofSumry, 
              caption="Summary statistic and information criteria for model comparison", 
@@ -195,11 +201,13 @@ print(xtable(gofSumry,
       caption.placement = "top")
 @
 
-Further, the residues obtained from these selected regression models are nearly Normal and random which can be seen from the diagnostic plots in \ref{diagPlot} but still there are some outliers due to the globel financial crisis discussed in chapter-\ref{ch:...}. Despite having outliers in these models, the outliers are not very influencial as their cook's distace is still less than a unit.
+Since prediction is the objective, \texttt{\Sexpr{filter(gofSumry, R.Sq.Adj==max(R.Sq.Adj))$Model[1]}} and \texttt{\Sexpr{filter(gofSumry, R.Sq.Adj==max(R.Sq.Adj))$Model[2]}} model can be considered as better than other linear models since they have smallest residual standard error and explain the response variable better than others. Further, the residues obtained from this selected set of regression models are nearly Normal and random which can be seen from the diagnostic plots in appendix-\ref{diagPlot} but still there are some outliers due to the global financial crisis discussed in section-\ref{sec:crisisEffect}. Despite having outliers in these models, the outliers are not very influential as their cook's distance is still less than a unity.
+
+In the case of PLS and PCR models, the residues obtained from them after considering \Sexpr{pls.min.comp.test} for PLS and \Sexpr{pcr.min.comp.test} for PCR are plotted in appendix-\ref{fig:residPlot} are also random. This shows that the models have not missed important information and the models does not have any effect of autocorrelation anymore.
 
 \subsection{Predictability}
 \label{ssec:prdblty}
-The main concert of this thesis is about the predictability of a model. The predictability of a model is measured using RMSEP and $R^2$ predicted. A model exhibit different nature in the case of prediction in training dataset, during cross-validation and when implementing it to predict the test dataset. The plot in fig-\ref{fig:ValdSumryPlot} shows this discripancies.
+The main concert of this thesis is about the predictability of a model. The predictability of a model is measured using RMSEP and $R^2$ predicted. A model exhibit different nature in the case of prediction in training dataset, during cross-validation and when implementing it to predict the test dataset. The plot in fig-\ref{fig:ValdSumryPlot} shows this discrepancies.
 <<ValdSumry, echo=FALSE, results='hide'>>=
 ValdSumry<-rbind(predMat.rpSumry, data.frame(variable=rownames(cvStat), L1="cv", cvStat, row.names = NULL))
 names(ValdSumry)<-c("Model", "Type", "RMSEP", "R2pred")
@@ -245,7 +253,12 @@ mdlComp.Plot<-ggplot(melt(ValdSumry, 1:2), aes(Model, value,
 print(mdlComp.Plot)
 @
 
-For all the candidate models considered as best, RMSEP and $R^2$ predicted are tabulated for training dataset, during cross-validation and for test dataset. It is observed that Linear Model has generated least prediction error when predicting the samples on training dataset. During cross-validation, PLS model with \Sexpr{pls.min.comp} components perform best by giving least RMSEP (\Sexpr{filter(vs.cast, Model=='PLS.Comp9')[,'cv_RMSEP']}). The main concert of this this thesis is the prediction of test dataset. The Subset of linear model selected from minimum BIC criteria has least prediction error (RMSEP=\Sexpr{filter(vs.cast, Model=='BICModel')[,'test_RMSEP']}) and maximum $R^2$ predicted (\Sexpr{filter(vs.cast, Model=='BICModel')[,'cv_R2pred']}).
+<<whichRMSEPtest, echo=FALSE>>=
+pls.min.test.rmsep<-predMat.rpSumry[grep("PLS", predMat.rpSumry$variable),]%>%filter(L1=="test") %>% cbind(pls.sc)%>%summarize(min(RMSEP))%>% as.numeric
+pls.min.test.r2pred<-predMat.rpSumry[grep("PLS", predMat.rpSumry$variable),]%>%filter(L1=="test") %>% cbind(pls.sc)%>%summarize(max(RMSEP))%>% as.numeric
+@
+
+From all the candidate models considered as best, RMSEP and $R^2$ predicted are tabulated for training dataset, during cross-validation and for test dataset. It is observed that Linear Model has generated least prediction error and maximum $R^2$pred when predicting the samples on training dataset. During cross-validation, PLS model with \Sexpr{pls.min.comp} components perform best by giving least RMSEP (\Sexpr{round(filter(vs.cast, Model=='PLS.Comp9')[,'cv_RMSEP'],3)}). The main concert of this thesis is the prediction of test dataset. PLS model with \Sexpr{pls.min.comp.test} components producing RMSEP (\Sexpr{round(pls.min.test.rmsep,4)}) and $R^2$pred (\Sexpr{round(pls.min.test.r2pred, 4)}) can be considered as the best model.
 <<ValdSumryPrnt, echo=FALSE, results='asis', purl=FALSE>>=
 print(ValdSumryTabl, include.rownames = FALSE, 
       include.colnames = FALSE, 
@@ -284,11 +297,8 @@ cp<-cp+scale_fill_discrete(label=c("Linear", "Ridge",
 cp<-cp+ylab("Coefficients")+xlab("Variables")
 print(cp)
 @
-The estimated coefficients of a linear model are larger in magnitude than the Ridge, PCR and PLS models. The first lagged response has very high (\Sexpr{round(max(coefMat[, "linear"]), 4)}) positive coefficient and has large influence on the model. The plot in figure-\ref{fig:coefPlot} shows that Import of old ship has larger coefficients than other import and export variables. On Dec 2008, a large sum of money is used to import elderly ships in Norway (\ref{fig:tsPlotImp}) which has an impact on its effect on the exchange rate models.
-
-In addition, the PLS (\Sexpr{pls.min.comp} Comp) and PCR (\Sexpr{pcr.min.comp} Comp) model have identified Oil spot price, Key interest rate, CPI and its lagged value as influential variable apart from the two lagged response variables. Some of the variables having higher coefficients obtained from these two models are presented in table -\ref{tbl:coefEstdTbl}.
-
-<<impExpShip, echo=FALSE, purl=FALSE, fig.cap="Import and Export of new and old ship in Norway from Jan 2000 to November 2014", fig.width='0.8\\textwidth', fig.height=3, eval=FALSE, fig.show='hide'>>=
+The estimated coefficients of a linear model are larger in magnitude than the Ridge, PCR and PLS models. The first lagged response has very high (\Sexpr{round(max(coefMat[, "linear"]), 4)}) positive coefficient and has large influence on the model. The plot in figure-\ref{fig:coefPlot} shows that Import of old ship has larger coefficients than other import and export variables. On Dec 2008, a large sum of money is used to import elderly ships in Norway (fig-\ref{fig:tsPlotImp}) which has an impact on its effect on the exchange rate models.
+<<impExpShip, echo=FALSE, purl=FALSE, fig.cap="Import and Export of new and old ship in Norway from Jan 2000 to November 2014", fig.width='0.8\\textwidth', fig.height=3, eval=FALSE, fig.show='hide', fig.pos='htbp'>>=
 impExpShipPlt<-suppressWarnings(
     ggplot(melt(baseTable[,c("Date", 
                              ls(baseTable, pattern = "^(Imp|Exp).+Ship$"))], 1), 
@@ -302,37 +312,22 @@ impExpShipPlt<-suppressWarnings(
         ggtitle("Import and Export of new and old ships in Norway")
     )
 @
+In addition, the PLS (\Sexpr{pls.min.comp} Comp) and PCR (\Sexpr{pcr.min.comp} Comp) model have identified Oil spot price, Key interest rate, CPI and its lagged value as influential variable apart from the two lagged response variables. Some of the variables having higher coefficients obtained from these two models are presented in table -\ref{tbl:coefEstdTbl}.
 
-
-<<coefMatPrint, echo=FALSE, results='asis'>>=
-coefMatxTable<-xtable(coefMat[c(order(coefMat$pcr, coefMat$pls)[1:4], 
+{\singlespacing\scriptsize
+<<coefMatPrint, echo=FALSE, results='asis', purl=FALSE>>=
+coefMatSelected<-coefMat[c(order(coefMat$pcr, coefMat$pls)[1:3], 
                                 order(coefMat$pcr, coefMat$pls, 
-                                      decreasing = TRUE)[1:4]), c(1,4:5)], 
-                      digits = 4,
-                      caption = c("Top four (both positive and negative) Coefficient Estimate of PLS and PCR model", "Coefficient Estimate for PLS and PCR model"),
-                      label="tbl:coefEstdTbl")
-print.xtable(coefMatxTable, include.rownames = FALSE,
-             caption.placement = 'top', table.placement = 'htp')
+                                      decreasing = TRUE)[1:3]), c(1,4:5)]
+rownames(coefMatSelected)<-coefMatSelected[,1]
+coefMatSelected<-coefMatSelected[,-1]
+coefMatxTable<-xtable(t(coefMatSelected), digits = 4)
+caption(coefMatxTable) <- c("Top three (both positive and negative) Coefficient Estimate of PLS and PCR model", "Coefficient Estimate for PLS and PCR model")
+label(coefMatxTable)<-"tbl:coefEstdTbl"
+print.xtable(coefMatxTable, caption.placement = "top")
 @
+}
 
-
-<<forecast, echo=FALSE, fig.cap="Prediction made on trained and test dataset using different models", fig.height=9.5, fig.width="\\textwidth">>=
-ggplot(stkPredMat, aes(Date, value))+
-    geom_line(aes(color="red"))+
-    facet_wrap(~variable+L1, 
-               scale="free_x", 
-               ncol = 4)+
-    geom_line(aes(y=TrueValue, color="blue"), 
-              shape=21)+
-    theme_bw()+
-    theme(axis.text.x=element_text(angle=45, hjust=0.5, vjust=0.5),
-          text=element_text(size=9),
-          legend.title=element_blank(),
-          legend.position="top")+
-    geom_text(data=predMat.rpSumry, 
-              aes(label=paste("RMSEP:", round(RMSEP, 3), 
-                              "\nR2pred", round(R2pred, 3))), 
-              x=-Inf, y=Inf, hjust=-0.1, vjust=1.1, size=2.5)+
-    scale_color_manual(values=c("red", "blue"), 
-                       labels=c("Predicted", "Original"))
-@
+\section{Autocorrelation and its resolution}
+\label{sec:autocorr}
+Due to autocorrelation the lagged response variable are included in the model. Since the partial autocorrelation function (PACF) plot of the residuals in appendix-\ref{fig:pacfPlot} shows that the error terms are free from autocorrelation. This justify the inclusion of the lagged variable in the model to remove autocorrelation present.

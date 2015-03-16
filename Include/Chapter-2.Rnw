@@ -4,7 +4,7 @@
 \label{ch:DataMaterial}
 Prediction of dynamics of Exchange Rate through Economic and Financial indicators is the main aim of this thesis. From these two broad categories, only those factors were considered which are believed to be useful to understand the exchange rate dynamics.
 
-\section{ForeX Market}
+\section{ForEx Market}
 \label{sec:forexMarket}
 Foreign Exchange(Fx) Market is the most traded and liquid financial market where individuals, firms and banks buy and sell foreign currencies. Forex market constitute of monetary counters connected electronically which are in constant contact forming a single international financial market. The market remains open 24 hr a day for five working days of a week (\cite{fxIntro}). 
 
@@ -26,11 +26,11 @@ After introduction of Krone in April 1875 (\cite{NorBnkHistory}), Norway was pus
 
 \section{EURO}
 \label{sec:EuroIntro}
-Euro, the official currency in the Eurozone, was introduced as a virtual currency in 1999 and later as physical in 2002. It is the single currency shared by 19\footnote{\url{https://www.ecb.europa.eu/euro/intro/html/index.en.html}} of the European Union's Member States of Euro Area. Although European Central Bank (ECB) manages Euro, the fiscal policy (public revenue and expenditure) are in the hands of individual national authorities. The single currency market throughout the euro zone not only makes traveling across the countries easier but also helps the member country to keep their economy sound and stable. This situation removes currency exchange cost, smooth international trade and consequently gives them more powerful voice in the world. A stable economy and larger area protects euro zone from external economic fluctuation, instability in currency market and unpredictable rise in oil prices.(\cite{euro2015ecb})
+Euro, the official currency in the Eurozone, was introduced as a virtual currency in 1999 and later as physical in 2002. It is the single currency shared by 19\footnote{\url{https://www.ecb.europa.eu/euro/intro/html/index.en.html}} of the European Union's Member States of Euro Area. Although European Central Bank (ECB) manages Euro, the fiscal policy (public revenue and expenditure) are in the hands of individual national authorities. The single currency market throughout the euro zone not only makes traveling across the countries easier but also helps the member country to keep their economy sound and stable. This situation removes currency exchange cost, smooth international trade and consequently gives them more powerful voice in the world. A stable economy and larger area protects euro zone from external economic fluctuations, instability in currency market and unpredictable rise in oil prices.(\cite{euro2015ecb})
 
 \section{Factors influencing Exchange Rate}
 \label{sec:AffectingFactors}
-	The demand of any currency relative to its supply determines its price, just like any other commodity. For each possible price of a Norwegian Krone, there is a corresponding demand and supply to be exchanged with euro in the money market. When demand of krone equals its supply, the price it exhibit at some specific time is called its equilibrium exchange rate. Factors like inflation, interest rates, expectation and government policy affects the demand for any currency. But the supply is mostly in control of central bank.  In a floating exchange rate regime, the shift in demand (fig-\ref{fig:demandShift}) and supply(fig-\ref{fig:supplyShift}) function  determines equilibrium exchange rate of any currency.
+	The demand of any currency relative to its supply determines its price, just like any other commodity. For each possible price of a Norwegian Krone, there is a corresponding demand and supply to be exchanged with euro in the money market. When demand of krone equals its supply, the price it exhibit at some specific time is called its equilibrium exchange rate. Factors like inflation, interest rates, expectation and government policy affects the demand for any currency. But the supply is mostly in control of the central bank.  In a floating exchange rate regime, the shift in demand (fig-\ref{fig:demandShift}) and supply(fig-\ref{fig:supplyShift}) function  determines equilibrium exchange rate of any currency.
 
 \begin{figure}[htbp]
 \begin{subfigure}[b]{0.5\textwidth}
@@ -46,7 +46,7 @@ Euro, the official currency in the Eurozone, was introduced as a virtual currenc
 \caption{Effect of shifts on demand and supply of currencies on their Exchange rates}
 \end{figure}
 
-In case of demand shift, being currency supply constant, the exchange rate will suddenly rise to $e’_d$ creating deadweight loss (also known as excess burden or allocative inefficiency\footnote{\url{http://www.princeton.edu/~achaney/tmve/wiki100k/docs/Deadweight_loss.html}}) which consequently pushes the supply from $Q_0$ to $Q_1$ creating a new equilibrium exchange rate at $e_1$. In the similar fashion, if the market is over flooded with currency, shifting the supply function and creating deadweight loss, the exchange rate is pressed from $e_0$ to create a new equilibrium at $e_1$. In both the situation, the quantity supplied althought being increased, the first one leads to a rise in exchange rate while the other leads to its fall.
+In case of demand shift, with constant currency supply, the exchange rate will suddenly rise to $e’_d$ creating dead weight loss (also known as excess burden or allocative inefficiency\footnote{\url{http://www.princeton.edu/~achaney/tmve/wiki100k/docs/Deadweight_loss.html}}) which consequently pushes the supply from $Q_0$ to $Q_1$ creating a new equilibrium exchange rate at $e_1$. In the similar fashion, if the market is over flooded with currency, shifting the supply function and creating dead weight loss, the exchange rate is pressed from $e_0$ to create a new equilibrium at $e_1$. In both the situation, the quantity supplied although being increased, the first one leads to a rise in exchange rate while the other leads to its fall.
 
 \citet*[p.~103]{madura2012international} suggested an equation consisting those macroeconomic factors that can affect the demand and supply of any currency and consequently the exchange rate as,
 
@@ -56,7 +56,7 @@ In case of demand shift, being currency supply constant, the exchange rate will 
 
 where,
 \begin{tabularx}{\textwidth}{rl}
-e: & percentage chage in spot exchange rate\\
+e: & percentage change in spot exchange rate\\
 $\Delta$ INF: & change in inflation differential between two countries (currencies)\\
 $\Delta$ INT: & change in interest rate differential between two countries\\
 $\Delta$ INC: & change in the income level differential between two countries\\
@@ -76,7 +76,7 @@ Inflation is the steady rise in overall price level, i.e. a decrease in the valu
     \label{fig:inflationEffect}
 \end{figure}
 
-Statistics Norway prepares and publishes the official figures for inflation, the consumer price index (CPI) with base year at 1998. Since the real value of money is constantly decling, high inflation means that storing money is expensive. while low and stable inflation contributes to an efficient distribution of resources in a market economy (\cite{NorgesBank2007faq}). Data for CPI is obtained for this thesis from Norges bank, since this is an inportant factor that can influence exchange rate. The time-series plot for CPI in figure-\ref{fig:tsCPI} shows an steady increment over the time. 
+Statistics Norway prepares and publishes the official figures for inflation, the consumer price index (CPI) with base year at 1998. Since the real value of money is constantly declining, high inflation means that storing money is expensive. while low and stable inflation contributes to an efficient distribution of resources in a market economy (\cite{NorgesBank2007faq}). Since this is an important factor that can influence exchange rate, data for CPI is obtained for this thesis from Norges bank. The time-series plot for CPI in figure-\ref{fig:tsCPI} shows an steady increment over the time. 
 
 \begin{figure} 
 <<tsCPI, echo=FALSE, fig.width=7, fig.height=4, purl=FALSE>>=
@@ -102,7 +102,7 @@ Since Interest rate has impact on inflation and currency values, by manipulating
 \centering
     \includestandalone[width=0.65\linewidth]{include/interestRateShift}
     \flushright\scriptsize{Source: \cite{madura2012international}}
-    \caption[Effect of interest rate change in Exchange Rate]{Effect of Interest Rate change on Exchange Rate includes (a) Demand Shift: Due to increased interest rate in Norway, demand of Norwegian Krone increases creating a demand shift in demand function and (b) Supply Shift: The supply of Krone decrease as Norwegian increase their domestic investment creating a sortage of NOK in market.}
+    \caption[Effect of interest rate change in Exchange Rate]{Effect of Interest Rate change on Exchange Rate includes (a) Demand Shift: Due to increased interest rate in Norway, demand of Norwegian Krone increases creating a demand shift in demand function and (b) Supply Shift: The supply of Krone decrease as Norwegian increase their domestic investment creating a shortage of NOK in market.}
     \label{fig:intRateEffect}
 \end{figure}
 
@@ -116,7 +116,7 @@ The influence of market interest rate flows through multiple channel such as dem
 \end{figure}
 
 
-According to \citet{madura2012international}, change in interest rate in third country can also affect the exchange rates between NOK and Euro. For instance, the sudden increase of interest rate in US would shift the european investment from Norway to US which consequently reduce the demand of NOK resulting a downward pressure on its exchange rate with Euro.
+According to \citet{madura2012international}, change in interest rate in third country can also affect the exchange rates between NOK and Euro. For instance, the sudden increase of interest rate in US would shift the European investment from Norway to US which consequently reduce the demand of NOK resulting a downward pressure on its exchange rate with Euro.
 
 <<intRates, echo=FALSE, warning=FALSE, fig.height=4, fig.cap="Interest Rates from Norway and Eurozone and their comparision with Exchange Rate showing a distinct inverse relationship", fig.pos='!htbp', purl=FALSE>>=
 intRates<-melt(baseTable[,c("Date", "PerEURO", "KeyIntRate", "LoanIntRate", "EuroIntRate")], 1:2)
@@ -132,12 +132,12 @@ irp<-irp+guides(color=guide_legend(nrow=2))
 print(irp)
 @
 
-Since the interest rate is a key factor influencing exchange rate, the key interest rate of Norway and Eurozone along with the loan interest rate of Norway is considered in this thesis. The time series plot of these variables are in figure - \ref{fig:intRates}. Due to simultenious act of other variables, the plot does not exhibit any discrete relationship. However, the model fitted by the data collected suggest some indepth understanding of this relationship which is analysed and presented in chapter-\ref{ch:dataAnalysis}.
+Since the interest rate is a key factor influencing exchange rate, the key interest rate of Norway and Eurozone along with the loan interest rate of Norway is considered in this thesis. The time series plot of these variables are in figure - \ref{fig:intRates}. Due to simultaneous act of other variables, the plot does not exhibit any discrete relationship. However, the model fitted by the data collected suggest some in-depth understanding of this relationship which is analysed and presented in chapter-\ref{ch:dataAnalysis}.
 
 \subsection{Income Levels}
 \label{ssec:incLevels}
 
-The rise in real income level increases the consumption level. Relative income levels of a country is another factor which can affect the demand of imported goods which consequently affect exchange rate (\cite{madura2012international}). For instance, if the income levels of people of eurozone rises, other factor being constant, the demand for foreign goods in eurozone may increase which can shift the demand function outward and subsequently increase the exchange rate (figure-\ref{fig:incEffect}).
+The rise in real income level increases the consumption level. Relative income levels of a country is another factor which can affect the demand of imported goods which consequently affect exchange rate (\cite{madura2012international}). For instance, if the income levels of people of euro zone rises, other factor being constant, the demand for foreign goods in euro zone may increase which can shift the demand function outward and subsequently increase the exchange rate (figure-\ref{fig:incEffect}).
 
 \begin{figure}[ht]
 \centering
@@ -159,20 +159,20 @@ Government Control is the fourth factor \citet{madura2012international} has cons
     \item intervening (buying and selling currencies) in the foreign exchange markets, and 
     \item affecting macro variables such as inflation, interest rates, and income levels.
 \end{inlinelist}
-Norges Bank could force the currency to depreciate by flooding the market with NOK (i.e increasing supply) if Norway wants to boost its exports. Similarly, the bank could used their foreign currency reserve to purchase NOK to rise its value. Such direct interventions make considerable impact on the exchange rate. As a indirect intervention, the government can influening the underlying macroeconomic factors like inflation, interest rate and income level (\cite[p.~107]{madura2012international}). 
+Norges Bank could force the currency to depreciate by flooding the market with NOK (i.e increasing supply) if Norway wants to boost its exports. Similarly, the bank could used their foreign currency reserve to purchase NOK to rise its value. Such direct interventions make considerable impact on the exchange rate. As a indirect intervention, the government can influencing the underlying macroeconomic factors like inflation, interest rate and income level (\cite[p.~107]{madura2012international}). 
 
 \subsection{Expectations}
 \label{ssec:expectations}
 
 Response to new information in foreign exchange market is similar to other financial market. The current expectation for the future value is reflected in the exchange rate changes. Like in stock market, when a company publishes its prosperous financial statement, the stock price suddenly rises; the forex market also exhibit similar performance. For example, a news of increasing inflation in Norway cause currency traders to sell Norwegian Krone expecting a decrease in its future value. This expectation is immediately seen as a downward pressure on Norwegian Krone. The similar effect is obtained when speculator expects the currency to depreciate (\cite[p.~107]{madura2012international}).
 
-A person of one country need the currency of another country for various purposes such as trade of goods and services, foreign investment and travelling. The actual flow of currency from one country to another is in these forms of activities. The volume of transaction of trade in terms of goods and services between specific countries is kept recorded as a form of balance of payment which can even have signal of possible shifts in exchange rate.
+A person of one country need the currency of another country for various purposes such as trade of goods and services, foreign investment and travelling. The actual flow of currency from one country to another is in these forms of activities. The transaction of trade in terms of goods and services between specific countries is kept recorded as a form of balance of payment which can even have signal of possible shifts in exchange rate.
 
 \section{Balance of Payment}
 \label{sec:bop} 
-Although international trade is possessed in various forms, the transaction of multiple currency is common in each of them. A country keep these transactions with other countries as a form of Balance of Payments. A balance of payment account maintain a systematic records of these transactions conducted at some specific time period between a home country and others (those countries with which the transactions are made). A balance of payment account of a country exhibit the size of its economic activities with rest of the world (\cite[p.~462]{appleyard2014international}).
+Although international trade is possessed in various forms, the transaction of multiple currency is common in each of them. A country keeps these transactions with other countries as a form of Balance of Payments account. A balance of payment account maintains a systematic records of these transactions conducted at some specific time period between a home country and others (those countries with which the transactions are made). A balance of payment account of a country exhibit the size of its economic activities with rest of the world (\cite[p.~462]{appleyard2014international}).
 
-Since Balance of Payment is a bookkeeping system for inter countries economic activities, the items with payments inward to the home country are credited while payments outward from the home country are debited. Exports, inflow of foreign investment, interest and devidents obtained from the investment made on foreign country by the home country are considered as credited items as they increase the inward flow of currency. Similary, Imports, investment made on foreign countries, interest and devidents paied to foreign countries for their investment in home country are the items to be debited (\cite[p.~465]{appleyard2014international}).
+Since Balance of Payment is a bookkeeping system for inter countries economic activities, the items with payments inward to the home country are credited while payments outward from the home country are debited. Exports, inflow of foreign investment, interest and dividends obtained from the investment made on foreign country by the home country are considered as credited items as they increase the inward flow of currency. Similarly, Imports, investment made on foreign countries, interest and dividends paid to foreign countries for their investment in home country are the items to be debited (\cite[p.~465]{appleyard2014international}).
 
 \begin{table}[htbp]
 \centering
@@ -186,7 +186,7 @@ Balance of payment can be classified into two broad categories - \begin{inlineli
 
 \subsection{Current Account}
 \label{ssec:currentAccount}
-Current account measures net imports and exports of a country. Imports and exports are divied into three sub categories -
+Current account measures net imports and exports of a country. Imports and exports are divided into three sub categories -
 \begin{inlinelist}
     \item Trade of goods, 
     \item Trade of services and 
@@ -201,7 +201,7 @@ The current account balance is the difference between export and import. When ex
 \text{Current Account}=\text{Total Exports}-\text{Total Imports}
 \end{equation}
 
-Above equation can also be expressed as a form of income and expenditure (\ref{eq:curAccBal2}) as the difference between Total National Income and Total Domestic consumption (\cite{krugman2006international}).
+Above equation can also be expressed as a form of income and expenditure like in equation-\ref{eq:curAccBal2} which is the difference between Total National Income and Total Domestic consumption (\cite{krugman2006international}).
 
 \begin{equation}
 \label{eq:curAccBal2}
@@ -219,7 +219,7 @@ G & = & Government Purchases \\
 \end{tabular}
 
 
-Current account incorportates a wide range of international transactions so there is a vital roal of exchange rate in each of those transaction. This thesis has considered the monthly data for imports and exports of goods which is availiable from \href{http://ssb.no}{Statistics Norway}. In Norway, current balance is highly influence by the balance in goods. Figure-\ref{fig:curBal} shows that the balance in services in Norway is decreasing while the balance in Goods has boost up around after 1998. Further, the balance in services ploted in the same figure from the quartely data exhibit a seasonal trend which is usual in Norway.
+Current account incorporates a wide range of international transactions so there is a vital role of exchange rate in each of those transaction. This thesis has considered the monthly data for imports and exports of goods which is available from \href{http://ssb.no}{Statistics Norway}. In Norway, current balance is highly influence by the balance in goods. Figure-\ref{fig:curBal} shows that the balance in services in Norway is decreasing while the balance in Goods has boost up after around 1998. Further, the balance in services plotted in the same figure from the quarterly data exhibit a seasonal trend which is usual in Norway.
 <<curBal, echo=FALSE, purl=FALSE, fig.cap="Current Account Balance prepared from quartely data from the year 1981 to 2014", fig.height=4, fig.width="0.8\\textwidth">>=
 curBal<-ggplot(melt(balTot[, c("Date", 
                                "BalanceGoods", 
@@ -238,30 +238,30 @@ print(curBal)
 
 \subsubsection{Imports}
 \label{sssec:imports}
-Machinery \& equipments, chemicals, metals and food stuffs are major imports of Norway. Sweden (13.6\%), Germany (12.4\%), China (9.3\%), Denmark (6.3\%), UK (6.1\%) and US (5.4\%) are major import partners~\footnote{\url{https://www.cia.gov/library/publications/the-world-factbook/geos/no.html}}. The monthly imports of New Ships (\texttt{ImpNewShip}), Oil Platform (\texttt{ImpOilPlat}), Old Ship (\texttt{ImpOldShip}) and all other items excluding Ship and Oil Platform (\texttt{ImpExShipOilPlat}) are considered as predictor variable in data analysis of this thesis. The time-series plot for these variables are presented in figure-\ref{fig:tsPlotImp}
+Machinery \& equipment, chemicals, metals and food stuffs are major imports of Norway. Sweden (13.6\%), Germany (12.4\%), China (9.3\%), Denmark (6.3\%), UK (6.1\%) and US (5.4\%) are major import partners~\footnote{\url{https://www.cia.gov/library/publications/the-world-factbook/geos/no.html}}. The monthly imports of new ships (\texttt{ImpNewShip}), oil platform (\texttt{ImpOilPlat}), old ships (\texttt{ImpOldShip}) and all other items excluding ship and oil platform (\texttt{ImpExShipOilPlat}) are considered as predictor variable in data analysis. The time-series plot for these variables are presented in figure-\ref{fig:tsPlotImp}
 <<tsPlotImp, echo=FALSE, fig.height=4, fig.cap="Time Series plot of major imports of Norway", warning=FALSE, error=FALSE, purl=FALSE>>=
 plotTS(baseTable[,c("Date", ls(baseTable, pattern = "Imp"))], 1, nc = 2)
 @
 
 \subsubsection{Exports}
 \label{sssec:exports}
-Norway is richly endowed with natural resources - petroleum, hydropower, fish, forests, and minerals but the economy is highly dependent on the petroleum sector~\footnotemark[\value{footnote}]. Petroleum products, machinery and equipments, metals, chemicals, ships and fishes are major exports of Norway~\footnotemark[\value{footnote}]. The monthly time series for the Export of condensed fuel (\texttt{ExpCond}), crude oil (\texttt{ExpCrdOil}), natural gas (\texttt{ExpNatGas}), new ships (\texttt{ExpNewShip}), oil platform (\texttt{ExpOilPlat}), old ships (\texttt{ExpOldShip}) and all other exports excluding ships and oil platform (\texttt{ExpExShipOilPlat}) are presented in figure-\ref{fig:tsPlotExp}.
+Norway is richly endowed with natural resources - petroleum, hydro-power, fish, forests, and minerals but the economy is highly dependent on the petroleum sector~\footnotemark[\value{footnote}]. Petroleum products, machinery and equipment, metals, chemicals, ships and fishes are major exports of Norway~\footnotemark[\value{footnote}]. The monthly time series for the Export of condensed fuel (\texttt{ExpCond}), crude oil (\texttt{ExpCrdOil}), natural gas (\texttt{ExpNatGas}), new ships (\texttt{ExpNewShip}), oil platform (\texttt{ExpOilPlat}), old ships (\texttt{ExpOldShip}) and all other exports excluding ships and oil platforms (\texttt{ExpExShipOilPlat}) are presented in figure-\ref{fig:tsPlotExp}.
 <<tsPlotExp, echo=FALSE, fig.height=5, fig.cap="Time Series plot of major exports of Norway", warning=FALSE, error=FALSE>>=
 plotTS(baseTable[,c("Date", ls(baseTable, pattern = "Exp"))], 1, nc=2)
 @
 
 \subsection{Capital and Financial Accounts}
 \label{ssec:capitalAccount}
-The following text of capital and finacial accounts are adapted from \citetitle{madura2012international} by \citet{madura2012international}. A capital account includes transaction of inter-country transfer of financial assets due to immigration and non-financial assets such as buying and selling of patents and trademarks. These transaction are relatively minor in comparison to the items of financial accounts. The key elements of financial account are,
+The following text of capital and financial accounts are adapted from \citetitle{madura2012international} by \citet{madura2012international}. A capital account includes transaction of inter-country transfer of financial assets due to immigration and non-financial assets such as buying and selling of patents and trademarks. These transaction are relatively minor in comparison to the items of financial accounts. The key elements of financial account are,
 
 \begin{itemize}
 \item \textbf{Direct Foreign Investment} includes investment in fixed assets in foreign countries.
 \item \textbf{Portfolio Investment} includes transaction of long term financial assets such as bonds and stocks.
 \item \textbf{Other Capital Investment} includes short term financial assets such as money market securities.
-\item \textbf{Errors, Ommissions and Reserves} includes adjustment for negative balance in current account.
+\item \textbf{Errors, Omissions and Reserves} includes adjustment for negative balance in current account.
 \end{itemize}
 
-Due to unavailability of monthly data for capital accounts, this thesis has not included the data in the analysis. The time series plot from quartely totals for the variables related to capital account are plotted in the figure-\ref{fig:capAccPlot}. The figure shows that the economy of Norway has drastically heated after the year around 1998.
+Due to unavailability of monthly data for capital accounts, this thesis has not included the data in the analysis. The time series plot from quarterly totals for the variables related to capital account are plotted in the figure-\ref{fig:capAccPlot}. The figure shows that the economy of Norway has drastically heated after the year around 1998.
 
 <<capAccPlot, echo=FALSE, purl=FALSE, fig.height=4, fig.cap='Time Series plot of variables related to capital account'>>=
 plotTS(balTot[, c(1,(ncol(balTot)-2):ncol(balTot))], 1, 3)+scale_x_yearqtr(format = "%Y")
@@ -269,7 +269,7 @@ plotTS(balTot[, c(1,(ncol(balTot)-2):ncol(balTot))], 1, 3)+scale_x_yearqtr(forma
 
 \section{Oil Spot Price}
 \label{sec:oilspotprice}
-After the discovery of oil in the North Sea in late 1969, economy of Norway has transformed completely (\cite{Eco:RichCousin}). Since the economy of Norway is highly depended on its petrolium related products, oil spot price also has influence on foreign exchange rate of Norway. However, \citet{ferraro2012can} argued that the predictive ability of exchange rate from oil price is more effective at a daily frequency and is hardly visiable at monthly frequencies. Oil spot price is also considered as predictive variable in this thesis. The heavy fluctuation in the oil spot price shown in time series plot (fig-\ref{fig:oilPricePlot}) is due to the financial crisis of 2007-2008.
+After the discovery of oil in the North Sea in late 1969, economy of Norway has transformed completely (\cite{Eco:RichCousin}). Since the economy of Norway is highly depended on its petroleum products, oil spot price also has influence on foreign exchange rate of Norway. However, \citet{ferraro2012can} argued that the predictive ability of exchange rate from oil price is more effective at a daily frequency and is hardly visible at monthly frequencies. Oil spot price is also considered as predictive variable in this thesis. The heavy fluctuation in the oil spot price shown in time series plot (fig-\ref{fig:oilPricePlot}) is due to the financial crisis of 2007-2009.
 
 <<oilPricePlot, echo=FALSE, purl=FALSE, fig.height=4, fig.cap='Time Series plot of oil spot price from Jan 2000'>>=
 plotTS(baseTable[, c("Date", "OilSpotPrice")], 1, 1)
@@ -277,7 +277,7 @@ plotTS(baseTable[, c("Date", "OilSpotPrice")], 1, 1)
 
 \section{Lagged response variable as predictor}
 \label{sec:lagRespVar}
-Exchange rate, being a time-series variable, contains autocorrelation which can be checked out by including the lagged variables of the response as predictor. Further, the correlation of response (\texttt{PerEURO}) with its first lag and second lag are \Sexpr{round(cor(baseTable[, c("PerEURO", "ly.var")]),2)[1,2]} and \Sexpr{round(cor(baseTable[, c("PerEURO", "l2y.var")]),2)[1,2]} respectively. In addition, two spikes which are significant in the partial autocorrelation function as plotted in figure-\ref{fig:pacf} also indicate for the use of auto-regressive terms in the model. This thesis has included the first and second lag of response variable as a predictor.
+Exchange rate, being a time-series variable, contains autocorrelation which can be checked out (soften) by including the lagged variables of the response as predictor. Further, the correlation of response (\texttt{PerEURO}) with its first lag and second lag are \Sexpr{round(cor(baseTable[, c("PerEURO", "ly.var")]),2)[1,2]} and \Sexpr{round(cor(baseTable[, c("PerEURO", "l2y.var")]),2)[1,2]} respectively. In addition, two spikes which are significant in the partial autocorrelation function as plotted in figure-\ref{fig:pacf} also indicate for the use of auto-regressive terms in the model. This thesis has included the first and second lag of response variable as a predictor.
 
 <<pacf, echo=FALSE, fig.height=4, fig.cap="Partial autocorrelation function for Exchange Rate of NOK per Euro. The red dashed line denotes the 95\\% level of significance.", fig.width='0.8\\textwidth', fig.pos='htpb', purl=FALSE>>=
 p.acf<-ggplot(data.frame(Lag=1:22, 
@@ -293,3 +293,6 @@ print(p.acf)
 
 \section{Effect of Crisis period}
 \label{sec:crisisEffect}
+Financial crisis unleashed in the United State in summer 2007. The crisis extended towards Europe which has created a series of difficult situations in the financial market. Inter bank interest rate rose dramatically, stock market plunged and banks incurred serious funding problem with losses on their head (\cite{FinCrisis2009Kred}).
+
+Norway has been affected by the crisis through various channels. Sharp fall in commodity price, devaluation of companies and low international demand has direct impact in exchange rate of NOK. The data during those period has high influence in the statistical model using in this thesis. The influence of crisis is visible in the plots of Appendix-\ref{ch:revPlots}.

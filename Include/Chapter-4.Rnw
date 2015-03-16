@@ -5,12 +5,12 @@
 This chapter will present the analysis report obtained for different models considered in chapter-\ref{chap:modelsmethods}. The analysis process includes following series of steps,
 
 \begin{enumerate}
-\item The model is trained from the observation from the trained period (Jan 2000 - Dec 2012) through cross validation.
+\item The model is trained from the observation of training period (Jan 2000 - Dec 2012) through cross validation and compare the results
 \item Prediction on the average monthly exchange rate of Euro vs Norwegian Krone is made for the test period (Jan 2013 - Nov 2014)
 \item Compare them on the basis of criteria discussed in section-\ref{sec:compCriteria}
 \end{enumerate}
 
-The summary report of the variables that are in use during the analysis are in table (\ref{tbl:sumryTabl}),
+The summary report of the variables are presented in table (\ref{tbl:sumryTabl}),
 
 {\singlespacing\sffamily
 <<sumryTablSetup, echo=FALSE, results='hide'>>=
@@ -42,7 +42,8 @@ print(sumryXtable, caption.placement = "top",
       booktabs=TRUE, 
       floating=FALSE, 
       tabular.environment = "longtable",
-      add.to.row=addtorow, hline.after=c(-1,-1, nrow(sumryXtable)))
+      add.to.row=addtorow, 
+      hline.after=c(-1,-1, nrow(sumryXtable)))
 @
 
 }

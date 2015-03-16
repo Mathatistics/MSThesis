@@ -96,9 +96,6 @@ data.path<-path.expand(file.path(dirname(getwd()), "Datasets", "CompleteDataSet.
   <<revPlots, child="Include/Appendix-revPlots.Rnw", eval=TRUE>>=
   @
   
-  <<appendixCodeUsed, child="Include/Appendix-PLSflowchart.Rnw", eval=TRUE>>=
-  @
-  
   <<appendixCodeUsed, child="Include/Appendix-codeUsed.Rnw", eval=TRUE>>=
   @
 

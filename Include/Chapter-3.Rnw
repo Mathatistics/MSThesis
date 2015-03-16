@@ -6,7 +6,7 @@
 \section{A statistical Model}
 \label{sec:statModel}
 
-A statistical model describes the relationship between a cause and its effect. A vector $\mbf{y}$ contains $n$ number of responses. Let $\mbf{X}$ be a $n\times p$ matrix whose columns are predictor variables and each of them have $n$ observations. These variables in $\mbf{X}$ can affect $\mbf{y}$ so, the relationship between $\mbf{X}$ and $\mbf{y}$ can be written in a functional form as, 
+A statistical model describes the relationship between a cause and its effect. Let a vector $\mbf{y}$ contains $n$ number of responses and $\mbf{X}$ be a $n\times p$ matrix whose columns are predictor variables and each of them have $n$ observations. These variables in $\mbf{X}$ can affect $\mbf{y}$ so, the relationship between $\mbf{X}$ and $\mbf{y}$ can be written in a functional form as, 
 
 \begin{equation}
   \label{eq:functionalForm}
@@ -35,7 +35,7 @@ The model - \ref{eq:linearRegModel} is linear function of $p+1$ unknown paramete
 \subsection{Least Square Estimation}
 \label{ssec:lstSqEstimation}
 
-The estimate of the unknown parameter vector $\mbf{\beta}$ in (\ref{eq:linRegMatModel}) is obtained by minimizing the sum of square of residuals, 
+The estimate of the unknown parameter vector $\bs{\beta}$ in (\ref{eq:linRegMatModel}) is obtained by minimizing the sum of square of residuals, 
 The sum of square of residuals is,
 
 \begin{equation}
@@ -43,7 +43,7 @@ The sum of square of residuals is,
   \label{eq:errorSq}
 \end{equation}
 
-On minimizing eq - \ref{eq:errorSq}, we get the OLS estimate of $\bs{\beta}$ as,
+On minimizing equation - \ref{eq:errorSq}, we get the OLS estimate of $\bs{\beta}$ as,
 
 \begin{equation}
   \hat{\bs{\beta}}_{OLS}=(\mbf{X}^{t}\mbf{X})^{-1}\mbf{X}^{t}\mbf{Y}
@@ -54,7 +54,7 @@ For ordinary least square estimation, following basic assumptions (\cite{wooldri
 \begin{enumerate}
 \item Linear in parameter \label{ass1}
 \item Absence of Multicollinearity \label{ass2}
-\item No correlation between Error terms and predicotor variable, mathematically,
+\item No correlation between Error terms and predictor variable, mathematically,
 \[
 E(\mbf{\epsilon}_i|\mbf{X})=0, t=1,2,\ldots, n
 \]
@@ -72,12 +72,12 @@ For Hypothesis testing and inference using $t$ and $F$ test, an additional assum
 \[
 \mbf{\epsilon}_t\sim N(\mbf{0}, \sigma^2\mbf{I})
 \]
-Under the assumption from \ref{ass1} to \ref{ass4}, the OLS estimate obtained from eq-\ref{eq:estOLS} is best linear unbiased estimator of $\beta$.
+Under the assumption from \ref{ass1} to \ref{ass4}, the OLS estimate obtained from equation-\ref{eq:estOLS} is best linear unbiased estimator (BLUE) of $\beta$.
 
 \subsection{Prediction}
 \label{ssec:pred}
 
-Using $\hat{\bs{\beta}}$ obtained in eq-\ref{eq:estOLS}, following two matrices can be obtained,
+Using $\hat{\bs{\beta}}$ obtained in equation-\ref{eq:estOLS}, following two matrices can be obtained,
 
 \begin{subequations}
 \begin{align}
@@ -86,7 +86,7 @@ Using $\hat{\bs{\beta}}$ obtained in eq-\ref{eq:estOLS}, following two matrices 
 \end{align}
 \end{subequations}
 
-Here eq-\ref{eq:predEquation} gives predicted values of $\mbf{Y}$ which on subtracting from observed value give the predicted error terms as is presented in eq-\ref{eq:OLSResid}. Eq-\ref{eq:predEquation} can also be written as, 
+Here equation-\ref{eq:predEquation} gives predicted values of $\mbf{Y}$ which on subtracting from observed value give the predicted error terms as is presented in equation-\ref{eq:OLSResid}. Equation-\ref{eq:predEquation} can also be written as, 
 
 \begin{equation}
   \hat{\mbf{Y}} =\mbf{X}\hat{\bs{\beta}}=\mbf{HY} \label{eq:predHatEquation}
@@ -96,7 +96,7 @@ Here, $\mbf{H}$ is called Hat matrix and is the orthogonal projection of $y$ ont
 
 \section{Variable selection}
 \label{sec:varSelection}
-Although including many variables in the model can add information, they are also the source of unnecessary noise. In addition, many variables in a model is also the cause of multicollinearity. So, a model that is simple yet contain usefull information is always diserable. Variable selection is intended for selecting best subset of predictor variables. Some of the criteria for variable selection as discribed in (\cite{weisberg2005applied}) are discussed below:
+Although including many variables in the model can add information, they are also the source of unnecessary noise. In addition, many variables in a model is also the cause of multicollinearity. So, a model that is simple yet contain useful information is always desirable. Variable selection is intended for selecting best subset of predictor variables. Some of the criteria for variable selection as described in \citetitle{weisberg2005applied} by \citet{weisberg2005applied} are discussed below:
 
 \subsection{Criteria for variable selection}
 \label{ssec:vsCriteria}
@@ -108,7 +108,7 @@ Suppose $X_s$ is selected set of variable which gives the predicted output of,
 If $X_s$ misses important variables, the residual sum of squares of fitted model in equation-\ref{eq:selectedVarModel} will be larger than the full model. Lack of fit for selecting the set $X_s$ is measured by its Error sum of square.
 \begin{description}
 \item[Model statistic Approach]\hfill\\
-When a model is fitted, various statistics such as $R^2$, $R^2$-adj, F-statistic are obtained which measures the quality of that model. Based on these statistic, a model is selected as better than other.
+When a model is fitted, various statistics such as $R^2$, $R^2$-adj, F-statistic are obtained which measures the quality of that model. Based on these statistic, a model is selected as better than others.
 \item[Information Criteria \label{itm:infCriteria}]\hfill \\
 Another common criterion, which balances the size of the residual sum of squares with the number of parameters in the model (\cite[p.~386]{johnson2007applied}), for selecting subset of predictor variable is AIC (\textit{Akaike Information Criterion}). It is given as,
 \begin{equation}
@@ -117,7 +117,7 @@ Another common criterion, which balances the size of the residual sum of squares
 \end{equation}
 where, RSS$=$Residual Sum of Square, $n=$number of observation and $k=$Number of variables included in the model
 
-A model with smaller value of AIC obtained from eq-\ref{eq:aicFormula} is better better than other with larger AIC. An alternative to AIC is its Bayesian analogue, also known as Schwarz or Bayesian information criteria. Bayesian Information Criteria provides between model complexity and lack of fit. Smaller value of BIC is better.
+A model with smaller value of AIC obtained from equation-\ref{eq:aicFormula} is better better than other with larger AIC. An alternative to AIC is its Bayesian analogue, also known as Schwarz or Bayesian information criteria. Bayesian Information Criteria provides balance between model complexity and lack of fit. Smaller value of BIC is better.
 \begin{equation}
 \label{eq:bicFormula}
 \text{BIC} = n \log(\text{RSS}_s/n) + \text{k} \log(n)
@@ -132,14 +132,14 @@ Where, $\hat{\sigma}^2$ is from the full model. A plot of $C_p$ vs $k$ for each 
 
 \subsection{Computational procedure for variable selection}
 \label{ssec:compProcVarSelction}
-When a model is large, fitting all possible subsets is not feasible. \citet{furnival1974regressions} suggested several algorithm to calculate residual sum of square of all possible regression called leap and bound technique which has been widely implemented in statistical software. However, this method is not appropriate for criteria based on model statistic where Stepwise methods can be used. Stepwise methods has three basic variation (\cite[p.~221]{weisberg2005applied}).
+When a model is large, fitting all possible subsets is not feasible. \citet{furnival1974regressions} suggested several algorithm to calculate residual sum of square of all possible regression called leap and bound technique which has been widely implemented in statistical software. However, this method is not appropriate for criteria based on model statistic where step wise methods can be used.  methods has three basic variation (\cite[p.~221]{weisberg2005applied}).
 
 \begin{description}
 \item[Forward selection procedure \label{itm:forwardSelection}] \hfill\\
-Model is started without any variable and in each step a variable is added and the model is fitted. The variable is left in the model if the subset minimizes the criterion of interest . Similar process is repeated for other predictor variable.
+Model is started without any variable and in each step a variable is added and the model is fitted. The variable is left in the model if the subset minimizes the criterion of interest . Similar process is repeated for other predictor variables.
 
 \item[Backward elimination procedure \label{itm:backwardElimination}]\hfill\\
-This process is like the reverse of \hyperref[itm:forwardSelection]{Forward selection procedure}. In this process, the model is fitted with all the predictor variable and variables are removed one at a time except those that are forced to be in the model. The model is examined against the considered criteria. Usually, the term with smallest t-value is removed since this give rise to the residual sum of square.
+This process is like the reverse of \hyperref[itm:forwardSelection]{Forward selection procedure}. In this process, the model is fitted with all the predictor variable and variables are removed one at a time except those that are forced to be in the model. The model is examined against the considered criteria. Usually, the term with smallest t-value is removed since this gives rise to the residual sum of square.
 
 \item[Stepwise procedure \label{itm:stepwise}]\hfill\\
 This combines both \hyperref[itm:forwardSelection]{Forward selection procedure} and \hyperref[itm:backwardElimination]{Backward elimination procedure}. In each step, a predictor variable is either deleted or added so that resulting model minimizes the criterion function of interest.
@@ -168,7 +168,7 @@ The principal components can be performed on Covariance or Correlation matrix. I
     	\mbf{S}=\mbb{E} \left[ \left( \mathbf{X} - \mbb{E}[\mathbf{X}] \right) \left( \mathbf{X} - \mbb{E}[\mathbf{X}] \right)^{\textrm{T}} \right] 
     \end{equation}
 
-\item Calculate eigenvalue and eigenvector of the correlation matrix obtained in eq-\ref{eq:corFormula}. An eigenvalue $\mbf{\Lambda}$ of a square matrix $\mbf{A}$ of rank $p$ is a diagonal matrix of order $p$ which satisfies, 
+\item Calculate eigenvalue and eigenvector of the correlation matrix obtained in equation-\ref{eq:corSampFormula}. An eigenvalue $\mbf{\Lambda}$ of a square matrix $\mbf{A}$ of rank $p$ is a diagonal matrix of order $p$ which satisfies, 
 
   \begin{equation}
     \mbf{AE}=\mbf{E\Lambda}
@@ -182,7 +182,7 @@ where,
 \label{eq:egnMatrix}
 \end{equation}
 
-In PCA these eigenvalues are arranged in descending order, i.e. $\lambda_1 \ge \lambda_2 \ge \ldots \ge \lambda_p$ . For each eigen values there is an eigenvector. Let $\mbf{E}=(\vl{\mbf{v}}{p})$ be the matrix of eigen vector so that the correlation matrix $\mbf{A}$ can be decomposed and expressed as,
+In PCA these eigenvalues are arranged in descending order, i.e. $\lambda_1 \ge \lambda_2 \ge \ldots \ge \lambda_p$ . For each eigenvalues there is an eigenvector. Let $\mbf{E}=(\vl{\mbf{v}}{p})$ be the matrix of eigenvector so that the correlation matrix $\mbf{A}$ can be decomposed and expressed as,
 
 \begin{equation}
   \mbf{A}=\mbf{E}\bs{\Lambda} \mbf{E}^{-1}=\mbf{E}\bs{\Lambda}\mbf{E}^T
@@ -196,23 +196,23 @@ Equivalently, $|\mbf{A}-\lambda_i \mbf{I}_n|\mbf{E}=0$ which can only be realize
     \label{eq:chrEqn}
   \end{equation}
   
-Eq-\ref{eq:chrEqn} is called the characteristic equation where, $\mbf{A}$ is the correlation matrix obtained from eq-\ref{eq:corFormula}.  The root of the equation is called eigenvalues (\cite{seber2008matrix}) and the vector $\mbf{E}_i$ is called eigenvector corresponding to the eigenvalue $\lambda_i$. The eigenvector obtaind from eq-\ref{eq:eigenEqn} are then normalized, i.e. $||\mbf{E}_i||^2=1$. 
+Equation-\ref{eq:chrEqn} is called the characteristic equation where, $\mbf{A}$ is the correlation matrix obtained from equation-\ref{eq:corSampFormula}.  The root of the equation is called eigenvalues (\cite{seber2008matrix}) and the vector $\mbf{E}_i$ is called eigenvector corresponding to the eigenvalue $\lambda_i$. The eigenvector obtained from equation-\ref{eq:eigenEqn} are then normalized, i.e. $||\mbf{E}_i||^2=1$. 
 
 \item Since, the variation explained in data are accumulated in first few  principal components, only $k$ eigenvalues are considered. The corresponding eigenvectors of those eigenvalues is called projection matrix. The projection matrix is,
 
 \begin{equation}
-  \mbf{P}=\begin{pmatrix} \mbf{E}_1^T & \mbf{E}_k^T & \ldots & \mbf{E}_k^T\end{pmatrix}^T
+  \mbf{P}=\begin{pmatrix} \mbf{E}_1^T & \mbf{E}_2^T & \ldots & \mbf{E}_k^T\end{pmatrix}^T
   \label{eq:projMatrix}
 \end{equation}
 
-The projection matrix in eq-\ref{eq:projMatrix} projects the datamatrix into lower dimensional subspace $\mbf{Z}_i$. i.e.,
+The projection matrix in equation-\ref{eq:projMatrix} projects the data matrix into lower dimensional subspace $\mbf{Z}_i$. i.e.,
 
 \begin{equation}
   \mbf{Z}=\mbf{PX}
   \label{eq:projComp}
 \end{equation}
 
-The columns vectors of matrix $Z$ obtained from \ref{eq:projComp} are the orthogonal projections of data matrix $\mbf{X}$ into $k$ dimensional subspace. These components are the linear combination of the rows of matrix $\mbf{X}$ such that the most variance is explained by the first column vector of $\mbf{Z}$ and second one has less variance than the first one and so on. Here,
+The column vectors of matrix $Z$ obtained from \ref{eq:projComp} are the orthogonal projections of data matrix $\mbf{X}$ into $k$ dimensional subspace. These components are the linear combination of the rows of matrix $\mbf{X}$ such that the most variance is explained by the first column vector of $\mbf{Z}$ and second one has less variance than the first one and so on. Here,
 \begin{align*}
 	\text{var}(\mbf{Z}_i)&=\lambda_i \text{ and }\\
 	\text{cov}(\mbf{Z}_i\mbf{Z}_j)&=0\text{ for }i\ne j
@@ -238,16 +238,16 @@ The components of Principal Component Analysis (PCA) accumulate the variation in
 \end{equation}
 Here, \bs{P} is a projection matrix defined in equation-\ref{eq:projMatrix}.
 \end{enumerate}
-Since, PCR includes only $m$ componets, the estimate obtained are biased. ;The number of components $m$ can be chosen by cross-validation the prediction mean squared error (RMSEP). If all the components are included in the model, estimates obtained from PCR, i.e. $\bs{\beta_\text{PCR}}$ are identical to the estimates of OLS ($\bs{\beta}_\text{OLS}$).
+Since, PCR includes only $m$ components, the estimate obtained are biased. ;The number of components $m$ can be chosen by cross-validation the prediction mean squared error (RMSEP). If all the components are included in the model, estimates obtained from PCR, i.e. $\bs{\beta_\text{PCR}}$ are identical to the estimates of OLS ($\bs{\beta}_\text{OLS}$).
 
 \section{Partial Least Square Regression}
 \label{sec:pls}
 
-Partial Least Square Regession (PLS) is relatively new methods and it can be used for both univariate and multivariate regression. It constructs a new set of variables called latent variable (or factor or components) from the linear combination of predictor variables $\vl{X}{n}$ (\cite{garthwaite1994interpretation}) as in the case of principal components, however PCR construct components (factors) maximizing the variation of data matrix$(X)$ while PLS construct them using the variation in both $X$ and $Y$ (\cite{yeniay2002comparison}). The intension of PLS is to create latent variables (components) that caputre most of the information in the $X$ variables that is useful for predicting $\vl{Y}{p}$, while reducing the dimensionality of the regression problem by using fewer components than the number of X-variables (\cite{garthwaite1994interpretation}). Partial least square regression can be performed using following steps. These steps are adapted from the paper \citetitle{wold2001pls} from \citet{wold2001pls}. The $X$ and $Y$ matrices are column centered for the ease of computation.
+Partial Least Square Regression (PLS) is relatively new method and it can be used for both univariate and multivariate regression. It constructs a new set of variables called latent variable (or factor or components) from the linear combination of predictor variables $\vl{X}{n}$ (\cite{garthwaite1994interpretation}) as in the case of principal components, however PCR construct components (factors) maximizing the variation of data matrix$(X)$ while PLS construct them using the variation in both $X$ and $Y$ (\cite{yeniay2002comparison}). The intention of PLS is to create latent variables (components) that capture most of the information in the $X$ variables that is useful for predicting $\vl{Y}{p}$, while reducing the dimension of the regression problem by using fewer components than the number of X-variables (\cite{garthwaite1994interpretation}). Partial least square regression can be performed using following steps. These steps are adapted from the paper \citetitle{wold2001pls} from \citet{wold2001pls}. The $X$ and $Y$ matrices are column centered for the ease of computation.
 
 \begin{enumerate}
 \item{
-PLS estimates the latent variables also called X-scores denoted by $t_a, (a~=~1,2,\ldots,A)$, where $A$ is the number of Components a model has considered. These X-scores are used to predict both X and Y, i.e. both X and Y are assumed to be modelled by the same latent variable. The X-scores are estimated as linear combination of original variables with the coefficients $W(w_{ka})$ as in equation-\ref{eq:PLSxScore}, i.e,
+PLS estimates the latent variables also called X-scores denoted by $t_a, (a~=~1,2,\ldots,A)$, where $A$ is the number of Components a model has considered. These X-scores are used to predict both X and Y, i.e. both X and Y are assumed to be modeled by the same latent variable. The X-scores are estimated as linear combination of original variables with the coefficients $W(w_{ka})$ as in equation-\ref{eq:PLSxScore}, i.e,
 \begin{eqnarray}
 \label{eq:PLSxScore}
     t_{ia}=\sum_{k=1}^{p}{W^*_{ka}X_{ik}} & (\bs{T}=\bs{X}\bs{W^*})
@@ -269,20 +269,19 @@ X_{ik} =\sum_a{t_{ia}P_{ak}+e_{ik}}; & (\bs{X}=\bs{T}\bs{P'}+\bs{E}) \label{eq:P
 \end{eqnarray}
 
 A similar setup can be used to have the summary for Y-matrix as in equation-\ref{eq:PLSySumry},
-\color{red}{
 \begin{eqnarray}
 Y_{im} =\sum_a{u_{ia}q_{am}+g_{im}}; & (\bs{Y}=\bs{U}\bs{Q'}+\bs{G}) \label{eq:PLSySumry}
 \end{eqnarray}
 
 where, $\bs{U}=\bs{YQ}$ and $\bs{Q}=\bs{T}^t\bs{Y}$
-}}
+}
 \item{
 The X-scores ($\bs{T_\circ}$) are also good predictor of \bs{Y}, i.e.,
 \begin{eqnarray}
 \label{eq:PLSyPred}
 y_{im}=\sum_a{q_{ma}t_{ia}+f_{im}} & (\bs{Y}=\bs{TC}^t+\bs{F})
 \end{eqnarray}
-Here, \bs{F} is the deviation between the observed and modelled response.
+Here, \bs{F} is the deviation between the observed and modeled response.
 }
 \item{
 \textbf{Coefficients Estimates:}\\
@@ -302,14 +301,14 @@ i.e., \bs{B}_\text{PLS} &= \bs{W}^*\bs{C}^t
 \end{align}
 }
 \end{enumerate}
-Above process is repreated for each components ($a$), the matrix \bs{X} and \bs{Y} are ``deflated'' by subtracting their best summaries ($\bs{TP}^t$ for \bs{X} and $\bs{QC}^t$ for \bs{Y}). The Residuals obtained are used as new \bs{X} and \bs{Y} in the computation process for new component. However, the deflation of \bs{Y} is not necessary since the result is equivalent with or without the deflation (\cite[p.~5]{wold2001pls}).
+Above process is repeated for each components ($a$), the matrix \bs{X} and \bs{Y} are ``deflated'' by subtracting their best summaries ($\bs{TP}^t$ for \bs{X} and $\bs{QC}^t$ for \bs{Y}). The Residuals obtained are used as new \bs{X} and \bs{Y} in the computation process for new component. However, the deflation of \bs{Y} is not necessary since the result is equivalent with or without the deflation (\cite[p.~5]{wold2001pls}).
 
-Various algorithm exist to perform PLS regression among which NIPLS and SIMPLS are in fashion. This thesis has opted NIPLS (Nonlinear Iterative Partial Least Square) regression which is performed by \texttt{oscores} method of \texttt{pls} package in R. Appendix - \ref{ch:NIPLSfloChrt} shows the flowchart for the algorithm. In the algorithm, the first weight vector ($\bs{w}_1$) is the first eigenvector of the combined variance-covariance matrix $\bs{X}^t\bs{YY}^t\bs{X}$ and the following weight vectors are computed using the deflated version. Similarly, the first score vector ($\bs{t}_1$) is computed as the first eigenvector of $\bs{XX}^t\bs{YY}^t$ and the following x-scores uses the deflated version of the matrices.
+Various algorithm exist to perform PLS regression among which NIPLS and SIMPLS are in fashion. This thesis has opted NIPLS (Nonlinear Iterative Partial Least Square) regression which is performed by \texttt{oscores} method of \texttt{pls} package in R. In the algorithm, the first weight vector ($\bs{w}_1$) is the first eigenvector of the combined variance-covariance matrix $\bs{X}^t\bs{YY}^t\bs{X}$ and the following weight vectors are computed using the deflated version. Similarly, the first score vector ($\bs{t}_1$) is computed as the first eigenvector of $\bs{XX}^t\bs{YY}^t$ and the following x-scores uses the deflated version of the matrices.
 
 \section{Ridge Regression}
 \label{sec:ridgeRegression}
 When the minimum eigenvalue of $\bs{X}^t\bs{X}$ matrix is very much smaller than unity (i.e. $\lambda_\text{min}<<1$), the least square estimate obtained from equation-\ref{eq:estOLS} are larger than average (\cite{marquardt1975ridge}).
-Estimates based on $\left[\bs{X}^t\bs{X}+\lambda\bs{I}_p\right], \lambda \ge 0$ rather than $\bs{X}^t\bs{X}$ can solve these problems. A.E. Hoel first suggests that to control instibility of the least square estimate, on the condition above, can be;
+Estimates based on $\left[\bs{X}^t\bs{X}+\lambda\bs{I}_p\right], \lambda \ge 0$ rather than $\bs{X}^t\bs{X}$ can solve these problems. A.E. Hoel first suggests that to control instability of the least square estimate, on the condition above, can be;
 \begin{align}
 \hat{\bs{\beta}}^*_\text{ridge}&=\left[\bs{X}^t\bs{X}+\lambda\bs{I}\right]^{-1}\bs{X}^t\bs{Y};\; \lambda \ge 0 \nonumber\\
 &=\bs{WX}^t\bs{Y}
@@ -327,9 +326,9 @@ Further, the hat matrix for Ridge regression is given as,
 \end{equation}
 All the theory behind Ridge Regression described above are cited from \citetitle{hoerl1970ridge} by \citet{hoerl1970ridge}.
 
-\section{Comparision Criteria}
+\section{Comparison Criteria}
 \label{sec:compCriteria}
-After fitting models with various methods, it becomes necessary to test their validity for their results to be trusted. Models react differently for the new information during prediction as the quality of model hightly depends on their estimates. Since the purpose of this thesis is to compare different models on the quality of their prediction, models are compared on the basis of their \begin{inlinelist}\item Goodness of fit and \item Predictability \end{inlinelist}.
+After fitting models with various methods, it becomes necessary to test their validity for their results to be trusted. Models react differently for the new information during prediction as the quality of model highly depends on their estimates. Since the purpose of this thesis is to compare different models, the basis for their comparison are set as their \begin{inlinelist}\item Goodness of fit and \item Predictability \end{inlinelist}.
 
 \subsection{Goodness of fit}
 \label{ssec:goodnessFit}
@@ -338,11 +337,11 @@ A model is assumed to follow some hypothetical state of being ideal. Setting up 
 \item [Residual obtained after the model fit] \hfill\\
 Residuals obtained from the fitted model are assumed to be random and normal considering that no useful information are still content on them.
 \item[Outlier] \hfill\\
-Outliers can distort the analysis toward unintential direction creating false estimates. Models without such outliers are considered better.
+Outliers can distort the analysis toward unintentional direction creating false estimates. Models without such outliers are considered better.
 \item [Variance explained by the model] \hfill\\
 The variance explained by the model is generally measured by $R^2$ or $R^2 \text{ adj}$ in linear models. More the variation contained in the data is explained by the model, better the model is considered. In the case of PLS and PCR, the residuals contains very little information left on the ignored components.
 \item [Relative value of Information Criteria such as AIC and BIC] \hfill\\
-AIC (Akaike information criterion) and BIC (Bayesian information criterion or Schwarz criterion) measures relative quality of model. Although, it is not an absolute measure of the model quality, helps to select a better model among others. AIC is defined as in equation - \ref{eq:aic} which is free from the ambiguities present in the convenential hypothesis testing system (\cite{akaike1974new}).
+AIC (Akaike information criterion) and BIC (Bayesian information criterion or Schwarz criterion) measures relative quality of models. Although, it is not an absolute measure of the model quality, it helps to select a better model among others. AIC is defined as in equation - \ref{eq:aic} which is free from the ambiguities present in the conventional hypothesis testing system (\cite{akaike1974new}).
 \begin{equation}
 \label{eq:aic}
 \text{AIC} = (-2)\log(\mathcal{L}) + 2(k)
@@ -353,33 +352,33 @@ For least square case, above formula resembles to equation - \ref{eq:aicFormula}
 
 \subsection{Predictability}
 \label{ssec:predictability}
-Prediction is highly influenced by the model in used. So, prediction strongly depends on the estimates of a model. False and unstable estimates makes the prediction  poor and unreliable. On one side, providing more information (variable) can well train the model resulting more precise prediction. On the other hand, overfitting, which attempts to explain idiosyncrasies in the data, leads to model complexity reducing the predictive power of a model. In the case of PLS and PCR, adding more components results in including noise in the model. 
+Prediction is highly influenced by the model in used. So, prediction strongly depends on the estimates of a model. False and unstable estimate makes the prediction  poor and unreliable. On one side, providing more information (variable) can well train the model resulting more precise prediction. On the other hand, over-fitting, which attempts to explain idiosyncrasies in the data, leads to model complexity reducing the predictive power of a model. In the case of PLS and PCR, adding more components results in including noise in the model. 
 <<mdlFitCriteriaPlot, child="mdlFitCriteriaPlot.Rnw">>=
 @
 The relationship between the model complexity and the prediction error is presented in figure-\ref{fig:mdlErrorPlt} with the case of under-fitting and over-fitting of a model.
 
-Furthermore, a model exhibits an \textit{external validity} if it closely predicts the observations that were not used to fit the model parameters (\cite[p.~72]{lattin2003analyzing}). An overfitted model model fails to perform well for those observation that are not included during model parameter estimation. The dataset in this thesis is divided into two parts. The first part includes the observations from Jan 2000 to December 2012 and the second one includes observation onward till November 2014. A cross-validation  approach is utilized on the first set of observation to train the model. The model is used to predict the the exchange rate of NOK per Euro from the predictors of the second set of observations. Figure - \ref{fig:calcProcedure} shows the procedure adopted for prediction in this thesis.
+Furthermore, a model exhibits an \textit{external validity} if it closely predicts the observations that were not used to fit the model parameters (\cite[p.~72]{lattin2003analyzing}). An over-fitted model fails to perform well for those observation that are not included during model parameter estimation. The dataset in this thesis is divided into two parts. The first part includes the observations from Jan 2000 to December 2012 and the second one includes observation onward till November 2014. A cross-validation  approach is utilized on the first set of observation to train the model. The model is used to predict the exchange rate of NOK per Euro from the predictors of the second set of observations. Figure - \ref{fig:calcProcedure} shows the procedure adopted for prediction in this thesis.
 
 \begin{figure}[ht]
 \centering
     \includestandalone[width=\linewidth]{include/calcProcedure}
-    \caption[Procedure adopted in the thesis]{Procedure adopted in the thesis for model comparision.A cross-validation technique is used to validate the trained dataset. The trained model is used to predict the test response from with prediction errors are obtained.}
+    \caption[Procedure adopted in the thesis]{Procedure adopted in the thesis for model comparison. A cross-validation technique is used to validate the trained dataset. The trained model is used to predict the test response from with prediction errors are obtained.}
     \label{fig:calcProcedure}
 \end{figure}
 
 \subsubsection{Cross-Validation}
 \label{sssec:crossValidation}
-There are various cross-validation techniques among which two were described below;
+There are various cross-validation techniques among which two are described below;
 \begin{description}
 \item[ K-Fold Cross-validation:]\hfill \\
-The dataset are splitted into $k$ equal parts. For each $i=1,2,\ldots, k$, a model is fitted leaving out the $i^\text{th}$ portion. A prediction error is calculated for this model. The process is repeated for all $i$. THe prediction error for K-fold cross validation is obtained by averaging the prediction error of each of the model fitted.
+The dataset are split into $k$ equal parts. For each $i=1,2,\ldots, k$, a model is fitted leaving out the $i^\text{th}$ portion. A prediction error is calculated for this model. The process is repeated for all $i$. The prediction error for K-fold cross validation is obtained by averaging the prediction error of each of the model fitted.
 \item[ Leave-one-out cross validation:]\hfill \\
 This is a special case of $k-$ fold cross-validation where $k=n$ (number of observation), i.e, each time one observation is removed and the model is fitted.
 \end{description}
 
 \subsubsection{Prediction Error}
 \label{sssec:predErr}
-Prediction of a model becomes precise if the error is minimum. Models can be compared according to their predictability. Understanding of different measures of prediction error is necessary acknoledge their predictability and eventually perform model comparison.
+Prediction of a model becomes precise if the error is minimum. Models can be compared according to their predictability. Understanding of different measures of prediction error is necessary to acknowledge their predictability and eventually perform model comparison.
 \begin{description}
 \item[Root Mean Square Error (RMSE)]\hfill\\
 RMSE is the measure of how well the model fit the data.
@@ -402,7 +401,7 @@ In the special case of leave one out cross validation, $i$ represents each sampl
 
 \subsubsection{R-squared for Prediction}
 \label{sssec:rseqPred}
-R-squared for prediction is analogus to the R-sq in the case of model estimation. In the case of cross-validation, it is also denoted by $Q^2$. It is obtained by subtracting the ratio of PRESS obtained from equation-\ref{eq:press} to Total sum of square from 1. i.e,
+R-squared for prediction is analogs to the R-sq in the case of model estimation. In the case of cross-validation, it is also denoted by $Q^2$. It is obtained by subtracting the ratio of PRESS obtained from equation-\ref{eq:press} to total sum of square from one. i.e,
 \begin{equation}
 \label{eq:rsqpred}
 R^2_{CV}=Q^2=1-\frac{\text{PRESS}}{\text{TSS}} = 1-\frac{\sum_{i=1}^n{\left(y_i-\hat{y}_{(i)}\right)^2}}{\sum_{i=1}^n{\left(y_i-\bar{y}\right)^2}}
